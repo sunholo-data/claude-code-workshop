@@ -175,15 +175,13 @@ nodes:
     minutes: 15
     can: "I can create a restricted API key in my own Google Cloud project and swap it in for the one I was lent."
     proof: "The server still works after the lent key is revoked."
-  - id: local-mcp
+  - id: bigquery-mcp
     tier: 5
-    title: A local MCP server on your own data
+    title: GA4 data through BigQuery
     needs: [add-mcp, team-conventions]
-    minutes: 45
-    can: "I can run an MCP server on my laptop that reads my own data as me, and say what it can reach."
-    proof: "A Google Analytics report from a property your group's rules allow, with the property named."
-
-  # ── Tier 6 · Share (the trunk's end) ────────────────────────────────────
+    minutes: 30
+    can: "I can connect Claude to Google's BigQuery server, query a GA4 export read-only, and say which data I was allowed to reach and why."
+    proof: "A read-only query result from the GA4 sample, and one sentence on what left Google to produce it."
   - id: shared-skills-repo
     tier: 6
     title: The team's skills repository
@@ -240,7 +238,7 @@ nodes:
   - id: scheduled
     tier: B
     title: Running without you
-    needs: [write-a-skill, local-mcp]
+    needs: [write-a-skill, bigquery-mcp]
     minutes: 30
     can: "I can describe what it takes for a task to run on a schedule, and what has to be true before it should."
     proof: "A scheduled run's output."
@@ -260,6 +258,13 @@ nodes:
     minutes: 40
     can: "I can organise a growing set of skills so the right one is found, and stop two skills overlapping."
     proof: "Two overlapping skills merged or their descriptions separated, and a request that now reaches the right one."
+  - id: local-mcp
+    tier: B
+    title: Run a GA4 server yourself
+    needs: [bigquery-mcp]
+    minutes: 45
+    can: "I can run a GA4 MCP server on my own laptop, signed in as me, and say how its access differs from the BigQuery route."
+    proof: "A GA4 report from a property your group's rules allow, with the property named, and what your sign-in could reach."
   - id: plugin-marketplace
     tier: B
     title: Team skills in every folder

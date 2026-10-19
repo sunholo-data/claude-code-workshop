@@ -18,6 +18,7 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Organiser | The group's data rule in writing: what may and may not go to a model | |
 | Facilitator | One Developer Knowledge API key per person, restricted to that API, in a project dedicated to the course so they can all be revoked together | |
 | Facilitator | The group overlay in `overlay/` | |
+| Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough), an OAuth client, the BigQuery connector added in claude.ai, and each participant granted query rights on that one dataset | |
 | Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key | |
 
 ## The day
@@ -36,8 +37,8 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 ## Homework
 
 - Finish your own skill (`write-a-skill`).
-- Install the Google Analytics MCP and run one report from data you are allowed to use
-  (`local-mcp`). Bring the error if it doesn't work.
+- Connect the BigQuery connector and query the GA4 sample read-only (`bigquery-mcp`). Bring the
+  error if it doesn't work. Optional: run a GA4 server yourself (`local-mcp`).
 - Make your own Developer Knowledge key (`own-api-key`).
 - Optional: one branch node of your choice.
 - Bring one thing the conventions got wrong.
@@ -49,7 +50,7 @@ which a generic course can't script.
 
 | Block | Nodes | Needs |
 |---|---|---|
-| Homework back: what broke in `local-mcp`, fixed together | `local-mcp` | Error messages people brought |
+| Homework back: what broke connecting BigQuery, fixed together; one GA4 question answered as a group | `bigquery-mcp` | Error messages people brought; the connector working on the facilitator's laptop |
 | Everyone installs the team skills repository and pulls a change someone else made | `shared-skills-repo` | The repository on the group's own GitHub organisation; everyone with access |
 | Each group contributes a skill by pull request; the other group reviews and uses it | `share-skill-pr`, `protect-main` | Named reviewers; a branch rule on `main` if the plan allows it |
 | Many skills, one entry point: overlaps found and fixed | `skill-routing` | At least four skills in the repository |

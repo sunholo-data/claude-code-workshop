@@ -3,14 +3,8 @@
     "google-developer-knowledge": {
       "type": "http",
       "url": "https://developerknowledge.googleapis.com/mcp",
-      "headers": { "X-Goog-Api-Key": "${GOOGLE_DK_API_KEY}" }
-    },
-    "analytics-mcp": {
-      "command": "uvx",
-      "args": ["analytics-mcp"],
-      "env": {
-        "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}",
-        "GOOGLE_PROJECT_ID": "${GOOGLE_PROJECT_ID}"
+      "headers": {
+        "X-Goog-Api-Key": "${GOOGLE_DK_API_KEY}"
       }
     }
   }

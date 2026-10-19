@@ -15,7 +15,7 @@ to be true before anything should run with nobody watching:
 ## Do
 
 1. Pick your skill from [write-a-skill](write-a-skill.md), or the report from
-   [local-mcp](local-mcp.md) if your rules allow it. Run it by hand three times. If you corrected
+   [bigquery-mcp](bigquery-mcp.md). Run it by hand three times. If you corrected
    it, it isn't ready.
 2. Add a check to the instructions: *"Finish by checking <what a wrong result looks like>. Write
    the result to `runs/<date>.md` with PASS or FAIL as the first line, and say why."*

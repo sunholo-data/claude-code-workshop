@@ -1,10 +1,19 @@
-# A local MCP server on your own data
+# Run a GA4 server yourself
 
-**Server:** Google Analytics MCP (`github.com/googleanalytics/google-analytics-mcp`). It runs on
-your laptop and reads GA4 **as you**: every property your Google account can open, it can open.
-Read your group's data rules before you start; this is where they matter most.
+**Optional.** The [BigQuery route](bigquery-mcp.md) is the easy way to GA4 data. This branch is for
+anyone who wants GA4's own reports rather than the export, or wants to run a server on their own
+laptop. It reads GA4 **as you**: every property your Google account can open, it can open,
+client properties included. Read your group's data rules before you start.
 
-Good as homework: the installs take a while, and it is fine to get stuck and bring the error.
+Two options, both needing a Google Cloud project with the **Google Analytics Admin API** and
+**Google Analytics Data API** enabled, and an OAuth client of type *Desktop app*:
+
+- **Google's official server** (`github.com/googleanalytics/google-analytics-mcp`): read-only by
+  design. Needs `uv` and `gcloud`. Steps below.
+- **A GA4 command-line tool with a skill**, such as `github.com/daidalytics/google-analytics-cli`:
+  needs only `uv`, but its own login asks for **edit and user-management rights** as well as read.
+  Add deny rules for its delete, create, update and access commands before you use it, or log in
+  read-only through `gcloud` as its README describes.
 
 ## You need
 
@@ -23,8 +32,9 @@ gcloud auth application-default login \
   --client-id-file=PATH_TO_CLIENT_FILE
 ```
 
-It prints `Credentials saved to file: [PATH]`. Set that path as `GOOGLE_APPLICATION_CREDENTIALS`,
-and your project ID as `GOOGLE_PROJECT_ID`; this repo's `.mcp.json` reads both. Restart and check
+It prints `Credentials saved to file: [PATH]`. Ask Claude to add the server to your practice
+folder's `.mcp.json`: command `uvx`, argument `analytics-mcp`, with that path as
+`GOOGLE_APPLICATION_CREDENTIALS` and your project ID as `GOOGLE_PROJECT_ID`. Restart and check
 `/mcp`.
 
 ## Do
