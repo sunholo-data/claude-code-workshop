@@ -124,6 +124,7 @@ html[data-density="stage"] .detail{display:none}
 .prompt{font-family:var(--mono);font-size:clamp(11px,1.5cqi,21px);line-height:1.5;padding:1.6cqb 1.8cqi;border-radius:8px;
   background:var(--code-bg);border:1px solid var(--code-border);border-left:3px solid var(--orange)}
 .prompt .cm{color:var(--text-dim)}
+.foot a{color:var(--orange);font-weight:700}
 .proof{display:flex;gap:1.2cqi;align-items:baseline;font-size:clamp(11px,1.5cqi,21px);line-height:1.4;color:var(--text-dim)}
 .proof b{font-family:var(--mono);font-size:.8em;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);flex-shrink:0}
 .proof span b{font-family:var(--sans);font-size:1em;letter-spacing:0;text-transform:none;color:var(--text)}
@@ -297,7 +298,7 @@ html[data-density="stage"] .detail{display:none}
           <div class="card"><div class="num">3</div><div class="t">Explain</div><div class="s">Where you were wrong is where the learning is.</div></div>
         </div>
         <div class="prompt" style="margin-top:3cqb"><span class="cm"># in the workshop folder, in the Code tab</span><br>start the workshop</div>
-        <p class="foot">The <b>workshop guide</b> skill sets each task and ticks it off <b>only when it has seen the proof</b>. Finish early? It unlocks the next node. Stuck? It asks what you tried; ask twice and it explains.</p>
+        <p class="foot">Your <b>progress board</b> shows the tree: mark a node done with one line on how you showed it, and the next ones unlock. The <b>workshop guide</b> skill in your Code tab sets each task. Stuck? It asks what you tried; ask twice and it explains.</p>
         <div class="detail fac"><span class="lbl">Facilitator</span>
           <p>Progress is private and per person. The room view is where people are, never a ranking. Nobody is behind; people are on different nodes.</p>
         </div>
@@ -319,6 +320,24 @@ html[data-density="stage"] .detail{display:none}
         <div class="branches"><span class="lbl">Branches · early finishers &amp; homework</span><span class="chip">Checking the work</span><span class="chip">Data files</span><span class="chip">Hooks</span><span class="chip">Subagents</span><span class="chip">Running on a schedule</span><span class="chip">Skill routing</span></div>
         <div class="detail fac"><span class="lbl">Facilitator</span>
           <p>Source: <b>tree/tree.yaml</b>. The <i>I can…</i> sentence on every node was the pre-session self-assessment. Read back the distribution: which tiers the room already has, which nobody has.</p>
+        </div>
+      </section>
+
+      <!-- 3b · Progress board -->
+      <section class="slide" data-slide="3b">
+        <div class="kicker">Your progress board</div>
+        <h2 class="slide-title">Mark it done. <span class="accent">Say how.</span></h2>
+        <div class="cols c3" style="flex:0 0 auto">
+          <div class="card"><div class="h"><i class="fa-solid fa-diagram-project"></i> My progress</div>
+            <div class="s">The tree as boxes and arrows. An arrow means <b>do this first</b>. Orange boxes are unlocked: start there.</div></div>
+          <div class="card hot"><div class="h"><i class="fa-solid fa-pen"></i> One line of proof</div>
+            <div class="s">"Done" needs a line on <b>how you showed it</b>. Everyone can read it, so the room learns from each other's evidence.</div></div>
+          <div class="card"><div class="h"><i class="fa-solid fa-people-group"></i> The room</div>
+            <div class="s">Who's where, box by box. Right now, mark everything you <b>already</b> can: that's our starting point.</div></div>
+        </div>
+        <p class="foot"><a class="board-link" href="#" target="_blank" rel="noopener">Open the progress board</a> · the link is in the session chat</p>
+        <div class="detail fac"><span class="lbl">Facilitator</span>
+          <p>Put the board's room view on the projector during welcome. The distribution replaces the self-assessment readback: which tiers the room already has, which nobody has. Leave it up during hands-on blocks.</p>
         </div>
       </section>
 
@@ -453,6 +472,21 @@ html[data-density="stage"] .detail{display:none}
         <p class="foot">Two groups, two ways of working, <b>one set of skills</b>. A disagreement becomes a review comment instead of a second template.</p>
       </section>
 
+      <!-- 10b · Worked example -->
+      <section class="slide" data-slide="10b">
+        <div class="kicker">An example, end to end</div>
+        <h2 class="slide-title">Why did sign-ups <span class="accent">drop to zero?</span></h2>
+        <div class="cols c3" style="flex:0 0 auto">
+          <div class="card"><div class="h">What I asked</div>
+            <div class="prompt">Read @samples/tagging-plan.md and @samples/daily-sessions.csv. Why do newsletter sign-ups drop to zero on 15 September? Show me the lines you used.</div></div>
+          <div class="card"><div class="h">What it did</div>
+            <ul><li>Read both files</li><li>Found the change log entry: <b>newsletter_signup</b> renamed to <b>sign_up</b> on 15 Sept</li><li>Pointed at the first zero in the CSV, the same day</li></ul></div>
+          <div class="card hot"><div class="h">How I checked</div>
+            <ul><li>Opened the change log line myself</li><li>Found the first zero in the CSV myself</li><li>Asked about the spike on 19 Sept: it said <b>it couldn't tell</b>, which is the right answer</li></ul></div>
+        </div>
+        <p class="foot">An illustration using the made-up files in <b>samples/</b>: run it yourself and compare. Your real task follows the same three columns.</p>
+      </section>
+
       <!-- 11 · Capstone -->
       <section class="slide" data-slide="11">
         <div class="kicker">Capstone</div>
@@ -561,7 +595,7 @@ html[data-density="stage"] .detail{display:none}
   }
   themeToggle.addEventListener('click', () =>
     setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
-  try { const saved = localStorage.getItem('slides-theme'); if (saved) setTheme(saved); } catch(e){}
+  let saved = null; try { saved = localStorage.getItem('slides-theme'); } catch(e){} setTheme(saved || 'light');
 })();
 </script>
 </body>
