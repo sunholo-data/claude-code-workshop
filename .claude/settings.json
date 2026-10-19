@@ -38,7 +38,8 @@
       "Read(~/.ssh/**)",
       "Bash(gcloud projects add-iam-policy-binding *)",
       "Bash(gcloud projects remove-iam-policy-binding *)",
-      "Bash(gcloud projects set-iam-policy *)"
+      "Bash(gcloud projects set-iam-policy *)",
+      "mcp__bigquery__execute_sql"
     ],
     "defaultMode": "default"
   }

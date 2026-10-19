@@ -23,6 +23,7 @@ open up something a deny or ask rule covers.
 | ask | `gh pr merge` | proposing | Merging is the review decision; it stays with a person. |
 | deny | reading `.env` files and `~/.ssh` | held | Credentials never go to a model. |
 | deny | changing who has access to a Google Cloud project | held | The one change that is hard to notice and expensive to undo. |
+| deny | BigQuery's `execute_sql` tool | held | Google's BigQuery MCP server has a separate `execute_sql_readonly` tool that refuses anything but `SELECT`. Denying the other one leaves Claude only that. |
 
 **Not needed:** `ls`, `cat`, `grep`, `head`, `find` and read-only `git` (`status`, `diff`, `log`)
 already run without asking in every mode, so they need no allow rule.
