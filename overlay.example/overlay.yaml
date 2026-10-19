@@ -1,0 +1,9 @@
+# Copy this folder to overlay/ and edit. Overlay wins over tree/tree.yaml.
+group: example
+date: 2026-01-01
+data_policy: "No client data. Generic samples only."   # repeated in overlay/CLAUDE.md
+required: [real-task, team-conventions, share-skill-pr]
+skip: []
+add: []            # extra nodes, same shape as tree.yaml
+samples: {}        # node-id: path to replacement sample material
+shared_skills_repo: ""   # the group's own repository, e.g. https://github.com/<org>/<repo>

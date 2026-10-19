@@ -1,0 +1,245 @@
+# Claude Code workshop — skill tree
+#
+# Source of truth for the workshop. The agenda, the concept map, the pre-session
+# self-assessment and the deck's section order are all read from this file.
+# A client overlay (see README, "Bespoke config") can add nodes, mark nodes
+# required or skipped, and swap sample material — it never edits this file.
+#
+# Each node:
+#   id        stable slug, used by overlays and progress files
+#   tier      0 setup · 1 agent basics · 2 rules · 3 git · 4 skills · 5 connect · 6 share · B branches
+#   needs     prerequisite ids — a node unlocks when all of these are done
+#   minutes   guided time, roughly; self-paced learners will vary
+#   can       the outcome, as "I can …" (also the self-assessment question)
+#   proof     what someone else could see that shows it is done
+#
+# The trunk (tiers 0–6) ends at `share-skill-pr`: everyone in the room
+# contributing to, and pulling from, one shared skills repository. Branches (B)
+# are for people who finish early, and for homework.
+
+version: 0.1.0
+audience: "People who use Claude (or another AI) in a chat window and have not used an agentic tool."
+end_goal: share-skill-pr
+
+nodes:
+  # ── Tier 0 · Setup (before the session) ─────────────────────────────────
+  - id: install
+    tier: 0
+    title: Claude Desktop, Code tab
+    needs: []
+    minutes: 10
+    can: "I can open a folder in the Code tab and get Claude to create a file in it."
+    proof: "hello.txt exists in a test folder."
+  - id: git-installed
+    tier: 0
+    title: Git and a GitHub account
+    needs: []
+    minutes: 10
+    can: "I have git installed and a GitHub account I can sign in to."
+    proof: "`git --version` prints a version; GitHub username sent to the facilitator."
+
+  # ── Tier 1 · From chat to agent ─────────────────────────────────────────
+  - id: chat-vs-agent
+    tier: 1
+    title: Chat versus agent
+    needs: [install]
+    minutes: 20
+    can: "I can explain what changes when the AI reads and writes files and runs commands, instead of me pasting text in and out."
+    proof: "Claude edited a file you then opened and checked yourself."
+  - id: folders-context
+    tier: 1
+    title: The folder is the context
+    needs: [chat-vs-agent]
+    minutes: 15
+    can: "I can point Claude at the files it needs with @, and say what it can and cannot see."
+    proof: "A question answered from two files you @-mentioned."
+  - id: permissions-review
+    tier: 1
+    title: Permissions and reviewing changes
+    needs: [chat-vs-agent]
+    minutes: 20
+    can: "I can pick a permission mode, read a diff, and reject a change I don't want."
+    proof: "One change rejected and re-asked; the reason said aloud."
+  - id: plan-first
+    tier: 1
+    title: Plan before acting
+    needs: [permissions-review]
+    minutes: 15
+    can: "I can use Plan mode to agree an approach before anything is changed."
+    proof: "A plan you edited before approving it."
+  - id: models
+    tier: 1
+    title: Choosing a model
+    needs: [chat-vs-agent]
+    minutes: 10
+    can: "I can choose a model for a task, and say what I trade between quality, speed and plan usage."
+    proof: "Same small task on two models; one sentence on the difference."
+  - id: context-hygiene
+    tier: 1
+    title: Sessions and context
+    needs: [folders-context]
+    minutes: 10
+    can: "I know when to start a fresh session, and why long sessions get worse."
+    proof: "A task restarted in a new session with a one-paragraph brief."
+
+  # ── Tier 2 · Rules ──────────────────────────────────────────────────────
+  - id: claude-md
+    tier: 2
+    title: CLAUDE.md — standing instructions
+    needs: [plan-first, folders-context]
+    minutes: 20
+    can: "I can write a CLAUDE.md and watch it change what Claude does."
+    proof: "Before/after: the same request, different behaviour, because of one rule."
+  - id: team-conventions
+    tier: 2
+    title: Team conventions and data handling
+    needs: [claude-md]
+    minutes: 30
+    can: "I can say what may and may not be given to a model, and where that rule is written down."
+    proof: "Your line in the team's conventions file."
+
+  # ── Tier 3 · Git, as the safety net and the sharing mechanism ───────────
+  - id: git-safety-net
+    tier: 3
+    title: Git as undo
+    needs: [permissions-review, git-installed]
+    minutes: 20
+    can: "I can ask Claude to commit my work, see what changed, and go back."
+    proof: "Three commits in a log; one change undone."
+  - id: clone-branch
+    tier: 3
+    title: Clone, branch, push
+    needs: [git-safety-net]
+    minutes: 20
+    can: "I can clone a repository, work on a branch, and push it."
+    proof: "Your branch visible on GitHub."
+
+  # ── Tier 4 · Skills ─────────────────────────────────────────────────────
+  - id: use-a-skill
+    tier: 4
+    title: Use someone else's skill
+    needs: [clone-branch, claude-md]
+    minutes: 30
+    can: "I can clone a repo that carries a skill and get the result its author intended, without knowing how."
+    proof: "A three-slide deck built with presentation-template's presentation-slides skill, passing its lint."
+    material: "https://github.com/sunholo-data/presentation-template"
+  - id: skill-anatomy
+    tier: 4
+    title: How a skill is built
+    needs: [use-a-skill]
+    minutes: 20
+    can: "I can read a SKILL.md and say when it triggers, what it tells Claude, and what it carries with it."
+    proof: "The skill's description rewritten so it triggers on a phrase you'd actually use."
+  - id: write-a-skill
+    tier: 4
+    title: Write your own skill
+    needs: [skill-anatomy]
+    minutes: 40
+    can: "I can turn something I do repeatedly into a skill that someone else could run."
+    proof: "A colleague runs your skill and gets the right result without asking you."
+
+  # ── Tier 5 · Connect ────────────────────────────────────────────────────
+  - id: connectors
+    tier: 5
+    title: Connectors and MCP
+    needs: [team-conventions]
+    minutes: 20
+    can: "I can explain the difference between pasting an export and connecting the source, and what each sends to the model."
+    proof: "A question answered from a connected source, with the data path said aloud."
+  - id: add-mcp
+    tier: 5
+    title: Add a remote MCP server
+    needs: [connectors]
+    minutes: 30
+    can: "I can add a hosted MCP server to a project with an API key, and use its tools."
+    proof: "An answer that came from the MCP tool (Google Developer Knowledge), not from Claude's memory."
+  - id: own-api-key
+    tier: 5
+    title: Make your own API key
+    needs: [add-mcp]
+    minutes: 15
+    can: "I can create a restricted API key in my own Google Cloud project and swap it in for the one I was lent."
+    proof: "The server still works after the lent key is revoked."
+  - id: local-mcp
+    tier: 5
+    title: A local MCP server on your own data
+    needs: [add-mcp, team-conventions]
+    minutes: 45
+    can: "I can run an MCP server on my laptop that reads my own data as me, and say what it can reach."
+    proof: "A Google Analytics report from a property your group's rules allow, with the property named."
+
+  # ── Tier 6 · Share (the trunk's end) ────────────────────────────────────
+  - id: shared-skills-repo
+    tier: 6
+    title: The team's skills repository
+    needs: [write-a-skill, clone-branch]
+    minutes: 20
+    can: "I can install the team's shared skills and keep them up to date."
+    proof: "The shared skills show up in your Code tab session; you pulled a change someone else made."
+  - id: share-skill-pr
+    tier: 6
+    title: Contribute a skill by pull request
+    needs: [shared-skills-repo]
+    minutes: 30
+    can: "I can propose a skill to the team by pull request, review someone else's, and see it reach everyone."
+    proof: "Your skill merged; a colleague in the other group used it."
+
+  # ── Capstone ────────────────────────────────────────────────────────────
+  - id: real-task
+    tier: 6
+    title: One real task, end to end
+    needs: [claude-md, git-safety-net]
+    minutes: 45
+    can: "I can take a real piece of my own work from request to checked result in the new mode."
+    proof: "Shown to the room: what you asked, what it did, how you checked it."
+
+  # ── Branches · for early finishers and homework ─────────────────────────
+  - id: verify-output
+    tier: B
+    title: Checking the work
+    needs: [real-task]
+    minutes: 20
+    can: "I can get Claude to show its evidence and check its own output against something I trust."
+    proof: "A check that caught something."
+  - id: data-files
+    tier: B
+    title: Spreadsheets and data files
+    needs: [folders-context]
+    minutes: 30
+    can: "I can have Claude analyse a CSV or spreadsheet with a script, and rerun it."
+    proof: "A script in the folder that reproduces the numbers."
+  - id: settings-permissions
+    tier: B
+    title: Settings and allowed commands
+    needs: [permissions-review]
+    minutes: 20
+    can: "I can allow or deny specific actions in settings instead of approving them every time."
+    proof: "A settings file with one allow and one deny rule."
+  - id: hooks
+    tier: B
+    title: Hooks
+    needs: [settings-permissions]
+    minutes: 30
+    can: "I can make something happen automatically before or after Claude acts."
+    proof: "A hook that ran."
+  - id: subagents
+    tier: B
+    title: Subagents and parallel sessions
+    needs: [context-hygiene]
+    minutes: 30
+    can: "I can hand a side-task to a subagent or a second session and bring back only the result."
+    proof: "A research result returned to the main session."
+  - id: scheduled
+    tier: B
+    title: Running without you
+    needs: [write-a-skill, local-mcp]
+    minutes: 30
+    can: "I can describe what it takes for a task to run on a schedule, and what has to be true before it should."
+    proof: "A scheduled run's output."
+  - id: skill-routing
+    tier: B
+    title: Many skills, one entry point
+    needs: [share-skill-pr]
+    minutes: 30
+    can: "I can organise a growing set of skills so the right one is found, and stop two skills overlapping."
+    proof: "Two overlapping skills merged or their descriptions separated."
