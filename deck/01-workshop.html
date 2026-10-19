@@ -165,6 +165,21 @@ html[data-density="stage"] .detail{display:none}
 .card{min-height:22cqb}
 .card .prompt{margin-top:1cqb}
 
+
+/* Rung mark (Decision Budget): five ascending bars, filled to the rung. Teal is used for nothing else. */
+.rung{display:inline-flex;align-items:flex-end;gap:.18em;font-family:var(--mono);font-weight:700;color:var(--rung);white-space:nowrap}
+.rung i{display:block;width:.42em;border-radius:1px;background:var(--rung-dim)}
+.rung i:nth-of-type(1){height:.45em}.rung i:nth-of-type(2){height:.65em}.rung i:nth-of-type(3){height:.85em}
+.rung i:nth-of-type(4){height:1.05em}.rung i:nth-of-type(5){height:1.25em}
+.rung.r0 i:nth-of-type(-n+1),.rung.r1 i:nth-of-type(-n+2),.rung.r2 i:nth-of-type(-n+3),
+.rung.r3 i:nth-of-type(-n+4),.rung.r4 i:nth-of-type(-n+5){background:var(--rung)}
+.rung b{margin-left:.55em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.8em}
+.ladder{display:grid;grid-template-columns:auto 1fr 1fr;gap:1.1cqb 2.4cqi;align-items:baseline}
+.ladder .rung{font-size:clamp(11px,1.5cqi,21px)}
+.ladder .what{font-size:clamp(11px,1.45cqi,20px);color:var(--text-dim);line-height:1.35}
+.ladder .cc{font-size:clamp(12px,1.6cqi,22px);line-height:1.35}
+.ladder .hd{font-family:var(--mono);font-size:clamp(9px,1.1cqi,15px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+
 /* Animation */
 @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .slide.active .card,.slide.active .step,.slide.active .tier{animation:up .5s ease both}
@@ -294,14 +309,14 @@ html[data-density="stage"] .detail{display:none}
         <h2 class="slide-title">A skill tree, <span class="dim">not a slide sequence</span></h2>
         <div class="tree">
           <div class="tier"><span class="tn">0 · before</span><span class="tl">Setup</span><span class="chip">Desktop + Code tab</span><span class="chip">Git + GitHub</span></div>
-          <div class="tier"><span class="tn">1</span><span class="tl">Chat → agent</span><span class="chip">Folder is context</span><span class="chip">Permissions &amp; diffs</span><span class="chip">Plan first</span><span class="chip">Models</span><span class="chip">Sessions</span></div>
-          <div class="tier"><span class="tn">2</span><span class="tl">Rules</span><span class="chip">CLAUDE.md</span><span class="chip">Team conventions &amp; data</span><span class="chip cap">One real task</span></div>
+          <div class="tier"><span class="tn">1</span><span class="tl">Chat → agent</span><span class="chip">Folder is context</span><span class="chip">Permissions &amp; diffs</span><span class="chip">Plan first</span><span class="chip">Trust per action</span><span class="chip">Models</span><span class="chip">Sessions</span></div>
+          <div class="tier"><span class="tn">2</span><span class="tl">Rules</span><span class="chip">CLAUDE.md</span><span class="chip">Team conventions &amp; data</span><span class="chip">Allow · ask · deny</span><span class="chip cap">One real task</span></div>
           <div class="tier"><span class="tn">3</span><span class="tl">Git</span><span class="chip">Git as undo</span><span class="chip">Clone, branch, push</span></div>
           <div class="tier"><span class="tn">4</span><span class="tl">Skills</span><span class="chip">Use one</span><span class="chip">How it's built</span><span class="chip">Write your own</span></div>
           <div class="tier"><span class="tn">5</span><span class="tl">Connect</span><span class="chip">Paste vs connect</span><span class="chip">Remote MCP</span><span class="chip">Your own key</span><span class="chip">Local MCP, your data</span></div>
           <div class="tier"><span class="tn">6</span><span class="tl">Share</span><span class="chip">Team skills repo</span><span class="chip goal">Skill by pull request</span></div>
         </div>
-        <div class="branches"><span class="lbl">Branches · early finishers &amp; homework</span><span class="chip">Checking the work</span><span class="chip">Data files</span><span class="chip">Settings</span><span class="chip">Hooks</span><span class="chip">Subagents</span><span class="chip">Running on a schedule</span><span class="chip">Skill routing</span></div>
+        <div class="branches"><span class="lbl">Branches · early finishers &amp; homework</span><span class="chip">Checking the work</span><span class="chip">Data files</span><span class="chip">Hooks</span><span class="chip">Subagents</span><span class="chip">Running on a schedule</span><span class="chip">Skill routing</span></div>
         <div class="detail fac"><span class="lbl">Facilitator</span>
           <p>Source: <b>tree/tree.yaml</b>. The <i>I can…</i> sentence on every node was the pre-session self-assessment. Read back the distribution: which tiers the room already has, which nobody has.</p>
         </div>
@@ -313,9 +328,9 @@ html[data-density="stage"] .detail{display:none}
         <h2 class="slide-title">Six hours, <span class="accent">five tiers</span></h2>
         <div class="agenda">
           <span class="tm">09:00</span><span class="it">Welcome <span>· the tree as the survey · install table</span></span><span class="tr">tier 0</span>
-          <span class="tm">09:30</span><span class="it">Chat to agent <span>· files, diffs, plan mode, models</span></span><span class="tr">tier 1</span>
-          <span class="tm">10:30</span><span class="it">Rules <span>· CLAUDE.md, then our conventions, data first</span></span><span class="tr">tier 2</span>
-          <span class="tm">11:15</span><span class="it">Git <span>· undo, then clone, branch, push</span></span><span class="tr">tier 3</span>
+          <span class="tm">09:30</span><span class="it">Chat to agent <span>· files, diffs, plan mode, models, trust per action</span></span><span class="tr">tier 1</span>
+          <span class="tm">10:45</span><span class="it">Rules <span>· CLAUDE.md, our conventions, then allow · ask · deny</span></span><span class="tr">tier 2</span>
+          <span class="tm">11:30</span><span class="it">Git <span>· undo, then clone, branch, push</span></span><span class="tr">tier 3</span>
           <span class="tm brk">12:00</span><span class="it brk">Lunch</span><span class="tr"></span>
           <span class="tm">12:30</span><span class="it">Skills <span>· use one, read one, start your own</span></span><span class="tr">tier 4</span>
           <span class="tm">13:30</span><span class="it">MCP <span>· connect instead of paste</span></span><span class="tr">tier 5</span>
@@ -341,6 +356,24 @@ html[data-density="stage"] .detail{display:none}
         </div>
       </section>
 
+      <!-- 5b · Trust ladder -->
+      <section class="slide" data-slide="5b">
+        <div class="kicker">Tier 1 · trust</div>
+        <h2 class="slide-title">Trust is earned <span class="accent">per action</span></h2>
+        <div class="ladder">
+          <span class="hd">Rung</span><span class="hd">What it means</span><span class="hd">In Claude Code</span>
+          <span class="rung r0"><i></i><i></i><i></i><i></i><i></i><b>Held</b></span><span class="what">A person decides, always</span><span class="cc"><b>Deny</b> rule: never, in any mode</span>
+          <span class="rung r1"><i></i><i></i><i></i><i></i><i></i><b>Instrumented</b></span><span class="what">See what would happen</span><span class="cc"><b>Plan</b> mode: nothing changes</span>
+          <span class="rung r2"><i></i><i></i><i></i><i></i><i></i><b>Shadow</b></span><span class="what">It decides; nothing counts yet</span><span class="cc">A <b>branch</b>: nothing counts until merged</span>
+          <span class="rung r3"><i></i><i></i><i></i><i></i><i></i><b>Proposing</b></span><span class="what">It acts; you approve first</span><span class="cc"><b>Manual</b> mode, and <b>ask</b> rules</span>
+          <span class="rung r4"><i></i><i></i><i></i><i></i><i></i><b>Automated</b></span><span class="what">Unattended inside limits</span><span class="cc"><b>Accept edits</b> / <b>Auto</b> + <b>allow</b> rules. Ask and deny still hold.</span>
+        </div>
+        <p class="foot">Commit: automated. <b>Push: always asks</b>, even in Auto. Changing who can access the cloud project: denied. One session, three rungs.</p>
+        <div class="detail fac"><span class="lbl">Facilitator</span>
+          <p>Same task three times: Manual, Accept edits, Auto. Everyone predicts the number of prompts first. The ladder is the Decision Budget's; promotion is "Yes, and don't ask again" after you've changed nothing several times. Down is a normal move.</p>
+        </div>
+      </section>
+
       <!-- 6 · Tier 2 -->
       <section class="slide" data-slide="6">
         <div class="kicker">Tier 2 · rules</div>
@@ -351,7 +384,7 @@ html[data-density="stage"] .detail{display:none}
             <div class="s">Same request, before and after one rule. If the behaviour didn't change, the rule didn't work.</div></div>
           <div class="card hot"><div class="h"><i class="fa-solid fa-people-group"></i> Our conventions</div>
             <div class="t">Written together, now</div>
-            <ul><li><b>Data first:</b> what may go to a model, and what may not</li><li>Where our files live, and how they're named</li><li>Who checks what before it leaves the team</li></ul></div>
+            <ul><li><b>Data first:</b> what may go to a model, and what may not</li><li>Where our files live, and how they're named</li><li>Who checks what before it leaves the team</li><li>Then the <b>settings</b> that enforce it</li></ul></div>
         </div>
         <div class="detail fac"><span class="lbl">Facilitator</span>
           <p>Start the conventions from the group's data rule in <b>overlay/</b>. Everyone adds one line. This file is the first shared artefact of the day; it gets corrected after a week of real use.</p>

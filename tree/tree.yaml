@@ -67,6 +67,13 @@ nodes:
     minutes: 15
     can: "I can use Plan mode to agree an approach before anything is changed."
     proof: "A plan you edited before approving it."
+  - id: trust-ladder
+    tier: 1
+    title: Trust is earned per action
+    needs: [permissions-review]
+    minutes: 25
+    can: "I can say which of Claude's actions I approve every time, which I let through, and which it may never do, and why each sits where it does."
+    proof: "The same task run in Manual, Accept edits and Auto, with a count of what asked in each, and the one action that still asked in Auto."
   - id: models
     tier: 1
     title: Choosing a model
@@ -97,6 +104,14 @@ nodes:
     minutes: 30
     can: "I can say what may and may not be given to a model, and where that rule is written down."
     proof: "Your line in the team's conventions file."
+
+  - id: settings-permissions
+    tier: 2
+    title: Your rules — allow, ask, deny
+    needs: [trust-ladder, claude-md]
+    minutes: 25
+    can: "I can write the settings that let routine actions through, always stop for the risky ones, and block the ones that must never happen."
+    proof: "A settings file in use, with one rule you promoted yourself, and a risky action you saw it stop."
 
   # ── Tier 3 · Git, as the safety net and the sharing mechanism ───────────
   - id: git-safety-net
@@ -188,7 +203,7 @@ nodes:
   - id: real-task
     tier: 6
     title: One real task, end to end
-    needs: [claude-md, git-safety-net]
+    needs: [claude-md, settings-permissions, git-safety-net]
     minutes: 45
     can: "I can take a real piece of my own work from request to checked result in the new mode."
     proof: "Shown to the room: what you asked, what it did, how you checked it."
@@ -208,13 +223,6 @@ nodes:
     minutes: 30
     can: "I can have Claude analyse a CSV or spreadsheet with a script, and rerun it."
     proof: "A script in the folder that reproduces the numbers."
-  - id: settings-permissions
-    tier: B
-    title: Settings and allowed commands
-    needs: [permissions-review]
-    minutes: 20
-    can: "I can allow or deny specific actions in settings instead of approving them every time."
-    proof: "A settings file with one allow and one deny rule."
   - id: hooks
     tier: B
     title: Hooks

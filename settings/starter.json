@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git switch *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(mkdir *)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:support.google.com)",
+      "mcp__google-developer-knowledge__search_documents",
+      "mcp__google-developer-knowledge__answer_query"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git checkout *)",
+      "Bash(git restore *)",
+      "Bash(git reset *)",
+      "Bash(git rebase *)",
+      "Bash(git clean *)",
+      "Bash(git stash *)",
+      "Bash(git rm *)",
+      "Bash(rm *)",
+      "Bash(curl *)",
+      "Bash(gh pr merge *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/.env)",
+      "Read(~/.ssh/**)",
+      "Bash(gcloud projects add-iam-policy-binding *)",
+      "Bash(gcloud projects remove-iam-policy-binding *)",
+      "Bash(gcloud projects set-iam-policy *)"
+    ]
+  }
+}

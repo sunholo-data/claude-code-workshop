@@ -25,9 +25,9 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Time | Block | Nodes | What it needs in the room |
 |---|---|---|---|
 | 09:00 | **Welcome.** The tree on the wall; the self-assessment read back as a distribution, not names. Install triage in parallel. | 0 | Tree printout or slide; the collected self-assessments; a spare person on installs |
-| 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned or downloaded |
-| 10:30 | **Rules.** CLAUDE.md before and after; then the group writes its conventions together, data handling first. | 2 | A shared document or file for the conventions; the group's data rule |
-| 11:15 | **Git.** Commit, see what changed, go back; clone, branch, push. | 3 | GitHub accounts; the team skills repository, which is also the practice repository |
+| 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model; then **trust is earned per action**: the same task in Manual, Accept edits and Auto, mapped to the delegation ladder. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned or downloaded |
+| 10:45 | **Rules.** CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny. | 2 | A shared document or file for the conventions; the group's data rule; `settings/starter.json` |
+| 11:30 | **Git.** Commit, see what changed, go back; clone, branch, push. | 3 | GitHub accounts; the team skills repository, which is also the practice repository |
 | 12:00 | Lunch | | |
 | 12:30 | **Skills.** Clone `presentation-template` and build a short deck with its skill; read how the skill is built; start writing your own. | 4 | github.com/sunholo-data/presentation-template; a browser to view the deck |
 | 13:30 | **MCP.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key; how to make your own. | 5 | The lent API keys, handed out individually; `.mcp.json` in this repo |
