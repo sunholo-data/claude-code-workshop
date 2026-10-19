@@ -2,259 +2,323 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one lane per tier, left to right as the path runs; a detail drawer for the chosen node. */
+/* Layout: Sunholo white paper. A layered prerequisite graph (left to right, roots first) with a detail panel beside it.
+   Single light theme by choice: the brand is white paper, slate structure, restrained orange. */
 :root{
-  --bg:#f5f6f8;--panel:#ffffff;--ink:#1c2230;--muted:#5d6678;--line:#dde1e8;
-  --accent:#c2410c;--accent-soft:#fdeee6;
-  --done:#15803d;--done-soft:#e3f4e8;--part:#a16207;--part-soft:#fbf1d9;--lock:#9aa3b2;
-  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
-  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:#ffffff;--ground:#f6f8fa;--ink:#2c3e50;--slate:#314352;--muted:#526677;--rule:#dce3e8;
+  --orange:#e73c17;--action:#bd3012;--orange-wash:#fdf0ec;
+  --font:"Montserrat","Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --radius:3px;color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#12151c;--panel:#1a1f29;--ink:#e6e9ef;--muted:#9aa3b5;--line:#2c3340;
-  --accent:#fb7c46;--accent-soft:#3a2219;
-  --done:#4ade80;--done-soft:#173322;--part:#facc15;--part-soft:#352d12;--lock:#5b6475;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12151c;--panel:#1a1f29;--ink:#e6e9ef;--muted:#9aa3b5;--line:#2c3340;
-  --accent:#fb7c46;--accent-soft:#3a2219;
-  --done:#4ade80;--done-soft:#173322;--part:#facc15;--part-soft:#352d12;--lock:#5b6475;color-scheme:dark}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
-.wrap{max-width:1360px;margin:0 auto;padding-block:28px 48px;
+body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6}
+.wrap{max-width:1440px;margin:0 auto;padding-block:32px 56px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:20px}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
-.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
-.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel)}
-.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--body);padding:6px 14px;border-radius:999px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.seg button:focus-visible,.node:focus-visible,.btn:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.status{font:500 12px var(--mono);color:var(--muted);letter-spacing:.02em}
-.status b{color:var(--ink);font-weight:500}
-.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:10px;height:10px;border-radius:3px;display:inline-block;border:1.5px solid var(--lock)}
-.dot.done{background:var(--done);border-color:var(--done)}.dot.part{background:var(--part);border-color:var(--part)}
-.dot.open{border-color:var(--accent)}
-.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
-.lanes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.lane{display:flex;flex-direction:column;gap:8px;min-width:0}
-.lane h2{margin:0 0 2px;font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:flex;gap:8px;align-items:baseline}
-.lane h2 strong{font-family:var(--display);font-size:17px;letter-spacing:-.01em;text-transform:none;color:var(--ink)}
-.node{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:8px;
-  background:var(--panel);border:1.5px solid var(--line);cursor:pointer;min-width:0}
-.node .t{font-weight:600;font-size:14px;line-height:1.25}
-.node .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font:500 11px var(--mono);color:var(--muted)}
-.pill{padding:1px 7px;border-radius:999px;font:500 11px var(--mono)}
-.node.locked{opacity:.6;border-style:dashed}
-.node.open{border-color:var(--accent)}
-.node.open .pill{background:var(--accent-soft);color:var(--accent)}
-.node.done{border-color:var(--done);background:var(--done-soft)}
-.node.done .pill{background:var(--done);color:var(--panel)}
-.node.part{border-color:var(--part);background:var(--part-soft)}
-.node.part .pill{background:var(--part);color:var(--panel)}
-.node.goal .t::after{content:" · end goal";font:500 11px var(--mono);color:var(--accent)}
-.node[aria-current="true"]{box-shadow:0 0 0 3px var(--accent-soft),0 0 0 4.5px var(--accent)}
-.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;display:flex}
-.bar i{display:block;height:100%}
-.bar .d{background:var(--done)}.bar .p{background:var(--part)}
-.room .node{cursor:pointer}
-.drawer{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.drawer h3{margin:0;font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em;line-height:1.15;text-wrap:balance}
-.k{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 3px}
-.drawer p{margin:0}
+  display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--slate);font-size:15px;margin-bottom:14px}
+.brand svg{width:32px;height:32px}
+h1{font-weight:700;font-size:clamp(28px,3.4vw,44px);line-height:1.14;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper)}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 14px var(--font);padding:10px 16px;min-height:44px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--slate);color:#fff}
+:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.bar-top{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:14px;height:14px;border-radius:2px;border:1.5px solid var(--rule);display:inline-block;background:var(--paper)}
+.sw.done{background:var(--slate);border-color:var(--slate)}
+.sw.part{background:repeating-linear-gradient(135deg,var(--slate) 0 2px,var(--paper) 2px 5px);border-color:var(--slate)}
+.sw.open{border-color:var(--action);border-width:2px}
+.sw.locked{border-style:dashed}
+.status{font:13px var(--mono);color:var(--muted)}
+.status b{color:var(--ink);font-weight:600}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start}
+.graph-box{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--ground)}
+.graph{position:relative}
+.graph svg{position:absolute;inset:0;overflow:visible}
+.edge{fill:none;stroke:#9fb0bd;stroke-width:1.5}
+.edge.hot{stroke:var(--action);stroke-width:2}
+.node{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:4px;
+  padding:8px 10px;border:1.5px solid var(--rule);border-radius:var(--radius);background:var(--paper);
+  font:600 13px/1.25 var(--font);color:var(--ink);text-align:left;cursor:pointer}
+.node .st{font:500 11px var(--mono);color:var(--muted);display:flex;justify-content:space-between;gap:6px;align-items:center}
+.node.branch{border-style:dotted}
+.node.locked{color:var(--muted);border-style:dashed;background:var(--ground)}
+.node.open{border:2px solid var(--action)}
+.node.open .st{color:var(--action)}
+.node.done{background:var(--slate);border-color:var(--slate);color:#fff}
+.node.done .st{color:#c9d4dc}
+.node.part{background:repeating-linear-gradient(135deg,var(--paper) 0 7px,#eef2f5 7px 10px);border-color:var(--slate)}
+.node.goal::after{content:"";position:absolute;top:-1px;right:-1px;width:10px;height:10px;background:var(--orange)}
+.node.sel{outline:3px solid var(--orange);outline-offset:2px}
+.spread{display:flex;height:5px;border-radius:2px;overflow:hidden;background:var(--rule)}
+.spread i{display:block;height:100%}
+.spread .d{background:var(--slate)}.spread .p{background:repeating-linear-gradient(135deg,var(--slate) 0 2px,#c9d4dc 2px 4px)}
+.faces{display:flex}
+.faces img{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--paper);margin-left:-5px;background:var(--rule)}
+.faces img:first-child{margin-left:0}
+.faces .more{font:500 10px var(--mono);color:var(--muted);margin-left:3px;align-self:center}
+aside{display:flex;flex-direction:column;gap:20px;min-width:0}
+.panel{border:1px solid var(--rule);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0;background:var(--paper)}
+.panel h2{margin:0;font-weight:700;font-size:22px;line-height:1.35;text-wrap:balance}
+.k{font:600 12px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+.panel p{margin:0}
 .can{font-size:16px}
-textarea{width:100%;box-sizing:border-box;min-height:84px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink);font:14px/1.4 var(--body)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);font:600 13px var(--body);padding:8px 14px;border-radius:8px;cursor:pointer}
-.btn.primary{background:var(--done);border-color:var(--done);color:var(--panel)}
-.btn.part{border-color:var(--part);color:var(--part)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
 .note{font-size:13px;color:var(--muted)}
-.because{font-size:14px;padding:10px;border-radius:8px;background:var(--done-soft);border:1px solid var(--done)}
-.empty{color:var(--muted);font-size:14px}
-@media (max-width:1100px){.lanes{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}.drawer{position:static}}
-@media (max-width:480px){.lanes{grid-template-columns:minmax(0,1fr)}}
-@media (prefers-reduced-motion:no-preference){.node{transition:border-color .2s,background .2s}}
+textarea{width:100%;box-sizing:border-box;min-height:88px;resize:vertical;border:1px solid var(--rule);border-radius:var(--radius);padding:10px;background:var(--paper);color:var(--ink);font:14px/1.5 var(--font)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--action);background:var(--paper);color:var(--action);font:600 14px var(--font);padding:10px 16px;min-height:44px;border-radius:var(--radius);cursor:pointer}
+.btn.primary{background:var(--action);color:#fff}
+.btn.quiet{border-color:var(--rule);color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.because{font-size:14px;padding:10px 12px;border-left:3px solid var(--slate);background:var(--ground)}
+.people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.people li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start}
+.people img{width:28px;height:28px;border-radius:50%;background:var(--rule)}
+.people .nm{font-weight:600;font-size:14px}
+.people .ev{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.people .tag{font:500 11px var(--mono);color:var(--muted);margin-left:6px}
+@media (max-width:980px){.main{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){.node{transition:background-color .2s,border-color .2s}}
 </style>
 <div class="wrap">
   <header>
     <div>
+      <div class="brand"><svg viewBox="0 0 300 300" aria-hidden="true"><circle cx="107" cy="150" r="80" fill="#f9a697" opacity=".3"/><circle cx="130" cy="150" r="80" fill="#e73c17" opacity=".3"/><circle cx="153" cy="150" r="80" fill="#e73c17"/></svg>Sunholo</div>
       <h1>Claude Code Skill Tree</h1>
-      <p class="sub">Your path through the workshop. A node unlocks when everything it needs is done. Mark a node done when you can show its proof, and say how.</p>
+      <p class="sub">Each box is something you'll be able to do. An arrow means "do this first". Mark a box done when you can show its proof, and say how, so others can learn from it.</p>
     </div>
-    <div class="controls">
-      <div class="seg" role="group" aria-label="View">
-        <button id="v-me" aria-pressed="true">My progress</button>
-        <button id="v-room" aria-pressed="false">The room</button>
-      </div>
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="v-me" aria-pressed="true">My progress</button>
+      <button type="button" id="v-room" aria-pressed="false">The room</button>
     </div>
   </header>
-  <div class="legend" id="legend"></div>
-  <p class="status" id="status">Connecting…</p>
+  <div class="bar-top"><div class="legend" id="legend"></div><p class="status" id="status">Connecting…</p></div>
   <div class="main">
-    <div class="lanes" id="lanes"></div>
-    <aside class="drawer" id="drawer" aria-live="polite"></aside>
+    <div class="graph-box"><div class="graph" id="graph"></div></div>
+    <aside id="aside"></aside>
   </div>
 </div>
 <script>
 const NODES = [{"id":"install","tier":"0","title":"Claude Desktop, Code tab","needs":[],"can":"I can open a folder in the Code tab and get Claude to create a file in it.","proof":"hello.txt exists in a test folder."},{"id":"git-installed","tier":"0","title":"Git and a GitHub account","needs":[],"can":"I have git installed and a GitHub account I can sign in to.","proof":"`git --version` prints a version; GitHub username sent to the facilitator."},{"id":"chat-vs-agent","tier":"1","title":"Chat versus agent","needs":["install"],"can":"I can explain what changes when the AI reads and writes files and runs commands, instead of me pasting text in and out.","proof":"Claude edited a file you then opened and checked yourself."},{"id":"folders-context","tier":"1","title":"The folder is the context","needs":["chat-vs-agent"],"can":"I can point Claude at the files it needs with @, and say what it can and cannot see.","proof":"A question answered from two files you @-mentioned."},{"id":"permissions-review","tier":"1","title":"Permissions and reviewing changes","needs":["chat-vs-agent"],"can":"I can pick a permission mode, read a diff, and reject a change I don't want.","proof":"One change rejected and re-asked; the reason said aloud."},{"id":"plan-first","tier":"1","title":"Plan before acting","needs":["permissions-review"],"can":"I can use Plan mode to agree an approach before anything is changed.","proof":"A plan you edited before approving it."},{"id":"models","tier":"1","title":"Choosing a model","needs":["chat-vs-agent"],"can":"I can choose a model for a task, and say what I trade between quality, speed and plan usage.","proof":"Same small task on two models; one sentence on the difference."},{"id":"context-hygiene","tier":"1","title":"Sessions and context","needs":["folders-context"],"can":"I know when to start a fresh session, and why long sessions get worse.","proof":"A task restarted in a new session with a one-paragraph brief."},{"id":"claude-md","tier":"2","title":"CLAUDE.md — standing instructions","needs":["plan-first","folders-context"],"can":"I can write a CLAUDE.md and watch it change what Claude does.","proof":"Before/after: the same request, different behaviour, because of one rule."},{"id":"team-conventions","tier":"2","title":"Team conventions and data handling","needs":["claude-md"],"can":"I can say what may and may not be given to a model, and where that rule is written down.","proof":"Your line in the team's conventions file."},{"id":"git-safety-net","tier":"3","title":"Git as undo","needs":["permissions-review","git-installed"],"can":"I can ask Claude to commit my work, see what changed, and go back.","proof":"Three commits in a log; one change undone."},{"id":"clone-branch","tier":"3","title":"Clone, branch, push","needs":["git-safety-net"],"can":"I can clone a repository, work on a branch, and push it.","proof":"Your branch visible on GitHub."},{"id":"use-a-skill","tier":"4","title":"Use someone else's skill","needs":["clone-branch","claude-md"],"can":"I can clone a repo that carries a skill and get the result its author intended, without knowing how.","proof":"A three-slide deck built with presentation-template's presentation-slides skill, passing its lint."},{"id":"skill-anatomy","tier":"4","title":"How a skill is built","needs":["use-a-skill"],"can":"I can read a SKILL.md and say when it triggers, what it tells Claude, and what it carries with it.","proof":"The skill's description rewritten so it triggers on a phrase you'd actually use."},{"id":"write-a-skill","tier":"4","title":"Write your own skill","needs":["skill-anatomy"],"can":"I can turn something I do repeatedly into a skill that someone else could run.","proof":"A colleague runs your skill and gets the right result without asking you."},{"id":"connectors","tier":"5","title":"Connectors and MCP","needs":["team-conventions"],"can":"I can explain the difference between pasting an export and connecting the source, and what each sends to the model.","proof":"A question answered from a connected source, with the data path said aloud."},{"id":"add-mcp","tier":"5","title":"Add a remote MCP server","needs":["connectors"],"can":"I can add a hosted MCP server to a project with an API key, and use its tools.","proof":"An answer that came from the MCP tool (Google Developer Knowledge), not from Claude's memory."},{"id":"own-api-key","tier":"5","title":"Make your own API key","needs":["add-mcp"],"can":"I can create a restricted API key in my own Google Cloud project and swap it in for the one I was lent.","proof":"The server still works after the lent key is revoked."},{"id":"local-mcp","tier":"5","title":"A local MCP server on your own data","needs":["add-mcp","team-conventions"],"can":"I can run an MCP server on my laptop that reads my own data as me, and say what it can reach.","proof":"A Google Analytics report from a property your group's rules allow, with the property named."},{"id":"shared-skills-repo","tier":"6","title":"The team's skills repository","needs":["write-a-skill","clone-branch"],"can":"I can install the team's shared skills and keep them up to date.","proof":"The shared skills show up in your Code tab session; you pulled a change someone else made."},{"id":"share-skill-pr","tier":"6","title":"Contribute a skill by pull request","needs":["shared-skills-repo"],"can":"I can propose a skill to the team by pull request, review someone else's, and see it reach everyone.","proof":"Your skill merged; a colleague in the other group used it."},{"id":"real-task","tier":"6","title":"One real task, end to end","needs":["claude-md","git-safety-net"],"can":"I can take a real piece of my own work from request to checked result in the new mode.","proof":"Shown to the room: what you asked, what it did, how you checked it."},{"id":"verify-output","tier":"B","title":"Checking the work","needs":["real-task"],"can":"I can get Claude to show its evidence and check its own output against something I trust.","proof":"A check that caught something."},{"id":"data-files","tier":"B","title":"Spreadsheets and data files","needs":["folders-context"],"can":"I can have Claude analyse a CSV or spreadsheet with a script, and rerun it.","proof":"A script in the folder that reproduces the numbers."},{"id":"settings-permissions","tier":"B","title":"Settings and allowed commands","needs":["permissions-review"],"can":"I can allow or deny specific actions in settings instead of approving them every time.","proof":"A settings file with one allow and one deny rule."},{"id":"hooks","tier":"B","title":"Hooks","needs":["settings-permissions"],"can":"I can make something happen automatically before or after Claude acts.","proof":"A hook that ran."},{"id":"subagents","tier":"B","title":"Subagents and parallel sessions","needs":["context-hygiene"],"can":"I can hand a side-task to a subagent or a second session and bring back only the result.","proof":"A research result returned to the main session."},{"id":"scheduled","tier":"B","title":"Running without you","needs":["write-a-skill","local-mcp"],"can":"I can describe what it takes for a task to run on a schedule, and what has to be true before it should.","proof":"A scheduled run's output."},{"id":"skill-routing","tier":"B","title":"Many skills, one entry point","needs":["share-skill-pr"],"can":"I can organise a growing set of skills so the right one is found, and stop two skills overlapping.","proof":"Two overlapping skills merged or their descriptions separated."}];
-const TIERS = [["0","Before"],["1","Chat to agent"],["2","Rules"],["3","Git"],["4","Skills"],["5","Connect"],["6","Share"],["B","Branches"]];
 const GOAL = "share-skill-pr";
 const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
+const EDGES = NODES.flatMap(n => n.needs.map(f => ({ from: f, to: n.id })));
 
-const state = { view: "me", mine: {}, room: [], selected: null, uid: null, db: null, canWrite: null, saving: false, mode: "connecting" };
+// Layout, after AIPLA's concept map: longest-path layer per node (roots in layer 0), one column per layer.
+const NODE_W = 172, NODE_H = 64, COL_GAP = 52, ROW_GAP = 14, PAD = 20;
+function layers(){
+  const L = Object.fromEntries(NODES.map(n => [n.id, 0]));
+  for (let pass = 0; pass < NODES.length; pass++){
+    let changed = false;
+    for (const e of EDGES){ const want = L[e.from] + 1; if (want > L[e.to]){ L[e.to] = want; changed = true; } }
+    if (!changed) break;
+  }
+  return L;
+}
+const LAYER = layers();
+const POS = {};
+(() => {
+  const cols = {};
+  for (const n of NODES){ (cols[LAYER[n.id]] ||= []).push(n); }
+  for (const [l, group] of Object.entries(cols)){
+    group.sort((a, b) => (a.tier === "B") - (b.tier === "B"));
+    group.forEach((n, row) => { POS[n.id] = { x: PAD + l * (NODE_W + COL_GAP), y: PAD + row * (NODE_H + ROW_GAP) }; });
+  }
+})();
+const MAXL = Math.max(...Object.values(LAYER));
+const MAXR = Math.max(...Object.values(POS).map(p => p.y));
+const GW = PAD * 2 + (MAXL + 1) * NODE_W + MAXL * COL_GAP, GH = MAXR + NODE_H + PAD;
 
-function myStatus(id){ const r = state.mine[id]; return r ? r.s : null; }
-function nodeState(n){
-  const s = myStatus(n.id);
+const S = { view: "me", mine: {}, room: [], profiles: {}, selected: null, uid: null, db: null, user: null, canWrite: null, saving: false, mode: "connecting" };
+
+const mineOf = id => S.mine[id] && S.mine[id].s;
+function stateOf(n){
+  const s = mineOf(n.id);
   if (s === "done") return "done";
   if (s === "partly") return "part";
-  return n.needs.every(x => myStatus(x) === "done") ? "open" : "locked";
+  return n.needs.every(x => mineOf(x) === "done") ? "open" : "locked";
 }
-function roomCounts(id){
-  let d = 0, p = 0;
-  for (const r of state.room){ const s = r.nodes && r.nodes[id] && r.nodes[id].s; if (s === "done") d++; else if (s === "partly") p++; }
+function who(id){
+  const d = [], p = [];
+  for (const r of S.room){ const e = r.nodes && r.nodes[id]; if (!e) continue; (e.s === "done" ? d : e.s === "partly" ? p : []).push({ uid: r.uid, because: e.because || "" }); }
   return { d, p };
 }
-const LABEL = { done: "done", part: "partly", open: "unlocked", locked: "locked" };
-
-function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+const LABEL = { done: "✓ done", part: "◐ partly", open: "→ start here", locked: "locked" };
+function el(t, c, x){ const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+function prof(uid){ return S.profiles[uid] || { name: "", avatarUrl: "" }; }
+function nameOf(uid){ return uid === S.uid ? "You" : (prof(uid).name || "Someone"); }
 
 function renderLegend(){
   const L = document.getElementById("legend"); L.replaceChildren();
-  const items = state.view === "me"
-    ? [["done","Done"],["part","Partly"],["open","Unlocked: start here"],["","Locked"]]
-    : [["done","People done"],["part","People partly there"]];
-  for (const [c, t] of items){ const s = el("span"); const d = el("i", "dot " + c); s.append(d, document.createTextNode(t)); L.append(s); }
+  const items = S.view === "me"
+    ? [["done","Done"],["part","Partly"],["open","Unlocked"],["locked","Locked"]]
+    : [["done","Done"],["part","Partly"]];
+  for (const [c, t] of items){ const s = el("span"); s.append(el("i", "sw " + c), document.createTextNode(t)); L.append(s); }
+  if (S.view === "room"){ const s = el("span", null, "· faces show who's done"); L.append(s); }
 }
 
-function renderLanes(){
-  const lanes = document.getElementById("lanes"); lanes.replaceChildren();
-  lanes.classList.toggle("room", state.view === "room");
-  const people = state.room.length;
-  for (const [tier, name] of TIERS){
-    const lane = el("section", "lane");
-    const h = el("h2"); h.append(document.createTextNode(tier === "B" ? "Extra" : "Tier " + tier), el("strong", null, name)); lane.append(h);
-    for (const n of NODES.filter(x => x.tier === tier)){
-      const b = el("button", "node"); b.type = "button";
-      if (n.id === GOAL) b.classList.add("goal");
-      b.setAttribute("aria-current", state.selected === n.id ? "true" : "false");
-      b.append(el("span", "t", n.title));
-      const meta = el("span", "meta");
-      if (state.view === "me"){
-        const st = nodeState(n); b.classList.add(st);
-        meta.append(el("span", "pill", LABEL[st]));
-      } else {
-        const { d, p } = roomCounts(n.id);
-        meta.append(el("span", null, people ? `${d} done · ${p} partly` : "no one yet"));
-        const bar = el("span", "bar");
-        if (people){ const di = el("i", "d"); di.style.width = (100 * d / people) + "%"; const pi = el("i", "p"); pi.style.width = (100 * p / people) + "%"; bar.append(di, pi); }
-        b.append(meta, bar); b.addEventListener("click", () => select(n.id)); lane.append(b); continue;
-      }
-      b.append(meta);
-      b.addEventListener("click", () => select(n.id));
-      lane.append(b);
+function renderGraph(){
+  const G = document.getElementById("graph"); G.replaceChildren();
+  G.style.width = GW + "px"; G.style.height = GH + "px";
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("width", GW); svg.setAttribute("height", GH); svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = '<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#9fb0bd"/></marker><marker id="arh" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#bd3012"/></marker></defs>';
+  for (const e of EDGES){
+    const a = POS[e.from], b = POS[e.to];
+    const x1 = a.x + NODE_W, y1 = a.y + NODE_H / 2, x2 = b.x - 3, y2 = b.y + NODE_H / 2, mx = (x1 + x2) / 2;
+    const hot = S.selected && (e.to === S.selected || e.from === S.selected);
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
+    p.setAttribute("class", "edge" + (hot ? " hot" : ""));
+    p.setAttribute("marker-end", hot ? "url(#arh)" : "url(#ar)");
+    svg.append(p);
+  }
+  G.append(svg);
+  for (const n of NODES){
+    const b = el("button", "node"); b.type = "button";
+    const p = POS[n.id]; b.style.left = p.x + "px"; b.style.top = p.y + "px"; b.style.width = NODE_W + "px"; b.style.height = NODE_H + "px";
+    if (n.tier === "B") b.classList.add("branch");
+    if (n.id === GOAL) b.classList.add("goal");
+    if (S.selected === n.id) b.classList.add("sel");
+    b.append(el("span", null, n.title));
+    const st = el("span", "st");
+    if (S.view === "me"){
+      const s = stateOf(n); b.classList.add(s); st.append(el("span", null, LABEL[s]));
+      const { d } = who(n.id); const others = d.filter(x => x.uid !== S.uid).length;
+      if (others) st.append(el("span", null, `${others} other${others > 1 ? "s" : ""}`));
+      b.append(st);
+    } else {
+      const { d, p: pt } = who(n.id), total = S.room.length;
+      const bar = el("span", "spread");
+      if (total){ const di = el("i", "d"); di.style.width = 100 * d.length / total + "%"; const pi = el("i", "p"); pi.style.width = 100 * pt.length / total + "%"; bar.append(di, pi); }
+      const faces = el("span", "faces");
+      for (const x of d.slice(0, 4)){ const img = el("img"); img.alt = ""; img.src = prof(x.uid).avatarUrl || ""; img.title = nameOf(x.uid); faces.append(img); }
+      if (d.length > 4) faces.append(el("span", "more", "+" + (d.length - 4)));
+      st.append(faces, el("span", null, total ? `${d.length}/${total}` : ""));
+      b.append(bar, st);
     }
-    lanes.append(lane);
+    b.setAttribute("aria-label", n.title);
+    b.addEventListener("click", () => { S.selected = S.selected === n.id ? null : n.id; render(); });
+    G.append(b);
   }
 }
 
-function renderDrawer(){
-  const D = document.getElementById("drawer"); D.replaceChildren();
-  const n = byId[state.selected];
+function peopleList(entries, tag){
+  const ul = el("ul", "people");
+  for (const x of entries){
+    const li = el("li"); const img = el("img"); img.alt = ""; img.src = prof(x.uid).avatarUrl || "";
+    const body = el("div"); const nm = el("span", "nm", nameOf(x.uid)); body.append(nm);
+    if (tag) nm.after(el("span", "tag", tag));
+    if (x.because) body.append(el("div", "ev", x.because));
+    li.append(img, body); ul.append(li);
+  }
+  return ul;
+}
+
+function renderAside(){
+  const A = document.getElementById("aside"); A.replaceChildren();
+  const n = byId[S.selected];
+  const P = el("section", "panel"); A.append(P);
   if (!n){
-    const next = NODES.filter(x => nodeState(x) === "open");
-    D.append(el("p", "k", "Next up"));
-    if (state.view === "room"){ D.append(el("p", "empty", `${state.room.length} ${state.room.length === 1 ? "person has" : "people have"} saved progress. Pick a node to see how many are there.`)); return; }
-    if (!next.length){ D.append(el("p", "empty", "Nothing unlocked. Start with the setup nodes.")); return; }
-    const ul = el("div", "row");
-    for (const x of next.slice(0, 3)){ const b = el("button", "btn", x.title); b.type = "button"; b.addEventListener("click", () => select(x.id)); ul.append(b); }
-    D.append(el("p", "empty", "Pick one of these, or any unlocked node."), ul);
+    if (S.view === "room"){
+      P.append(el("p", "k", "The room"));
+      if (!S.room.length){ P.append(el("p", "note", "No one has saved progress yet. The first box marked done shows up here.")); return; }
+      const rows = S.room.map(r => ({ uid: r.uid, because: `${Object.values(r.nodes || {}).filter(e => e.s === "done").length} of ${NODES.length} done` }))
+        .sort((a, b) => parseInt(b.because) - parseInt(a.because));
+      P.append(peopleList(rows));
+      P.append(el("p", "note", "Pick a box to see who's done it and how."));
+      return;
+    }
+    const next = NODES.filter(x => stateOf(x) === "open");
+    P.append(el("p", "k", "Next up"));
+    P.append(el("p", "note", next.length ? "These are unlocked. Pick one, or any orange box." : "Start with the setup boxes on the left."));
+    const row = el("div", "row");
+    for (const x of next.slice(0, 3)){ const b = el("button", "btn", x.title); b.type = "button"; b.addEventListener("click", () => { S.selected = x.id; render(); }); row.append(b); }
+    P.append(row);
     return;
   }
-  D.append(el("p", "k", n.tier === "B" ? "Extra" : "Tier " + n.tier), el("h3", null, n.title));
-  const c = el("div"); c.append(el("p", "k", "You'll be able to say"), el("p", "can", n.can)); D.append(c);
-  const pr = el("div"); pr.append(el("p", "k", "Proof"), el("p", null, n.proof)); D.append(pr);
-  if (n.needs.length){
-    const nd = el("div"); nd.append(el("p", "k", "Needs"), el("p", "note", n.needs.map(x => byId[x].title).join(" · "))); D.append(nd);
+  P.append(el("p", "k", n.tier === "B" ? "Branch" : "Tier " + n.tier), el("h2", null, n.title));
+  const c = el("div"); c.append(el("p", "k", "You'll be able to say"), el("p", "can", n.can)); P.append(c);
+  const pr = el("div"); pr.append(el("p", "k", "Proof"), el("p", null, n.proof)); P.append(pr);
+  if (n.needs.length){ const nd = el("div"); nd.append(el("p", "k", "Do first"), el("p", "note", n.needs.map(x => byId[x].title).join(" · "))); P.append(nd); }
+  const { d, p } = who(n.id);
+  const others = [...d.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "done" })), ...p.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "partly" }))];
+  if (S.view === "me"){
+    const st = stateOf(n), mine = S.mine[n.id];
+    if (mine && mine.because){ const bc = el("div"); bc.append(el("p", "k", "How you showed it"), el("p", "because", mine.because)); P.append(bc); }
+    if (st === "locked"){
+      P.append(el("p", "note", "Unlocks after: " + n.needs.filter(x => mineOf(x) !== "done").map(x => byId[x].title).join(", ") + "."));
+    } else if (S.mode !== "live"){
+      P.append(el("p", "note", "Saving isn't available in this view."));
+    } else if (S.canWrite === false){
+      P.append(el("p", "note", "You can see this board but not save to it. Ask the facilitator to invite you as an editor."));
+    } else {
+      const lab = el("label", "k", "How did you show it?"); lab.htmlFor = "because";
+      const ta = el("textarea"); ta.id = "because"; ta.placeholder = "One line: what you did, and where someone could see it."; ta.value = mine ? (mine.because || "") : "";
+      const row = el("div", "row");
+      const done = el("button", "btn primary", "Mark done"); done.type = "button";
+      const part = el("button", "btn", "Partly"); part.type = "button";
+      row.append(done, part);
+      if (mine){ const clr = el("button", "btn quiet", "Clear"); clr.type = "button"; clr.addEventListener("click", () => save(n.id, null, "")); row.append(clr); }
+      const sync = () => { done.disabled = S.saving || !ta.value.trim(); part.disabled = S.saving; };
+      ta.addEventListener("input", sync); sync();
+      done.addEventListener("click", () => save(n.id, "done", ta.value.trim()));
+      part.addEventListener("click", () => save(n.id, "partly", ta.value.trim()));
+      P.append(lab, ta, row, el("p", "note", "Done needs a line of evidence. Others in the room can read it."));
+    }
   }
-  if (state.view === "room"){
-    const { d, p } = roomCounts(n.id);
-    D.append(el("p", "note", `${d} done, ${p} partly, out of ${state.room.length} with saved progress.`));
-    return;
+  if (others.length || S.view === "room"){
+    const sec = el("section", "panel");
+    sec.append(el("p", "k", S.view === "room" ? "Who's done it" : "How others did it"));
+    const list = S.view === "room" ? [...d.map(x => ({ ...x, tag: "done" })), ...p.map(x => ({ ...x, tag: "partly" }))] : others;
+    if (!list.length) sec.append(el("p", "note", "No one yet."));
+    else { const ul = el("ul", "people"); for (const x of list) ul.append(...peopleList([x], x.tag).childNodes); sec.append(ul); }
+    A.append(sec);
   }
-  const st = nodeState(n), mine = state.mine[n.id];
-  if (mine && mine.because){ const bc = el("div"); bc.append(el("p", "k", "How you showed it"), el("p", "because", mine.because)); D.append(bc); }
-  if (st === "locked"){
-    const missing = n.needs.filter(x => myStatus(x) !== "done").map(x => byId[x].title);
-    D.append(el("p", "note", "Unlocks after: " + missing.join(", ") + "."));
-    return;
-  }
-  if (state.mode !== "live"){ D.append(el("p", "note", "Saving isn't available in this view, so progress can't be recorded here.")); return; }
-  if (state.canWrite === false){ D.append(el("p", "note", "You can view this board but not save to it. Ask the facilitator to invite you as an editor.")); return; }
-  const lab = el("label", "k", "How did you show it?"); lab.htmlFor = "because";
-  const ta = el("textarea"); ta.id = "because"; ta.placeholder = "One line: what you did, and where someone could see it."; ta.value = mine ? (mine.because || "") : "";
-  const row = el("div", "row");
-  const done = el("button", "btn primary", "Mark done"); done.type = "button";
-  const part = el("button", "btn part", "Partly"); part.type = "button";
-  row.append(done, part);
-  if (mine){ const clr = el("button", "btn", "Clear"); clr.type = "button"; clr.addEventListener("click", () => save(n.id, null, "")); row.append(clr); }
-  const hint = el("p", "note", "Done needs a line of evidence. Partly can say what's missing.");
-  const sync = () => { done.disabled = state.saving || !ta.value.trim(); part.disabled = state.saving; };
-  ta.addEventListener("input", sync); sync();
-  done.addEventListener("click", () => save(n.id, "done", ta.value.trim()));
-  part.addEventListener("click", () => save(n.id, "partly", ta.value.trim()));
-  D.append(lab, ta, row, hint);
 }
 
-function render(){ renderLegend(); renderLanes(); renderDrawer(); renderStatus(); }
 function renderStatus(){
   const s = document.getElementById("status");
-  const doneCount = Object.values(state.mine).filter(r => r.s === "done").length;
-  if (state.mode === "connecting") s.textContent = "Connecting…";
-  else if (state.mode === "offline") s.textContent = "Not connected: you're seeing the tree without saved progress.";
-  else { s.replaceChildren(document.createTextNode("Saved progress: "), el("b", null, `${doneCount} of ${NODES.length} done`), document.createTextNode(` · ${state.room.length} ${state.room.length === 1 ? "person" : "people"} on the board`)); }
+  if (S.mode === "connecting") { s.textContent = "Connecting…"; return; }
+  if (S.mode === "offline") { s.textContent = "Not connected: the tree without saved progress."; return; }
+  const n = Object.values(S.mine).filter(r => r.s === "done").length;
+  s.replaceChildren(document.createTextNode("You: "), el("b", null, `${n} of ${NODES.length} done`), document.createTextNode(` · ${S.room.length} on the board`));
 }
-function select(id){ state.selected = state.selected === id ? null : id; render(); }
+function render(){ renderLegend(); renderGraph(); renderAside(); renderStatus(); }
 
 async function save(id, s, because){
-  if (!state.db || !state.uid || state.saving) return;
-  state.saving = true; renderDrawer();
-  const nodes = { ...state.mine };
+  if (!S.db || !S.uid || S.saving) return;
+  S.saving = true; renderAside();
+  const nodes = { ...S.mine };
   if (s) nodes[id] = { s, because, at: new Date().toISOString() }; else delete nodes[id];
-  try { await state.db.doc("progress/" + state.uid).set({ nodes }); }
-  catch (e) {
-    if (e && e.code === "invalid_argument") state.canWrite = false;
-    else alertNote("Couldn't save. Try again in a moment.");
-  }
-  state.saving = false; render();
+  try { await S.db.doc("progress/" + S.uid).set({ nodes }); }
+  catch (e) { if (e && e.code === "invalid_argument") S.canWrite = false; else document.getElementById("status").textContent = "Couldn't save. Try again in a moment."; }
+  S.saving = false; render();
 }
-function alertNote(t){ const s = document.getElementById("status"); s.textContent = t; }
 
+function setView(v){ S.view = v; for (const [id, val] of [["v-me","me"],["v-room","room"]]) document.getElementById(id).setAttribute("aria-pressed", String(v === val)); render(); }
 document.getElementById("v-me").addEventListener("click", () => setView("me"));
 document.getElementById("v-room").addEventListener("click", () => setView("room"));
-function setView(v){ state.view = v; document.getElementById("v-me").setAttribute("aria-pressed", v === "me"); document.getElementById("v-room").setAttribute("aria-pressed", v === "room"); render(); }
 
 render();
 (async () => {
-  const claude = window.claude;
-  const [db, user] = claude && claude.use ? await Promise.all([claude.use("db"), claude.use("user")]) : [null, null];
+  const c = window.claude;
+  const [db, user] = c && c.use ? await Promise.all([c.use("db"), c.use("user")]) : [null, null];
   const uid = user ? await user.id() : null;
-  if (!db || !uid){ state.mode = "offline"; render(); return; }
-  state.db = db; state.uid = uid; state.mode = "live";
-  state.canWrite = await user.can("data.write");
-  db.doc("progress/" + uid).onSnapshot(snap => {
-    const d = snap.exists ? snap.data() : null;
-    state.mine = d && d.nodes ? d.nodes : {}; render();
-  }, () => { state.mode = "offline"; render(); });
-  db.collection("progress").onSnapshot(q => {
-    state.room = q.docs.map(x => x.data() || {}); render();
+  if (!db || !uid){ S.mode = "offline"; render(); return; }
+  Object.assign(S, { db, user, uid, mode: "live" });
+  S.canWrite = await user.can("data.write");
+  db.doc("progress/" + uid).onSnapshot(snap => { const d = snap.exists ? snap.data() : null; S.mine = d && d.nodes ? d.nodes : {}; render(); }, () => { S.mode = "offline"; render(); });
+  db.collection("progress").onSnapshot(async q => {
+    S.room = q.docs.map(x => ({ uid: x.id, ...(x.data() || {}) }));
+    S.profiles = await user.profiles(S.room.map(r => r.uid).concat(uid));
+    render();
   }, () => {});
 })();
 </script>
