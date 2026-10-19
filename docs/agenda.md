@@ -42,14 +42,22 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 - Optional: one branch node of your choice.
 - Bring one thing the conventions got wrong.
 
-## The follow-up (about two hours)
+## The follow-up (half a day)
+
+The first half finishes the tree as a team; the second half belongs to the group's own decisions,
+which a generic course can't script.
 
 | Block | Nodes | Needs |
 |---|---|---|
 | Homework back: what broke in `local-mcp`, fixed together | `local-mcp` | Error messages people brought |
-| Everyone installs the team skills repository and pulls a change someone else made | `shared-skills-repo` | The repository, everyone with write access to branches |
-| Each group contributes a skill by pull request; the other group reviews and uses it | `share-skill-pr` | Named reviewers |
-| Many skills, one entry point: where this goes next | `skill-routing` | — |
+| Everyone installs the team skills repository and pulls a change someone else made | `shared-skills-repo` | The repository on the group's own GitHub organisation; everyone with access |
+| Each group contributes a skill by pull request; the other group reviews and uses it | `share-skill-pr`, `protect-main` | Named reviewers; a branch rule on `main` if the plan allows it |
+| Many skills, one entry point: overlaps found and fixed | `skill-routing` | At least four skills in the repository |
+| *Lunch* | | |
+| The group's open decisions, and where its AI work will run | — | The group's own material |
+
+Optional for whoever maintains the tooling: `plugin-marketplace`, so team skills work in every
+folder.
 
 ## After
 

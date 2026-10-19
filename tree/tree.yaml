@@ -13,7 +13,7 @@
 #   can       the outcome, as "I can …" (also the self-assessment question)
 #   proof     what someone else could see that shows it is done
 #
-# The trunk (tiers 0–6) ends at `share-skill-pr`: everyone in the room
+# The trunk (tiers 0–6) ends at `share-skill-pr`; tier 7 is the follow-up session's team layer: everyone in the room
 # contributing to, and pulling from, one shared skills repository. Branches (B)
 # are for people who finish early, and for homework.
 
@@ -244,10 +244,26 @@ nodes:
     minutes: 30
     can: "I can describe what it takes for a task to run on a schedule, and what has to be true before it should."
     proof: "A scheduled run's output."
+
+  # ── Tier 7 · Team layer (the follow-up session) ─────────────────────────
+  - id: protect-main
+    tier: 7
+    title: A review before anything is shared
+    needs: [share-skill-pr]
+    minutes: 20
+    can: "I can explain why the team's main branch only changes through a reviewed pull request, and who reviews."
+    proof: "A pull request that could not be merged until a named reviewer approved it."
   - id: skill-routing
-    tier: B
+    tier: 7
     title: Many skills, one entry point
     needs: [share-skill-pr]
-    minutes: 30
+    minutes: 40
     can: "I can organise a growing set of skills so the right one is found, and stop two skills overlapping."
-    proof: "Two overlapping skills merged or their descriptions separated."
+    proof: "Two overlapping skills merged or their descriptions separated, and a request that now reaches the right one."
+  - id: plugin-marketplace
+    tier: B
+    title: Team skills in every folder
+    needs: [skill-routing]
+    minutes: 45
+    can: "I can package the team's skills as a plugin from our own marketplace, so they work in any folder, not only the skills repo."
+    proof: "A team skill run as /<plugin>:<skill> from a session on a different folder."
