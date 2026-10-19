@@ -2,3 +2,7 @@ overlay/
 progress.md
 .DS_Store
 CLAUDE.local.md
+
+# OAuth client secrets: never in this public repo
+client_secret*.json
+*oauth-client*.json
