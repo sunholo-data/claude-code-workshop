@@ -7,3 +7,4 @@ skip: []
 add: []            # extra nodes, same shape as tree.yaml
 samples: {}        # node-id: path to replacement sample material
 shared_skills_repo: ""   # the group's own repository, e.g. https://github.com/<org>/<repo>
+reviewers: []           # who approves a skill pull request

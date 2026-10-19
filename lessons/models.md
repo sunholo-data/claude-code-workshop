@@ -1,0 +1,29 @@
+# Choosing a model
+
+The dropdown next to the send button chooses the model, and you can change it mid-session. Larger
+models are usually better at hard, many-step work; smaller ones are faster and use less of your
+plan's allowance. For a lot of everyday tasks you can't tell the difference, and that's worth
+finding out for yourself.
+
+## Do
+
+1. Open the model dropdown and note which models you can choose and which one is selected.
+2. **Predict:** you'll ask two models the same thing. Which will be faster? Which answer will you
+   prefer, and will you be able to tell them apart?
+3. On one model, ask: *"Read samples/daily-sessions.csv and give me three bullet points on what
+   happened in September."*
+4. Start a new session (**+ New session**), choose a different model, and ask exactly the same
+   thing.
+5. Compare: speed, accuracy (check one number against the CSV), and whether either noticed the
+   signups dropping to zero.
+
+## Proof
+
+The same task on two models, and one sentence on the difference you saw.
+
+## Misconceptions this exposes
+
+- *"Always use the biggest model."* It costs more of your allowance and is slower; for a small,
+  well-described task it often adds nothing.
+- *"The model is the only thing that matters."* A clear request and the right files usually change
+  the answer more than the model does.
