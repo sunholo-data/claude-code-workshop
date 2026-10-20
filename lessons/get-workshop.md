@@ -17,6 +17,13 @@ Do this before the day, after `install` and `git-installed`.
    > Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then tell me how to start the workshop.
 
 4. Claude shows you the command (`git clone …`) and asks before running it. Read it, then allow it.
+
+   ![Claude asking to run git clone](../images/setup/git-clone-permission.png)
+
+   The big button may say **Always allow**: that saves a rule, so this command never asks again in
+   this folder. Look at the arrow beside it before choosing. Which you pick is your first trust
+   decision of the day.
+
    This is the first of many approvals; reading them is the habit the whole day builds.
    Then it tells you the next step, from the README: a new session on the workshop folder.
    Asking for the one thing you want next, rather than "what's in it?", gets a short answer.

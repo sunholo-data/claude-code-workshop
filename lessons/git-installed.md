@@ -13,6 +13,9 @@ you install yourself. Do this before the day.
 2. Open a session in the Code tab (any folder, `claude-test` is fine). In the message box, type
    `!git --version` and send it. The `!` means *run this myself*: the command runs straight away,
    without Claude and without asking, and the result appears in the conversation.
+
+   ![!git --version and its output](../images/setup/git-version.png)
+
 3. If it prints a version number, you're done with this step. If not:
    - **Mac:** git comes with Apple's developer tools. Asking for git when they're missing makes
      macOS offer to install them in a pop-up: click **Install** and wait a few minutes. No pop-up?

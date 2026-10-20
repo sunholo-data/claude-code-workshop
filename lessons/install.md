@@ -20,11 +20,14 @@ the day, and bring any error message with you.
 
 3. Make an empty folder somewhere easy to find, for example `claude-test` in your Documents.
 4. Click **+ New**. In the bar under the message box, choose **This computer**, then the folder
-   button, and pick `claude-test`.
+   button and **Open folder…**, and pick `claude-test`.
+
+   ![The folder menu: recent folders, and Open folder](../images/setup/select-folder.png)
+
 5. In the same bar, the mode button says **Auto**: that's the default. Click it and choose
    **Manual**. Leave **Bypass permissions** alone.
 
-   ![The bar under the message box, with the mode menu open](../images/setup/select-folder-mode-model.png)
+   ![The mode menu, with Auto ticked](../images/setup/select-mode.png)
 
 6. **Predict:** you type *"Create a file called hello.txt that says hello"*. Will the file just
    appear? Will Claude ask you first? Where on your computer will it go?

@@ -1,6 +1,6 @@
 # Choosing a model
 
-The dropdown next to the send button chooses the model, and you can change it mid-session. Larger
+The menu at the bottom right, under the message box, chooses the model, and you can change it mid-session. Larger
 models are usually better at hard, many-step work; smaller ones are faster and use less of your
 plan's allowance. For a lot of everyday tasks you can't tell the difference, and that's worth
 finding out for yourself.
@@ -8,6 +8,9 @@ finding out for yourself.
 ## Do
 
 1. Open the model dropdown and note which models you can choose and which one is selected.
+
+   ![The model menu, with Effort underneath](../images/setup/select-model.png)
+
 2. **Predict:** you'll ask two models the same thing. Which will be faster? Which answer will you
    prefer, and will you be able to tell them apart?
 3. On one model, ask: *"Read samples/daily-sessions.csv and give me three bullet points on what
