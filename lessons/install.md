@@ -15,6 +15,9 @@ the day, and bring any error message with you.
 
 2. Click the **Code** button (**</>**) at the top left. If it asks you to upgrade, your plan
    doesn't include it; tell the facilitator before the day.
+
+   ![The Code button at the top left, next to Chat](../images/setup/code-tab.png)
+
 3. Make an empty folder somewhere easy to find, for example `claude-test` in your Documents.
 4. Click **+ New**. In the bar under the message box, choose **This computer**, then the folder
    button, and pick `claude-test`.
