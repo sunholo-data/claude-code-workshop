@@ -19,7 +19,7 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Organiser | The group's data rule in writing: what may and may not go to a model | |
 | Facilitator | One Developer Knowledge API key per person, restricted to that API, in a project dedicated to the course so they can all be revoked together | |
 | Facilitator | The group overlay in `overlay/` | |
-| Facilitator | Everyone invited to the progress board **by email** from its Share menu, at a level that lets them interact (a public link alone gives view only to anyone outside your organisation), and the invitation opened once | |
+| Facilitator | Everyone invited to the progress board **by email** from its Share menu, as **Editor**, with link sharing **turned off**. Anyone outside your organisation can save progress only as an email-invited Editor, and only while the board has no public link. Each invitation opened once | |
 | Facilitator | Everyone's GitHub username added to this repository with **Write** access, invitations accepted before the day. `main` is protected by a ruleset: pull requests only, and only admins can merge | |
 | Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough), an OAuth client, the BigQuery connector added in claude.ai, and each participant granted query rights on that one dataset | |
 | Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key | |
