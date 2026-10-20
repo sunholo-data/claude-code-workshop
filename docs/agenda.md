@@ -30,7 +30,7 @@ Every node in the tree has a `band`, separate from its tier, saying when it's ex
 | Band | When | Nodes |
 |---|---|---|
 | **core** | The minimum standard: everyone, on the day, in step with the blocks | `install`, `git-installed`, `get-workshop`, `chat-vs-agent`, `folders-context`, `permissions-review`, `trust-ladder`, `claude-md`, `team-conventions`, `settings-permissions`, `git-safety-net`, `clone-branch`, `use-a-skill`, `room-pr`, `connectors`, `add-mcp`, `real-task` |
-| **stretch** | On the day, for whoever finishes a block's core first | `plan-first`, `models`, `context-hygiene`, `settings-tour`, `skill-anatomy`, `verify-output`, `data-files` |
+| **stretch** | On the day, for whoever finishes a block's core first | `plan-first`, `models`, `context-hygiene`, `settings-tour`, `skill-anatomy`, `verify-output`, `data-files`, `page-tags` |
 | **homework** | Everyone, before the follow-up (after any unfinished core) | `write-a-skill`, `own-api-key`, `bigquery-mcp` |
 | **follow-up** | Together, in the follow-up | `shared-skills-repo`, `share-skill-pr`, `protect-main`, `skill-routing` |
 | **advanced** | Extra routes, for anyone who wants more; never expected | `hooks`, `subagents`, `scheduled`, `local-mcp`, `plugin-marketplace` |
@@ -70,7 +70,7 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 | 11:30 | **4 · Git.** Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`. | `git-safety-net`, `clone-branch` | Write access to this repository for everyone; GitHub sign-in working on each laptop (the GitHub CLI on Macs) |
 | 12:00 | *Lunch* | | |
 | 12:30 | **5 · Skills.** Clone `presentation-template` and build a short deck with its skill. Then one pull request each: a small skill in its own folder. The facilitator merges them all on screen; everyone pulls, types `/`, and runs a colleague's skill. | `use-a-skill`, `room-pr`; stretch: `skill-anatomy` | github.com/sunholo-data/presentation-template; the facilitator signed in to GitHub to merge |
-| 13:30 | **6 · Connect.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key. | `connectors`, `add-mcp` | One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo |
+| 13:30 | **6 · Connect.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key. | `connectors`, `add-mcp`; stretch: `page-tags` | One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo; for the stretch box, a web page everyone may check (the group's own site) |
 | 14:15 | **7 · One real task.** One real task each, shown to the group: what you asked, what it did, how you checked it. Self-assessment again; homework. | `real-task`; stretch: `verify-output` | The task ideas from the Who's here slide |
 <!-- day:end -->
 

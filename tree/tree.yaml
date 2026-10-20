@@ -106,7 +106,7 @@ blocks:
     title: "Connect"
     time: "13:30"
     summary: "Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key."
-    room: "One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo"
+    room: "One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo; for the stretch box, a web page everyone may check (the group's own site)"
   - id: 7
     tagline: "each, shown to the group · homework"
     title: "One real task"
@@ -398,6 +398,15 @@ nodes:
     minutes: 30
     can: "I can have Claude analyse a CSV or spreadsheet with a script, and rerun it."
     proof: "A script in the folder that reproduces the numbers."
+  - id: page-tags
+    tier: B
+    band: stretch
+    block: 6
+    title: Check a page's tags
+    needs: [connectors]
+    minutes: 25
+    can: "I can have Claude open a web page in the Browser pane, read its dataLayer and list the tags it sent, and say how it knows."
+    proof: "The dataLayer events and the GA4 hits on a page you may check, each with how Claude found it."
   - id: hooks
     tier: B
     band: advanced
