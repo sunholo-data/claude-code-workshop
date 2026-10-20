@@ -32,7 +32,9 @@ Do this before the day, after `install` and `git-installed`.
    `claude-code-workshop`. Check the button now says `claude-code-workshop`.
 6. You'll see **This workspace isn't trusted**. A folder you downloaded can carry its own Claude
    settings, so Claude asks before using them. Type **start the workshop**, send it, and choose
-   **Trust workspace**: that's what lets the course's guide, rules and settings load.
+   **Trust workspace**: that's what lets the course's guide, rules and settings load. If the
+   banner shows but the question never comes, quit Claude Desktop and open it again, then go back
+   to this session.
 
    **Predict first:** what would it mean to trust a folder you hadn't read?
 

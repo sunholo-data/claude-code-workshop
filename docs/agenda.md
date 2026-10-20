@@ -22,7 +22,7 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Facilitator | Everyone invited to the progress board **by email** from its Share menu, as **Editor**, with link sharing **turned off**. Anyone outside your organisation can save progress only as an email-invited Editor, and only while the board has no public link. Each invitation opened once | |
 | Facilitator | Everyone's GitHub username added to this repository with **Write** access, invitations accepted before the day. `main` is protected by a ruleset: pull requests only, and only admins can merge | |
 | Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough), an OAuth client, the BigQuery connector added in claude.ai, and each participant granted query rights on that one dataset | |
-| Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key | |
+| Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key. Known on 20 Oct: the Trust workspace question sometimes doesn't appear until Claude Desktop is restarted | |
 
 ## The day
 
