@@ -15,10 +15,11 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Each participant | This repository cloned, a session open on it, and "start the workshop" answered (`get-workshop`) | |
 | Each participant | The self-assessment: every node's *I can…* answered yes / partly / no | |
 | Each participant | One small, real task they'd like help with. An idea is enough | |
-| Organiser | A GitHub organisation, and an empty team skills repository in it | |
+| Organiser | A GitHub organisation, and an empty team skills repository in it (used in the follow-up) | |
 | Organiser | The group's data rule in writing: what may and may not go to a model | |
 | Facilitator | One Developer Knowledge API key per person, restricted to that API, in a project dedicated to the course so they can all be revoked together | |
 | Facilitator | The group overlay in `overlay/` | |
+| Facilitator | Everyone's GitHub username added to this repository with **Write** access, invitations accepted before the day. `main` is protected by a ruleset: pull requests only, and only admins can merge | |
 | Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough), an OAuth client, the BigQuery connector added in claude.ai, and each participant granted query rights on that one dataset | |
 | Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key | |
 
@@ -29,9 +30,9 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | 09:00 | **Welcome.** The tree on the wall; the self-assessment read back as a distribution, not names. Install triage in parallel. | 0 | Tree printout or slide; the collected self-assessments; a spare person on installs |
 | 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model; then **trust is earned per action**: the same task in Manual, Accept edits and Auto, mapped to the delegation ladder. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned, or downloaded as a ZIP by anyone whose git isn't working yet |
 | 10:45 | **Rules.** CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny. | 2 | A shared document or file for the conventions; the group's data rule; `settings/starter.json` |
-| 11:30 | **Git.** Commit, see what changed, go back; clone, branch, push. | 3 | GitHub accounts; the team skills repository, which is also the practice repository |
+| 11:30 | **Git.** Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`. | 3 | GitHub accounts with Write access to this repository; GitHub sign-in working on each laptop (GitHub CLI on Macs) |
 | 12:00 | Lunch | | |
-| 12:30 | **Skills.** Clone `presentation-template` and build a short deck with its skill; read how the skill is built; start writing your own. | 4 | github.com/sunholo-data/presentation-template; a browser to view the deck |
+| 12:30 | **Skills.** Clone `presentation-template` and build a short deck with its skill; read how the skill is built. Then **one pull request each**: a small skill in its own folder. Around 13:15 the facilitator merges them all on the projector; everyone pulls, types `/`, and runs a colleague's skill. | 4 | github.com/sunholo-data/presentation-template; a browser to view the deck; the facilitator signed in to GitHub to merge |
 | 13:30 | **MCP.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key; how to make your own. | 5 | The lent API keys, handed out individually; `.mcp.json` in this repo |
 | 14:15 | **One real task each**, shown to the room: what you asked, what it did, how you checked it. Self-assessment again. Homework. | capstone | The task ideas from before the day |
 
@@ -63,4 +64,7 @@ folder.
 
 ## After
 
-Revoke the lent API keys.
+- Revoke the lent API keys.
+- Remove the group's Write access to this repository, and delete the `practice/` branches.
+- Move the group's skills out of `.claude/skills/` into `cohorts/<date>/`, so the next group starts
+  with a clean list. Their pull requests stay on GitHub as the record.

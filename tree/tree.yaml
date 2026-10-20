@@ -134,7 +134,7 @@ nodes:
     needs: [git-safety-net]
     minutes: 20
     can: "I can clone a repository, work on a branch, and push it."
-    proof: "Your branch visible on GitHub."
+    proof: "Your branch visible on GitHub, and GitHub's refusal when you pushed to main."
 
   # ── Tier 4 · Skills ─────────────────────────────────────────────────────
   - id: use-a-skill
@@ -159,6 +159,14 @@ nodes:
     minutes: 40
     can: "I can turn something I do repeatedly into a skill that someone else could run."
     proof: "A colleague runs your skill and gets the right result without asking you."
+
+  - id: room-pr
+    tier: 4
+    title: Your skill, in everyone's copy
+    needs: [skill-anatomy, clone-branch]
+    minutes: 25
+    can: "I can propose a change by pull request, and once it is merged, pull and see my work and everyone else's in my own copy."
+    proof: "After the merge and a pull, your skill and a colleague's both appear when you type /, and you ran theirs."
 
   # ── Tier 5 · Connect ────────────────────────────────────────────────────
   - id: connectors
@@ -192,7 +200,7 @@ nodes:
   - id: shared-skills-repo
     tier: 6
     title: The team's skills repository
-    needs: [write-a-skill, clone-branch]
+    needs: [write-a-skill, room-pr]
     minutes: 20
     can: "I can install the team's shared skills and keep them up to date."
     proof: "The shared skills show up in your Code tab session; you pulled a change someone else made."
