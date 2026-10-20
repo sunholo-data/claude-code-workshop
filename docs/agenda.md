@@ -18,8 +18,9 @@ The day is seven blocks (`blocks` in the tree). Each one runs the same way:
    *Regroup signal* row highlights a block once half have). Compare in the chat, then the next
    block's slides.
 
-Before block 1, the "Who's here" slide: name and role, what you used AI for last week, what you'd
-like it to do, and the email you sign in to Claude with (for the board invite).
+Block 1 opens with the "Who's here" slide: name and role, what you used AI for last week, what
+you'd like it to do, and the email you sign in to Claude with (for the board invite, if it hasn't
+gone out yet).
 
 ## Core, stretch, homework, advanced
 
@@ -43,10 +44,9 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 
 | Who | What | Status |
 |---|---|---|
-| Each participant | Claude Desktop installed, signed in with a paid plan, Code tab working (`install`) | |
-| Each participant | Git installed. On a Mac, `xcode-select --install`; on Windows, Git for Windows (`git-installed`) | |
-| Each participant | A GitHub account, username sent to the facilitator | |
-| Each participant | This repository cloned, a session open on it, and "start the workshop" answered (`get-workshop`) | |
+| Each participant | Claude Desktop installed and signed in with a paid plan. The rest of setup (`install`, `git-installed`, `get-workshop`) is done together in block 1 | |
+| Each participant | A GitHub account. Their GitHub username and the email they sign in to Claude with, sent to the facilitator | |
+| Each participant | On Windows: Git for Windows installed. On a Mac, block 1 installs git if it's missing | |
 | Each participant | The self-assessment: every node's *I can…* answered yes / partly / no | |
 | Each participant | One small, real task they'd like help with. An idea is enough | |
 | Organiser | A GitHub organisation, and an empty team skills repository in it (used in the follow-up) | |
@@ -57,7 +57,7 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 | Facilitator | Everyone invited to the progress board **by email** from its Share menu, as **Editor**, with link sharing **turned off**. Anyone outside your organisation can save progress only as an email-invited Editor, and only while the board has no public link. Each invitation opened once | |
 | Facilitator | Everyone's GitHub username added to this repository with **Write** access, invitations accepted before the day. `main` is protected by a ruleset: pull requests only, and only admins can merge | |
 | Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough); a **Web application** OAuth client with redirect `https://claude.ai/api/mcp/auth_callback`, consent screen External in testing with participants as test users; each participant (or their domain) granted MCP Tool User and BigQuery Job User on the project and Data Viewer on that one dataset only; a per-user daily query quota. Send the client ID and secret privately. Test it first with an account holding only those grants, in a chat and in the Code tab | Connectors load when the Desktop app starts: after adding one, quit and reopen it |
-| Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key. Known on 20 Oct: the Trust workspace question sometimes doesn't appear until Claude Desktop is restarted | |
+| Facilitator | A dry run on a clean account, Mac and Windows: Code tab, a skill from a cloned repo, `.mcp.json` with the key from `settings.local.json`, a push refused on `main` | Checked in the Desktop app on 20 Oct: `/mcp` and **+ → Plugins** exist; the mode sticks per folder; connectors and the Trust workspace question sometimes need the app restarted |
 
 ## The day
 
@@ -81,7 +81,7 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 - Connect the BigQuery connector and query the GA4 sample read-only (`bigquery-mcp`). Bring the
   error if it doesn't work. Optional: run a GA4 server yourself (`local-mcp`).
 - Make your own Developer Knowledge key (`own-api-key`).
-- Optional: one branch node of your choice.
+- Optional: one advanced box of your choice.
 - Bring one thing the conventions got wrong.
 
 ## The follow-up
@@ -95,7 +95,7 @@ which a generic course can't script.
 | Everyone installs the team skills repository and pulls a change someone else made | `shared-skills-repo` | The repository on the group's own GitHub organisation; everyone with access |
 | Each group contributes a skill by pull request; the other group reviews and uses it | `share-skill-pr`, `protect-main` | Named reviewers; a branch rule on `main` if the plan allows it |
 | Many skills, one entry point: overlaps found and fixed | `skill-routing` | At least four skills in the repository |
-| *Lunch* | | |
+| *Break* | | |
 | The group's open decisions, and where its AI work will run | — | The group's own material |
 
 Optional for whoever maintains the tooling: `plugin-marketplace`, so team skills work in every

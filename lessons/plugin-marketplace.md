@@ -3,8 +3,9 @@
 Skills in the team repository load only when your session is opened on that folder. A **plugin**
 packages the same skills so they load wherever you work, and a **marketplace** is the list your
 team installs plugins from: a repository with a `.claude-plugin/marketplace.json` file. The team
-repository can be its own marketplace. This node is for whoever looks after the team's tooling; it
-uses the `claude` command line, which the desktop app does not install for you.
+repository can be its own marketplace. This node is for whoever looks after the team's tooling.
+Installing works from the Code tab's **+ → Plugins** menu; checking the marketplace file uses the
+`claude` command line, which the desktop app does not install for you.
 
 ## Do
 
@@ -17,8 +18,8 @@ uses the `claude` command line, which the desktop app does not install for you.
    - `.claude-plugin/marketplace.json` at the root, with a `name`, an `owner`, and one entry whose
      `source` is `"./plugins/<plugin>"`. Keep the entry name and the plugin's name the same.
 3. Check it: `claude plugin validate .` should end with *Validation passed*.
-4. Add it and install: `claude plugin marketplace add <org>/<repo>`, then
-   `claude plugin install <plugin>@<marketplace>`.
+4. Add it and install, from the Code tab's **+ → Plugins** menu, or on the command line:
+   `claude plugin marketplace add <org>/<repo>`, then `claude plugin install <plugin>@<marketplace>`.
 5. Open a session on a different folder and run a team skill as `/<plugin>:<skill>`.
 6. Find out how a colleague gets your next change, and write it in the repository's README.
 
