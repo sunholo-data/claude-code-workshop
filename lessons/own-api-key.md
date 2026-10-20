@@ -10,7 +10,8 @@ and a Google Cloud project; your organisation may already have one you should us
 3. **APIs & Services → Credentials → Create credentials → API key.** Copy the key it shows.
 4. Click the new key, then under **API restrictions** choose **Restrict key**, tick
    **Developer Knowledge API**, and **Save**. Name it something you'll recognise later.
-5. Replace the lent key with yours in `GOOGLE_DK_API_KEY`, restart, and check `/mcp`.
+5. Open `.claude/settings.local.json` yourself and replace the lent key with yours (never paste a
+   key into the chat). Start a new session and check `/mcp`.
 
 ## Or from the command line
 

@@ -9,12 +9,18 @@ and is revoked after the course. Making your own is the next node, [own-api-key]
 
 ## Do
 
-1. Set the key where this repo's `.mcp.json` can read it, as `GOOGLE_DK_API_KEY`. Ask Claude how,
-   and watch what it changes.
-2. Restart the session so the server loads. `/mcp` lists the servers and whether they connected.
-3. **Predict:** ask *"How do I add a custom dimension to a GA4 Data API report?"* What will Claude
+1. Ask Claude: *"Create .claude/settings.local.json with an env entry GOOGLE_DK_API_KEY set to
+   PASTE-KEY-HERE."* Don't paste the key into the chat: anything in the chat is sent to the model.
+2. Open that file yourself and replace `PASTE-KEY-HERE` with your key. In Finder, the `.claude`
+   folder is hidden: press **⌘⇧.** (Command, Shift, full stop) to show it. Save.
+3. Check it can't reach GitHub: send `!git check-ignore -v .claude/settings.local.json`. It names
+   the `.gitignore` line that keeps the file private. Claude itself can't read the file: the
+   repo's settings deny it, so the key never enters the chat.
+4. Start a new session so the server loads. If it asks whether to use this project's MCP server,
+   say yes. `/mcp` lists the servers and whether they connected.
+5. **Predict:** ask *"How do I add a custom dimension to a GA4 Data API report?"* What will Claude
    do differently now that the server is there?
-4. Ask it. Look for a call to `search_documents` or `answer_query`.
+6. Ask it. Look for a call to `search_documents` or `answer_query`.
 
 ## Proof
 
