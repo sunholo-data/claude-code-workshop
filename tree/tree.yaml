@@ -14,6 +14,10 @@
 #               homework   everyone, between the day and the follow-up
 #               follow-up  together, in the follow-up session
 #               advanced   extra routes for anyone who wants more; never expected
+#   block     core and stretch nodes only: which block of the day they belong to (see `blocks`).
+#             A block's slide says "finish these"; the board counts who has finished its core.
+#   predict   "group" on one node per block: its lesson's Predict step is asked of the whole group
+#             (online: everyone answers in the meeting chat) before the facilitator runs it live.
 #   needs     prerequisite ids — a node unlocks when all of these are done
 #   minutes   guided time, roughly; self-paced learners will vary
 #   can       the outcome, as "I can …" (also the self-assessment question)
@@ -27,11 +31,22 @@ version: 0.1.0
 audience: "People who use Claude (or another AI) in a chat window and have not used an agentic tool."
 end_goal: share-skill-pr
 
+# The day's blocks, in order. Times are the default agenda; an overlay may move them.
+blocks:
+  - { id: 1, title: "Setup", time: "09:00" }
+  - { id: 2, title: "Chat to agent", time: "09:30" }
+  - { id: 3, title: "Rules", time: "10:45" }
+  - { id: 4, title: "Git", time: "11:30" }
+  - { id: 5, title: "Skills", time: "12:30" }
+  - { id: 6, title: "Connect", time: "13:30" }
+  - { id: 7, title: "One real task", time: "14:15" }
+
 nodes:
   # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
   - id: install
     tier: 0
     band: core
+    block: 1
     title: Claude Desktop, Code tab
     needs: []
     minutes: 10
@@ -40,6 +55,7 @@ nodes:
   - id: git-installed
     tier: 0
     band: core
+    block: 1
     title: Git and a GitHub account
     needs: [install]
     minutes: 10
@@ -48,6 +64,7 @@ nodes:
   - id: get-workshop
     tier: 0
     band: core
+    block: 1
     title: Get the workshop
     needs: [install, git-installed]
     minutes: 10
@@ -58,6 +75,7 @@ nodes:
   - id: chat-vs-agent
     tier: 1
     band: core
+    block: 2
     title: Chat versus agent
     needs: [get-workshop]
     minutes: 20
@@ -66,6 +84,7 @@ nodes:
   - id: folders-context
     tier: 1
     band: core
+    block: 2
     title: The folder is the context
     needs: [chat-vs-agent]
     minutes: 15
@@ -74,6 +93,7 @@ nodes:
   - id: permissions-review
     tier: 1
     band: core
+    block: 2
     title: Permissions and reviewing changes
     needs: [chat-vs-agent]
     minutes: 20
@@ -82,6 +102,7 @@ nodes:
   - id: plan-first
     tier: 1
     band: stretch
+    block: 2
     title: Plan before acting
     needs: [permissions-review]
     minutes: 15
@@ -90,6 +111,8 @@ nodes:
   - id: trust-ladder
     tier: 1
     band: core
+    block: 2
+    predict: group
     title: Trust is earned per action
     needs: [permissions-review]
     minutes: 25
@@ -98,6 +121,7 @@ nodes:
   - id: models
     tier: 1
     band: stretch
+    block: 2
     title: Choosing a model
     needs: [chat-vs-agent]
     minutes: 10
@@ -106,6 +130,7 @@ nodes:
   - id: context-hygiene
     tier: 1
     band: stretch
+    block: 2
     title: Sessions and context
     needs: [folders-context]
     minutes: 10
@@ -116,6 +141,8 @@ nodes:
   - id: claude-md
     tier: 2
     band: core
+    block: 3
+    predict: group
     title: CLAUDE.md — standing instructions
     needs: [plan-first, folders-context]
     minutes: 20
@@ -124,6 +151,7 @@ nodes:
   - id: team-conventions
     tier: 2
     band: core
+    block: 3
     title: Team conventions and data handling
     needs: [claude-md]
     minutes: 30
@@ -133,6 +161,7 @@ nodes:
   - id: settings-permissions
     tier: 2
     band: core
+    block: 3
     title: Your rules — allow, ask, deny
     needs: [trust-ladder, claude-md]
     minutes: 25
@@ -143,6 +172,8 @@ nodes:
   - id: git-safety-net
     tier: 3
     band: core
+    block: 4
+    predict: group
     title: Git as undo
     needs: [permissions-review, git-installed]
     minutes: 20
@@ -151,6 +182,7 @@ nodes:
   - id: clone-branch
     tier: 3
     band: core
+    block: 4
     title: Clone, branch, push
     needs: [git-safety-net]
     minutes: 20
@@ -161,6 +193,7 @@ nodes:
   - id: use-a-skill
     tier: 4
     band: core
+    block: 5
     title: Use someone else's skill
     needs: [clone-branch, claude-md]
     minutes: 30
@@ -170,6 +203,7 @@ nodes:
   - id: skill-anatomy
     tier: 4
     band: stretch
+    block: 5
     title: How a skill is built
     needs: [use-a-skill]
     minutes: 20
@@ -187,6 +221,8 @@ nodes:
   - id: room-pr
     tier: 4
     band: core
+    block: 5
+    predict: group
     title: Your skill, in everyone's copy
     needs: [use-a-skill, clone-branch]
     minutes: 25
@@ -197,6 +233,8 @@ nodes:
   - id: connectors
     tier: 5
     band: core
+    block: 6
+    predict: group
     title: Connectors and MCP
     needs: [team-conventions]
     minutes: 20
@@ -205,6 +243,7 @@ nodes:
   - id: add-mcp
     tier: 5
     band: core
+    block: 6
     title: Add a remote MCP server
     needs: [connectors]
     minutes: 30
@@ -213,6 +252,7 @@ nodes:
   - id: own-api-key
     tier: 5
     band: stretch
+    block: 6
     title: Make your own API key
     needs: [add-mcp]
     minutes: 15
@@ -247,6 +287,7 @@ nodes:
   - id: real-task
     tier: 6
     band: core
+    block: 7
     title: One real task, end to end
     needs: [claude-md, settings-permissions, git-safety-net]
     minutes: 45
@@ -257,6 +298,7 @@ nodes:
   - id: verify-output
     tier: B
     band: stretch
+    block: 7
     title: Checking the work
     needs: [real-task]
     minutes: 20
@@ -265,6 +307,7 @@ nodes:
   - id: data-files
     tier: B
     band: stretch
+    block: 2
     title: Spreadsheets and data files
     needs: [folders-context]
     minutes: 30

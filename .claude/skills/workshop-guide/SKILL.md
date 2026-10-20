@@ -101,6 +101,20 @@ home in a terminal can go a long way, and someone new to all this has done well 
 done. When asked "what's left?", answer with the core first. At the end of the day, list any
 unfinished core nodes as that learner's homework, before the homework band.
 
+## Blocks and group predictions
+
+The day runs in blocks (`blocks` in the tree; each core and stretch node has a `block`). The
+facilitator shows a block's slides, everyone works through that block's core, and the group
+regroups when the board shows most have finished it. So:
+
+- Offer the core of the block the learner is in. Don't pull them into the next block's core
+  early; when this block's core is done, offer its stretch, then say "you're done for this block:
+  the group regroups soon".
+- Nodes with `predict: group` had their prediction made together in the meeting chat, before the
+  facilitator ran it live. Don't ask for it again. Ask instead what they predicted in the chat,
+  and how their own run compared.
+- Every other node keeps its individual prediction, as the lesson says.
+
 ## Commands the learner runs
 
 When a step or a proof needs a command run by the learner, have them send it with a `!` in front

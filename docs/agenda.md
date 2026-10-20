@@ -5,6 +5,22 @@ A six-hour day plus a follow-up of about two hours, a week later. Times assume 0
 most ten minutes, hands-on, then the room compares what happened. Node ids refer to
 [`tree/tree.yaml`](../tree/tree.yaml).
 
+## How each block runs (online)
+
+The day is seven blocks (`blocks` in the tree). Each one runs the same way:
+
+1. **Slides**, shared on screen. The block's last slide carries a strip, generated from the tree:
+   *Finish* (its core boxes), *Done early* (its stretch boxes), and, where there is one, a
+   **group prediction**: everyone types an answer in the meeting chat before you run it live.
+2. **Hands-on.** Everyone works in their own Code tab, with the guide. Stuck people go to the help
+   channel or a side room with a helper.
+3. **Regroup** when the board's room view shows most of the group has finished the block (its
+   *Regroup signal* row highlights a block once half have). Compare in the chat, then the next
+   block's slides.
+
+Before block 1, the "Who's here" slide: name and role, what you used AI for last week, what you'd
+like it to do, and the email you sign in to Claude with (for the board invite).
+
 ## Core, stretch, homework, advanced
 
 Every node in the tree has a `band`, separate from its tier, saying when it's expected:
