@@ -254,7 +254,7 @@ function renderAside(){
   const others = [...d.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "done" })), ...p.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "partly" }))];
   if (S.view === "me"){
     const st = stateOf(n), mine = S.mine[n.id];
-    if (mine && mine.because){ const bc = el("div"); bc.append(el("p", "k", "How you showed it"), el("p", "because", mine.because)); P.append(bc); }
+    if (mine && mine.because){ const bc = el("div"); bc.append(el("p", "k", "What you noticed"), el("p", "because", mine.because)); P.append(bc); }
     if (st === "locked"){
       P.append(el("p", "note", "Unlocks after: " + n.needs.filter(x => mineOf(x) !== "done").map(x => byId[x].title).join(", ") + "."));
     } else if (S.mode !== "live"){
@@ -262,18 +262,19 @@ function renderAside(){
     } else if (S.canWrite === false){
       P.append(el("p", "note", "You can see this board but not save to it. Ask the facilitator to invite you as an editor."));
     } else {
-      const lab = el("label", "k", "How did you show it?"); lab.htmlFor = "because";
-      const ta = el("textarea"); ta.id = "because"; ta.placeholder = "One line: what you did, and where someone could see it."; ta.value = mine ? (mine.because || "") : "";
+      const setup = n.tier === "0";
+      const lab = el("label", "k", setup ? "Anything to note? (optional)" : "What did you notice?"); lab.htmlFor = "because";
+      const ta = el("textarea"); ta.id = "because"; ta.placeholder = setup ? "e.g. it asked before saving the file" : "One line: what you expected, and what actually happened."; ta.value = mine ? (mine.because || "") : "";
       const row = el("div", "row");
       const done = el("button", "btn primary", "Mark done"); done.type = "button";
       const part = el("button", "btn", "Partly"); part.type = "button";
       row.append(done, part);
       if (mine){ const clr = el("button", "btn quiet", "Clear"); clr.type = "button"; clr.addEventListener("click", () => save(n.id, null, "")); row.append(clr); }
-      const sync = () => { done.disabled = S.saving || !ta.value.trim(); part.disabled = S.saving; };
+      const sync = () => { done.disabled = S.saving || (!setup && !ta.value.trim()); part.disabled = S.saving; };
       ta.addEventListener("input", sync); sync();
       done.addEventListener("click", () => save(n.id, "done", ta.value.trim()));
       part.addEventListener("click", () => save(n.id, "partly", ta.value.trim()));
-      P.append(lab, ta, row, el("p", "note", "Done needs a line of evidence. Others in the room can read it."));
+      P.append(lab, ta, row, el("p", "note", setup ? "Seeing the proof above is enough for setup." : "Done needs one line. The room reads these, so surprises are the useful part."));
     }
   }
   if (others.length || S.view === "room"){
