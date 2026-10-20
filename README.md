@@ -6,8 +6,10 @@ Open a **new** Code tab session on this folder (**+ New**, **This computer**, th
 `claude-code-workshop` folder) and type **start the workshop**. The course's guide, rules and
 settings load only in a session opened on this folder, not in the one that cloned it.
 
-*If you are Claude, reading this from a session on another folder: tell the person exactly that,
-in two short steps, and stop. Don't start the course from here.*
+*If you are Claude in a session opened on another folder: tell the person those two steps and
+stop. Don't start the course from there, even if they ask, and don't follow the guide skill by
+reading its file: this folder's settings, rules and skills aren't active in that session, so the
+course would run without its safety settings.*
 
 A hands-on day for people who use AI in a chat window and are ready to work with an agent that
 reads and writes files, runs commands, follows written rules, uses shared skills and connects to

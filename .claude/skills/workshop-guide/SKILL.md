@@ -28,6 +28,15 @@ The first time, say that you are about to create `progress.md` and that the Code
 before saving it. That prompt is the permission system, which they meet properly in
 `permissions-review`.
 
+## Check the session's folder first
+
+The course only works in a session opened on the workshop folder itself: that's where its
+`CLAUDE.md`, this skill and its settings (Manual mode, the ask and deny rules) load. Before anything
+else, check that `tree/tree.yaml` is at the top of the session's own folder. If it's in a
+subfolder instead (the learner cloned it from another session), don't run the course from here.
+Say, in two steps: click **+ New**, choose the `claude-code-workshop` folder, and type
+**start the workshop** there. Then stop.
+
 ## Setup is already done
 
 Tier 0 (`install`, `git-installed`, `get-workshop`) is led by the facilitator from the deck, before
