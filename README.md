@@ -29,7 +29,8 @@ docs/agenda.md            The day, block by block, and what each block needs.
 docs/pedagogy.md          How the course teaches, and why.
 lessons/<node-id>.md      One page per node (being written).
 samples/                  Generic practice material. Never client data.
-deck/                     The facilitator deck (built with the presentation-template skill).
+deck/                     The facilitator deck (built with the presentation-template skill), and
+                          02-reference.html: one slide per node, generated from the tree and lessons.
 .claude/skills/workshop-guide/   The skill that walks a learner through the tree.
 overlay.example/          How a group's bespoke configuration is shaped.
 ```

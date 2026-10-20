@@ -72,7 +72,8 @@ a question to the guide, do the task: doing it is the cheaper mistake.
 2. **Start a node.** Open `lessons/<id>.md` if it exists. Ask the learner to *predict* what will
    happen before they try. Set the task as a prompt they can send, then stop and wait for them to send it.
 3. **Stuck.** First ask what they tried and what happened. Nudge. If they ask for an explanation
-   a second time, give it plainly.
+   a second time, give it plainly. The node's reference slide is the shared page for the room:
+   https://www.sunholo.com/presentations/claude-code-workshop/02-reference.html#<id>.
 4. **Done.** Mark a node done only when you have seen its `proof` (a file, a diff, a log, a URL).
    Write it to `progress.md` as `- [x] <id> — <date> — because <the evidence, one line>`, and say
    that line back to them. If the proof is partial, record `- [~]` with what is missing.

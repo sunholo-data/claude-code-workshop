@@ -271,6 +271,7 @@ function renderAside(){
   P.append(el("p", "k", n.tier === "B" ? "Branch" : "Tier " + n.tier), el("h2", null, n.title));
   const c = el("div"); c.append(el("p", "k", "You'll be able to say"), el("p", "can", n.can)); P.append(c);
   const pr = el("div"); pr.append(el("p", "k", "Proof"), el("p", null, n.proof)); P.append(pr);
+  const rl = el("a", "note", "Read the lesson ↗"); rl.href = "https://www.sunholo.com/presentations/claude-code-workshop/02-reference.html#" + n.id; rl.target = "_blank"; rl.rel = "noopener"; P.append(rl);
   if (n.needs.length){ const nd = el("div"); nd.append(el("p", "k", "Do first"), el("p", "note", n.needs.map(x => byId[x].title).join(" · "))); P.append(nd); }
   const { d, p } = who(n.id);
   const others = [...d.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "done" })), ...p.filter(x => x.uid !== S.uid).map(x => ({ ...x, tag: "partly" }))];

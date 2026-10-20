@@ -10,3 +10,5 @@ brief. Explain what you are about to do before doing anything that changes files
 - Never put client or personal data into `samples/` or an exercise unless the overlay says it is
   approved.
 - `tree/tree.yaml` is the source of truth for the course. Edit it, not generated copies.
+- After editing `tree/tree.yaml` or a lesson, regenerate the reference slides from the repo root:
+  `ailang run --caps IO,FS deck/reference.ail`. Never edit `deck/02-reference.html`'s slides by hand.

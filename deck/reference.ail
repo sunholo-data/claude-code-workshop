@@ -1,0 +1,271 @@
+-- The reference appendix: one slide per node of the skill tree, rendered from the tree and
+-- the lessons, so the room can put the same page on the projector when someone asks.
+--
+--   ailang run --caps IO,FS deck/reference.ail
+--
+-- Run from the repository root. Reads tree/tree.yaml and lessons/<id>.md, and rewrites the
+-- slides between <!-- reference:begin --> and <!-- reference:end --> in deck/02-reference.html.
+-- The frame around them (styles, navigation, bars) is hand-kept; only the slides are generated.
+-- Each slide's id is its node id, so deck/02-reference.html#trust-ladder opens that slide.
+--
+-- From a lesson it takes: the "## Do" section (steps, prompts, sub-headings; images dropped),
+-- "## Proof", and the first two bullets of "## Misconceptions this exposes". From the tree:
+-- title, tier, can, needs. Edit those sources, never the generated slides.
+
+module deck/reference
+
+import std/yaml (decode as yamlDecode)
+import std/json (Json, get, asString, asArray, asNumber)
+import std/fs (readFile, writeFile, fileExists)
+import std/io (println, exit)
+import std/list (map, filter, foldl, reverse, length, take, concat, head_or, findIndex, flatMap, any)
+import std/string (join, trim, split, replace, startsWith, find, substring, length as slen, intToStr, floatToStr, stringToInt)
+import std/regex (compile, replaceAll, isMatch)
+
+-- ── the tree ───────────────────────────────────────────────────────────────
+
+type Node = { id: string, tier: string, title: string, can: string, needs: [string] }
+
+func strOf(j: Json, k: string) -> string =
+  match get(j, k) {
+    Some(v) => match asString(v) {
+      Some(s) => s,
+      None => match asNumber(v) {
+        Some(n) => floatToStr(n),
+        None => ""
+      }
+    },
+    None => ""
+  }
+
+func strsOf(j: Json, k: string) -> [string] =
+  match get(j, k) {
+    Some(v) => match asArray(v) {
+      Some(xs) => filter(\s. s != "", map(\x. match asString(x) { Some(s) => s, None => "" }, xs)),
+      None => []
+    },
+    None => []
+  }
+
+func nodeOf(j: Json) -> Node =
+  { id: strOf(j, "id"), tier: strOf(j, "tier"), title: strOf(j, "title"), can: strOf(j, "can"), needs: strsOf(j, "needs") }
+
+func tierName(t: string) -> string =
+  if t == "0" then "Tier 0 · setup"
+  else if t == "1" then "Tier 1 · chat to agent"
+  else if t == "2" then "Tier 2 · rules"
+  else if t == "3" then "Tier 3 · git"
+  else if t == "4" then "Tier 4 · skills"
+  else if t == "5" then "Tier 5 · connect"
+  else if t == "6" then "Tier 6 · share"
+  else if t == "7" then "Tier 7 · team layer"
+  else "Branch"
+
+-- ── text ───────────────────────────────────────────────────────────────────
+
+export pure func esc(s: string) -> string =
+  replace(replace(replace(s, "&", "&amp;"), "<", "&lt;"), ">", "&gt;")
+
+func rx(p: string, s: string, r: string) -> string =
+  match compile(p) { Ok(re) => replaceAll(re, s, r), Err(_) => s }
+
+-- Inline markdown: links keep their text, then code, bold, italic. Escaped first.
+func inline(s: string) -> string {
+  let a = esc(s);
+  let b = rx("\\[([^\\]]+)\\]\\([^)]+\\)", a, "$1");
+  let c = rx("`([^`]+)`", b, "<code>$1</code>");
+  let d = rx("\\*\\*([^*]+)\\*\\*", c, "<b>$1</b>");
+  rx("\\*([^*]+)\\*", d, "<i>$1</i>")
+}
+
+-- ── a lesson's sections ────────────────────────────────────────────────────
+
+-- The lines under "## <name>", up to the next "## " heading.
+func section(md: string, name: string) -> [string] {
+  let lines = split(md, "\n");
+  let st = foldl(\acc. \l.
+      if startsWith(l, "## ") then { inside: trim(substring(l, 3, slen(l))) == name, out: acc.out }
+      else if acc.inside then { inside: true, out: [l] ++ acc.out }
+      else acc,
+    { inside: false, out: [] }, lines);
+  reverse(st.out)
+}
+
+-- A block of the Do section. k: "step" | "para" | "head" | "quote" | "code"
+type Block = { k: string, t: string }
+
+type PState = { bs: [Block], blank: bool, code: bool }
+
+func isStep(l: string) -> bool = match compile("^[0-9]+\\.\\s") { Ok(re) => isMatch(re, l), Err(_) => false }
+
+func stepText(l: string) -> string = rx("^[0-9]+\\.\\s+", l, "")
+
+func push(st: PState, b: Block) -> PState = { bs: [b] ++ st.bs, blank: false, code: st.code }
+
+-- Add text to the newest block, with a separator.
+func extend(st: PState, sep: string, t: string) -> PState =
+  match st.bs {
+    [] => push(st, { k: "para", t: t }),
+    b :: rest => { bs: [{ k: b.k, t: "${b.t}${sep}${t}" }] ++ rest, blank: false, code: st.code }
+  }
+
+func lastKind(st: PState) -> string = match st.bs { [] => "", b :: _ => b.k }
+
+func lastEmpty(st: PState) -> bool = match st.bs { [] => false, b :: _ => b.t == "" }
+
+func step(st: PState, raw: string) -> PState {
+  let t = trim(raw);
+  let indented = startsWith(raw, " ");
+  if startsWith(t, "```") then
+    (if st.code then { bs: st.bs, blank: false, code: false }
+     else { bs: [{ k: "code", t: "" }] ++ st.bs, blank: false, code: true })
+  else if st.code then
+    (if lastKind(st) == "code" && lastEmpty(st) then extend(st, "", t) else extend(st, "\n", t))
+  else if t == "" then { bs: st.bs, blank: true, code: false }
+  else if startsWith(t, "![") then st
+  else if isStep(t) && !indented then push(st, { k: "step", t: stepText(t) })
+  else if startsWith(t, "### ") then push(st, { k: "head", t: substring(t, 4, slen(t)) })
+  else if startsWith(t, "> ") || t == ">" then
+    { let q = trim(substring(t, 1, slen(t))); if lastKind(st) == "quote" && !st.blank then extend(st, " ", q) else push(st, { k: "quote", t: q }) }
+  else if startsWith(t, "- ") && indented then extend(st, "\n• ", substring(t, 2, slen(t)))
+  else if indented then
+    (if lastKind(st) == "step" || (lastKind(st) == "para" && !st.blank) then extend(st, " ", t)
+     else push(st, { k: "para", t: t }))
+  else if lastKind(st) == "para" && !st.blank then extend(st, " ", t)
+  else push(st, { k: "para", t: t })
+}
+
+export func blocks(lines: [string]) -> [Block] =
+  reverse(foldl(\st. \l. step(st, l), { bs: [], blank: false, code: false }, lines).bs)
+
+func renderStep(t: string) -> string =
+  join("<br>", map(\p. inline(p), split(t, "\n")))
+
+-- Consecutive steps share one <ol>; a prompt or code between steps stays inside the list item
+-- before it, so numbering carries on.
+func renderBlocks(bs: [Block]) -> string {
+  let st = foldl(\acc. \b.
+      if b.k == "step" then
+        { out: "${acc.out}${if acc.open then "</li>" else "<ol>"}<li>${renderStep(b.t)}", open: true }
+      else if (b.k == "quote" || b.k == "code") && acc.open then
+        { out: "${acc.out}<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>", open: true }
+      else {
+        let pre = if acc.open then "</li></ol>" else "";
+        let body =
+          if b.k == "head" then "<p class=\"ref-h\">${inline(b.t)}</p>"
+          else if b.k == "quote" || b.k == "code" then "<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>"
+          else "<p>${inline(b.t)}</p>";
+        { out: "${acc.out}${pre}${body}", open: false }
+      },
+    { out: "", open: false }, bs);
+  if st.open then "${st.out}</li></ol>" else st.out
+}
+
+-- Paragraph text of a short section, joined.
+func prose(lines: [string]) -> string =
+  trim(join(" ", filter(\l. !startsWith(trim(l), "!["), map(\l. trim(l), lines))))
+
+-- The first n "- " bullets, continuation lines folded in.
+func bullets(lines: [string], n: int) -> [string] {
+  let bs = foldl(\acc. \l.
+      if startsWith(l, "- ") then [substring(l, 2, slen(l))] ++ acc
+      else if trim(l) != "" then match acc { [] => acc, b :: rest => ["${b} ${trim(l)}"] ++ rest }
+      else acc,
+    [], lines);
+  take(n, reverse(bs))
+}
+
+-- ── slides ─────────────────────────────────────────────────────────────────
+
+func titleOf(nodes: [Node], id: string) -> string =
+  head_or(map(\n. n.title, filter(\n. n.id == id, nodes)), id)
+
+func link(id: string, text: string) -> string = "<a href=\"#${id}\">${esc(text)}</a>"
+
+export func slide(nodes: [Node], n: Node, md: string) -> string {
+  let doHtml = renderBlocks(blocks(section(md, "Do")));
+  let proof = prose(section(md, "Proof"));
+  let watch = bullets(section(md, "Misconceptions this exposes"), 2);
+  let needs = if length(n.needs) == 0 then "nothing" else join(" · ", map(\x. link(x, titleOf(nodes, x)), n.needs));
+  let watchHtml = if length(watch) == 0 then ""
+    else "<div class=\"card\"><div class=\"h\"><i class=\"fa-solid fa-eye\"></i> Watch for</div><ul>${concatStr(map(\w. "<li>${inline(w)}</li>", watch))}</ul></div>";
+  join("\n", [
+    "      <section class=\"slide\" data-slide=\"${n.id}\" id=\"${n.id}\">",
+    "        <div class=\"kicker\">${esc(tierName(n.tier))}</div>",
+    "        <h2 class=\"slide-title\">${esc(n.title)}</h2>",
+    "        <p class=\"ref-can\">${inline(n.can)}</p>",
+    "        <div class=\"ref-cols\">",
+    "          <div class=\"card ref-do\"><div class=\"h\"><i class=\"fa-solid fa-list-ol\"></i> Do</div>${doHtml}</div>",
+    "          <div class=\"ref-side\">",
+    "            <div class=\"card hot\"><div class=\"h\"><i class=\"fa-solid fa-check\"></i> Proof</div><div class=\"s\">${inline(proof)}</div></div>",
+    "            ${watchHtml}",
+    "            <p class=\"ref-meta\">Needs: ${needs}<br>Source: lessons/${n.id}.md · <a href=\"#index\">all boxes</a></p>",
+    "          </div>",
+    "        </div>",
+    "      </section>",
+    ""
+  ])
+}
+
+func concatStr(xs: [string]) -> string = join("", xs)
+
+func tierGroup(nodes: [Node], t: string) -> string {
+  let ns = filter(\n. n.tier == t, nodes);
+  if length(ns) == 0 then "" else "<h3>${esc(tierName(t))}</h3>${concatStr(map(\n. "<p>${link(n.id, n.title)}</p>", ns))}"
+}
+
+export func indexSlide(nodes: [Node]) -> string {
+  let tiers = ["0", "1", "2", "3", "4", "5", "6", "7", "B"];
+  let groups = map(\t. tierGroup(nodes, t), tiers);
+  join("\n", [
+    "      <section class=\"slide active\" data-slide=\"index\" id=\"index\">",
+    "        <div class=\"kicker\">Reference</div>",
+    "        <h2 class=\"slide-title\">One slide per box, <span class=\"accent\">from the same source</span></h2>",
+    "        <div class=\"ref-index\">${concatStr(groups)}</div>",
+    "        <p class=\"foot\">Each slide is generated from <b>lessons/&lt;box&gt;.md</b> and <b>tree/tree.yaml</b>. Add <b>#&lt;box-id&gt;</b> to the address to open one directly.</p>",
+    "      </section>",
+    ""
+  ])
+}
+
+func ordered(nodes: [Node]) -> [Node] =
+  flatMap(\t. filter(\n. n.tier == t, nodes), ["0", "1", "2", "3", "4", "5", "6", "7", "B"])
+
+-- Replace what sits between the two markers.
+export func splice(frame: string, body: string) -> Option[string] {
+  let b = "<!-- reference:begin -->";
+  let e = "<!-- reference:end -->";
+  let i = find(frame, b);
+  let j = find(frame, e);
+  if i < 0 || j < i then None
+  else Some("${substring(frame, 0, i + slen(b))}\n${body}${substring(frame, j, slen(frame))}")
+}
+
+-- ── shell ──────────────────────────────────────────────────────────────────
+
+export func main() -> () ! {IO, FS} {
+  let treeSrc = readFile("tree/tree.yaml");
+  match yamlDecode(treeSrc) {
+    Err(e) => { println("tree/tree.yaml: ${e}"); exit(1) },
+    Ok(tree) => {
+      let nodes = ordered(match get(tree, "nodes") {
+        Some(v) => match asArray(v) { Some(xs) => map(nodeOf, xs), None => [] },
+        None => []
+      });
+      let missing = filter(\n. !fileExists("lessons/${n.id}.md"), nodes);
+      if length(nodes) == 0 then { println("no nodes in tree/tree.yaml"); exit(1) }
+      else if length(missing) > 0 then { println("no lesson for: ${join(", ", map(\n. n.id, missing))}"); exit(1) }
+      else {
+        let slides = map(\n. slide(nodes, n, readFile("lessons/${n.id}.md")), nodes);
+        let frame = readFile("deck/02-reference.html");
+        match splice(frame, "${indexSlide(nodes)}${concatStr(slides)}") {
+          None => { println("deck/02-reference.html: reference markers not found"); exit(1) },
+          Some(out) => {
+            writeFile("deck/02-reference.html", out);
+            println("deck/02-reference.html: ${intToStr(length(nodes))} reference slides and an index")
+          }
+        }
+      }
+    }
+  }
+}
