@@ -14,7 +14,9 @@ you install yourself. Do this before the day.
    `!git --version` and send it. The `!` means *run this myself*: the command runs straight away,
    without Claude and without asking, and the result appears in the conversation.
 3. If it prints a version number, you're done with this step. If not:
-   - **Mac:** send `!xcode-select --install` and accept the pop-up. It takes a few minutes.
+   - **Mac:** git comes with Apple's developer tools. Asking for git when they're missing makes
+     macOS offer to install them in a pop-up: click **Install** and wait a few minutes. No pop-up?
+     Send `!xcode-select --install`.
    - **Windows:** install **Git for Windows** from git-scm.com/downloads/win, accepting the
      defaults. Restart Claude Desktop afterwards so it finds git.
 4. Send `!git --version` again.
