@@ -36,7 +36,7 @@ nodes:
     needs: [install]
     minutes: 10
     can: "I have git installed and a GitHub account I can sign in to."
-    proof: "`git --version` prints a version; GitHub username sent to the facilitator."
+    proof: "`!git --version` in the Code tab prints a version; GitHub username sent to the facilitator."
   - id: get-workshop
     tier: 0
     title: Get the workshop

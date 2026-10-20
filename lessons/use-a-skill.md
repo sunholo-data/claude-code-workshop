@@ -17,9 +17,9 @@ layout mistake that most often breaks a slide.
    anyway? Which files will it open first?
 4. Ask: *"Build a 3-slide deck in `my-deck/` about <something you know well>."* Watch which files
    it reads before it writes anything.
-5. Run the check, in the terminal pane (**Ctrl+`**) or by asking Claude to run it:
+5. Run the check yourself by sending this with a `!` in front, or ask Claude to run it:
    ```
-   node .claude/skills/presentation-slides/scripts/lint-slides.mjs my-deck/*.html
+   !node .claude/skills/presentation-slides/scripts/lint-slides.mjs my-deck/*.html
    ```
    No output means it passed. It needs Node: if `node` is not found, ask Claude to install it, or
    skip the lint and do step 6 carefully.

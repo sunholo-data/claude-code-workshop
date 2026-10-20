@@ -13,7 +13,8 @@ repository, but not to its `main`: that only changes through a pull request the 
    check how it would sign in."* On Windows, Git for Windows opens a browser window when it needs
    you. On a Mac it usually can't ask: install **GitHub CLI** from cli.github.com, then in the
    terminal pane (**Ctrl+`**) type `gh auth login`, choose the browser option, and afterwards
-   `gh auth setup-git`. Sign in yourself; never paste a password or token into the chat.
+   `gh auth setup-git`. Use the terminal pane, not `!`: sign-in asks you questions, and anything
+   run with `!` lands in the conversation. Never paste a password or token into the chat.
 3. Ask: *"Make a branch called practice/<your-github-username>."*
 4. Make one small change (a line in your own `notes/<your-github-username>.md`) and ask Claude to
    commit it.

@@ -53,6 +53,13 @@ Then go straight to tier 1.
 5. **Off the frontier.** If they ask about a locked node, say which node unlocks it and park the
    question in `progress.md` under `## Parked`. A one-line answer is fine; a tutorial is not.
 
+## Commands the learner runs
+
+When a step or a proof needs a command run by the learner, have them send it with a `!` in front
+(`!git --version`): it runs without you, and its output appears in the conversation where you can
+see it. Never use `!` for signing in to anything: that belongs in the terminal pane or a browser,
+out of the conversation.
+
 ## Don't
 
 - Rank learners or compare them to each other.

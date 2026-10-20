@@ -18,7 +18,7 @@ counts, and hand it to a colleague who wants to check. The practice file is
    it."* If the language it wants isn't installed, it can check what you have, or install what it
    needs. Read each command before you approve it.
 5. Open the script. Find the line that decides which days count as the weekend.
-6. Run it yourself with the command Claude gave you, in the terminal pane (**Ctrl+`**).
+6. Run it yourself: send the command Claude gave you, with a `!` in front.
 7. Change one number in the CSV, run it again, and check the result moved the way you expected.
 8. Ask for the output as a small table file next to the script, so the numbers have a source.
 
