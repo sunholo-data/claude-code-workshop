@@ -28,7 +28,7 @@ Every node in the tree has a `band`, separate from its tier, saying when it's ex
 | Band | When | Nodes |
 |---|---|---|
 | **core** | The minimum standard: everyone, on the day, in step with the blocks | setup, chat-vs-agent, folders-context, permissions-review, trust-ladder, claude-md, team-conventions, settings-permissions, git-safety-net, clone-branch, use-a-skill, room-pr, connectors, add-mcp, real-task |
-| **stretch** | On the day, for whoever finishes a block's core first | models, context-hygiene, plan-first, skill-anatomy, own-api-key, verify-output, data-files |
+| **stretch** | On the day, for whoever finishes a block's core first | models, context-hygiene, plan-first, settings-tour, skill-anatomy, own-api-key, verify-output, data-files |
 | **homework** | Everyone, before the follow-up (after any unfinished core) | write-a-skill, bigquery-mcp |
 | **follow-up** | Together, in the follow-up | shared-skills-repo, share-skill-pr, protect-main, skill-routing |
 | **advanced** | Extra routes, for anyone who wants more; never expected | hooks, subagents, scheduled, local-mcp, plugin-marketplace |

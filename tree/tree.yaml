@@ -167,6 +167,15 @@ nodes:
     minutes: 25
     can: "I can write the settings that let routine actions through, always stop for the risky ones, and block the ones that must never happen."
     proof: "A settings file in use, with one rule you promoted yourself, and a risky action you saw it stop."
+  - id: settings-tour
+    tier: 2
+    band: stretch
+    block: 3
+    title: What else settings can do
+    needs: [settings-permissions]
+    minutes: 20
+    can: "I can choose which settings file a setting belongs in (the team's, mine for this project, or mine everywhere) and check that it took effect."
+    proof: "One setting you added, the file you put it in and why, and a new session where you saw it work."
 
   # ── Tier 3 · Git, as the safety net and the sharing mechanism ───────────
   - id: git-safety-net
