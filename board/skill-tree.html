@@ -54,14 +54,17 @@ h1{font-weight:700;font-size:clamp(28px,3.4vw,44px);line-height:1.14;margin:0;le
 .node.done .st{color:#c9d4dc}
 .node.part{background:repeating-linear-gradient(135deg,var(--paper) 0 7px,#eef2f5 7px 10px);border-color:var(--slate)}
 .node.goal::after{content:"";position:absolute;top:-1px;left:-1px;width:10px;height:10px;background:var(--orange)}
-.node .band{position:absolute;top:3px;right:5px;font:600 9px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.node .band{font:600 9px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);line-height:1}
 .node .band.core{color:var(--action)}
 .node.done .band{color:#c9d4dc}
-.node > span:first-child{padding-right:36px}
+.blocks[hidden]{display:none}
 .blocks{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding:10px 14px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper)}
 .blocks .k{margin:0 6px 0 0}
-.blk{font:13px var(--mono);padding:5px 10px;border-radius:var(--radius);border:1px solid var(--rule);color:var(--muted)}
-.blk b{font-weight:700;margin-right:4px}
+.blk{font:13px var(--mono);padding:6px 10px;border-radius:var(--radius);border:1px solid var(--rule);color:var(--muted);background:var(--paper);cursor:pointer;display:inline-flex;gap:8px;align-items:baseline}
+.blk b{font-weight:700}
+.blk .cnt{padding-left:8px;border-left:1px solid var(--rule)}
+.blk.on{outline:2px solid var(--slate);outline-offset:1px}
+.node.dim{opacity:.28}
 .blk.most{border-color:var(--action);color:var(--action);background:#fbeeea}
 .bandnote{font-size:13px;color:var(--muted);margin:2px 0 0}
 .node.sel{outline:3px solid var(--orange);outline-offset:2px}
@@ -154,7 +157,7 @@ const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
 const EDGES = NODES.flatMap(n => n.needs.map(f => ({ from: f, to: n.id })));
 
 // Layout, after AIPLA's concept map: longest-path layer per node (roots in layer 0), one column per layer.
-const NODE_W = 176, NODE_H = 74, COL_GAP = 52, ROW_GAP = 14, PAD = 20;
+const NODE_W = 176, NODE_H = 84, COL_GAP = 52, ROW_GAP = 14, PAD = 20;
 function layers(){
   const L = Object.fromEntries(NODES.map(n => [n.id, 0]));
   for (let pass = 0; pass < NODES.length; pass++){
@@ -231,8 +234,9 @@ function renderGraph(){
     if (n.tier === "B") b.classList.add("branch");
     if (n.id === GOAL) b.classList.add("goal");
     if (S.selected === n.id) b.classList.add("sel");
-    b.append(el("span", null, n.title));
-    b.append(el("span", "band " + n.band, n.band));
+    b.append(el("span", "band " + n.band, (n.block ? "Block " + n.block + " · " : "") + n.band));
+    b.append(el("span", "ttl", n.title));
+    if (S.blockFocus && n.block !== S.blockFocus) b.classList.add("dim");
     const st = el("span", "st");
     if (S.view === "me"){
       const s = stateOf(n); b.classList.add(s); st.append(el("span", null, LABEL[s]));
@@ -282,9 +286,10 @@ function renderAside(){
       P.append(el("p", "note", "Pick a box to see who's done it and how."));
       return;
     }
-    const next = NODES.filter(x => stateOf(x) === "open");
+    const RANK = { core: 0, stretch: 1, homework: 2, "follow-up": 3, advanced: 4 };
+    const next = NODES.filter(x => stateOf(x) === "open").sort((a, b) => ((+a.block || 99) - (+b.block || 99)) || ((RANK[a.band] ?? 9) - (RANK[b.band] ?? 9)));
     P.append(el("p", "k", "Next up"));
-    P.append(el("p", "note", next.length ? "These are unlocked. Pick one, or any orange box." : "Start with the setup boxes on the left."));
+    P.append(el("p", "note", next.length ? "Unlocked, this block first: its core, then its stretch. Core is the minimum for today." : "Start with the setup boxes on the left."));
     const row = el("div", "row");
     for (const x of next.slice(0, 3)){ const b = el("button", "btn", x.title); b.type = "button"; b.addEventListener("click", () => { S.selected = x.id; render(); }); row.append(b); }
     P.append(row);
@@ -351,13 +356,15 @@ function renderStatus(){
 function renderBlocks(){
   const B = document.getElementById("blocks");
   if (S.view !== "room" || !S.room.length){ B.hidden = true; return; }
-  B.hidden = false; B.replaceChildren(el("span", "k", "Regroup signal"));
+  B.hidden = false; B.replaceChildren(el("span", "k", "Regroup signal · people who finished each block's core"));
   for (const b of BLOCKS){
     const core = NODES.filter(n => n.block === b.id && n.band === "core");
     if (!core.length) continue;
     const done = S.room.filter(r => core.every(n => r.nodes && r.nodes[n.id] && r.nodes[n.id].s === "done")).length;
-    const pill = el("span", "blk" + (done * 2 >= S.room.length ? " most" : ""));
-    pill.append(el("b", null, `${b.id} · ${b.title}`), document.createTextNode(` ${done} of ${S.room.length}`));
+    const pill = el("button", "blk" + (done * 2 >= S.room.length ? " most" : "") + (S.blockFocus === b.id ? " on" : ""));
+    pill.type = "button"; pill.title = "Show this block's boxes";
+    pill.append(el("b", null, `Block ${b.id} · ${b.title}`), el("span", "cnt", `${done}/${S.room.length} done`));
+    pill.addEventListener("click", () => { S.blockFocus = S.blockFocus === b.id ? null : b.id; render(); });
     B.append(pill);
   }
 }
