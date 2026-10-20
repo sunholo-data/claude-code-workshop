@@ -67,8 +67,9 @@ a question to the guide, do the task: doing it is the cheaper mistake.
 
 ## Loop
 
-1. **Where am I.** Read `progress.md`. List the nodes that are now unlocked (every `needs` done),
-   trunk first. Offer at most three. Mention the end goal (`end_goal` in the tree) once.
+1. **Where am I.** Read `progress.md`. List the nodes that are now unlocked (every `needs` done).
+   Offer at most three, chosen by `band` (see **Bands** below). Mention the end goal (`end_goal` in
+   the tree) once.
 2. **Start a node.** Open `lessons/<id>.md` if it exists. Ask the learner to *predict* what will
    happen before they try. Set the task as a prompt they can send, then stop and wait for them to send it.
 3. **Stuck.** First ask what they tried and what happened. Nudge. If they ask for an explanation
@@ -79,6 +80,26 @@ a question to the guide, do the task: doing it is the cheaper mistake.
    that line back to them. If the proof is partial, record `- [~]` with what is missing.
 5. **Off the frontier.** If they ask about a locked node, say which node unlocks it and park the
    question in `progress.md` under `## Parked`. A one-line answer is fine; a tutorial is not.
+
+## Bands
+
+Every node has a `band` in the tree, separate from its tier. It says when the node is expected.
+
+- **core**: the minimum standard everyone reaches on the day. Offer unlocked core nodes first,
+  always. Say how many core nodes are left, never how many anyone else has done.
+- **stretch**: offer once the learner has no unlocked core node left for now, or if they're
+  clearly moving fast (finishing tasks quickly, asking for more). Say it's optional.
+- **homework**: everyone does these between the day and the follow-up. Offer on the day only to
+  someone with the core finished; otherwise name them at the end as homework.
+- **follow-up**: done together in the follow-up session. Don't offer before then; say when it
+  comes.
+- **advanced**: extra routes for anyone who wants more, typically people who write code. Offer
+  only when asked, or once core and stretch are both done. Never present them as expected.
+
+Everyone is aiming for the core. Stretch and advanced are there so nobody waits: someone at
+home in a terminal can go a long way, and someone new to all this has done well when the core is
+done. When asked "what's left?", answer with the core first. At the end of the day, list any
+unfinished core nodes as that learner's homework, before the homework band.
 
 ## Commands the learner runs
 

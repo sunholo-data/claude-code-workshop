@@ -8,6 +8,12 @@
 # Each node:
 #   id        stable slug, used by overlays and progress files
 #   tier      0 setup · 1 agent basics · 2 rules · 3 git · 4 skills · 5 connect · 6 share · B branches
+#   band      when it's expected, separate from what it teaches:
+#               core       the minimum everyone reaches on the day, in step with the blocks
+#               stretch    on the day, for whoever finishes a block's core first
+#               homework   everyone, between the day and the follow-up
+#               follow-up  together, in the follow-up session
+#               advanced   extra routes for anyone who wants more; never expected
 #   needs     prerequisite ids — a node unlocks when all of these are done
 #   minutes   guided time, roughly; self-paced learners will vary
 #   can       the outcome, as "I can …" (also the self-assessment question)
@@ -25,6 +31,7 @@ nodes:
   # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
   - id: install
     tier: 0
+    band: core
     title: Claude Desktop, Code tab
     needs: []
     minutes: 10
@@ -32,6 +39,7 @@ nodes:
     proof: "hello.txt exists in a test folder."
   - id: git-installed
     tier: 0
+    band: core
     title: Git and a GitHub account
     needs: [install]
     minutes: 10
@@ -39,6 +47,7 @@ nodes:
     proof: "`!git --version` in the Code tab prints a version; GitHub username sent to the facilitator."
   - id: get-workshop
     tier: 0
+    band: core
     title: Get the workshop
     needs: [install, git-installed]
     minutes: 10
@@ -48,6 +57,7 @@ nodes:
   # ── Tier 1 · From chat to agent ─────────────────────────────────────────
   - id: chat-vs-agent
     tier: 1
+    band: core
     title: Chat versus agent
     needs: [get-workshop]
     minutes: 20
@@ -55,6 +65,7 @@ nodes:
     proof: "Claude edited a file you then opened and checked yourself."
   - id: folders-context
     tier: 1
+    band: core
     title: The folder is the context
     needs: [chat-vs-agent]
     minutes: 15
@@ -62,6 +73,7 @@ nodes:
     proof: "A question answered from two files you @-mentioned."
   - id: permissions-review
     tier: 1
+    band: core
     title: Permissions and reviewing changes
     needs: [chat-vs-agent]
     minutes: 20
@@ -69,6 +81,7 @@ nodes:
     proof: "One change rejected and re-asked; the reason said aloud."
   - id: plan-first
     tier: 1
+    band: stretch
     title: Plan before acting
     needs: [permissions-review]
     minutes: 15
@@ -76,6 +89,7 @@ nodes:
     proof: "A plan you edited before approving it."
   - id: trust-ladder
     tier: 1
+    band: core
     title: Trust is earned per action
     needs: [permissions-review]
     minutes: 25
@@ -83,6 +97,7 @@ nodes:
     proof: "The same task run in Manual, Accept edits and Auto, with a count of what asked in each, and the one action that still asked in Auto."
   - id: models
     tier: 1
+    band: stretch
     title: Choosing a model
     needs: [chat-vs-agent]
     minutes: 10
@@ -90,6 +105,7 @@ nodes:
     proof: "Same small task on two models; one sentence on the difference."
   - id: context-hygiene
     tier: 1
+    band: stretch
     title: Sessions and context
     needs: [folders-context]
     minutes: 10
@@ -99,6 +115,7 @@ nodes:
   # ── Tier 2 · Rules ──────────────────────────────────────────────────────
   - id: claude-md
     tier: 2
+    band: core
     title: CLAUDE.md — standing instructions
     needs: [plan-first, folders-context]
     minutes: 20
@@ -106,6 +123,7 @@ nodes:
     proof: "Before/after: the same request, different behaviour, because of one rule."
   - id: team-conventions
     tier: 2
+    band: core
     title: Team conventions and data handling
     needs: [claude-md]
     minutes: 30
@@ -114,6 +132,7 @@ nodes:
 
   - id: settings-permissions
     tier: 2
+    band: core
     title: Your rules — allow, ask, deny
     needs: [trust-ladder, claude-md]
     minutes: 25
@@ -123,6 +142,7 @@ nodes:
   # ── Tier 3 · Git, as the safety net and the sharing mechanism ───────────
   - id: git-safety-net
     tier: 3
+    band: core
     title: Git as undo
     needs: [permissions-review, git-installed]
     minutes: 20
@@ -130,6 +150,7 @@ nodes:
     proof: "Three commits in a log; one change undone."
   - id: clone-branch
     tier: 3
+    band: core
     title: Clone, branch, push
     needs: [git-safety-net]
     minutes: 20
@@ -139,6 +160,7 @@ nodes:
   # ── Tier 4 · Skills ─────────────────────────────────────────────────────
   - id: use-a-skill
     tier: 4
+    band: core
     title: Use someone else's skill
     needs: [clone-branch, claude-md]
     minutes: 30
@@ -147,6 +169,7 @@ nodes:
     material: "https://github.com/sunholo-data/presentation-template"
   - id: skill-anatomy
     tier: 4
+    band: stretch
     title: How a skill is built
     needs: [use-a-skill]
     minutes: 20
@@ -154,6 +177,7 @@ nodes:
     proof: "The skill's description rewritten so it triggers on a phrase you'd actually use."
   - id: write-a-skill
     tier: 4
+    band: homework
     title: Write your own skill
     needs: [skill-anatomy]
     minutes: 40
@@ -162,8 +186,9 @@ nodes:
 
   - id: room-pr
     tier: 4
+    band: core
     title: Your skill, in everyone's copy
-    needs: [skill-anatomy, clone-branch]
+    needs: [use-a-skill, clone-branch]
     minutes: 25
     can: "I can propose a change by pull request, and once it is merged, pull and see my work and everyone else's in my own copy."
     proof: "After the merge and a pull, your skill and a colleague's both appear when you type /, and you ran theirs."
@@ -171,6 +196,7 @@ nodes:
   # ── Tier 5 · Connect ────────────────────────────────────────────────────
   - id: connectors
     tier: 5
+    band: core
     title: Connectors and MCP
     needs: [team-conventions]
     minutes: 20
@@ -178,6 +204,7 @@ nodes:
     proof: "A question answered from a connected source, with the data path said aloud."
   - id: add-mcp
     tier: 5
+    band: core
     title: Add a remote MCP server
     needs: [connectors]
     minutes: 30
@@ -185,6 +212,7 @@ nodes:
     proof: "An answer that came from the MCP tool (Google Developer Knowledge), not from Claude's memory."
   - id: own-api-key
     tier: 5
+    band: stretch
     title: Make your own API key
     needs: [add-mcp]
     minutes: 15
@@ -192,6 +220,7 @@ nodes:
     proof: "The server still works after the lent key is revoked."
   - id: bigquery-mcp
     tier: 5
+    band: homework
     title: GA4 data through BigQuery
     needs: [add-mcp, team-conventions]
     minutes: 30
@@ -199,6 +228,7 @@ nodes:
     proof: "A read-only query result from the GA4 sample, and one sentence on what left Google to produce it."
   - id: shared-skills-repo
     tier: 6
+    band: follow-up
     title: The team's skills repository
     needs: [write-a-skill, room-pr]
     minutes: 20
@@ -206,6 +236,7 @@ nodes:
     proof: "The shared skills show up in your Code tab session; you pulled a change someone else made."
   - id: share-skill-pr
     tier: 6
+    band: follow-up
     title: Contribute a skill by pull request
     needs: [shared-skills-repo]
     minutes: 30
@@ -215,6 +246,7 @@ nodes:
   # ── Capstone ────────────────────────────────────────────────────────────
   - id: real-task
     tier: 6
+    band: core
     title: One real task, end to end
     needs: [claude-md, settings-permissions, git-safety-net]
     minutes: 45
@@ -224,6 +256,7 @@ nodes:
   # ── Branches · for early finishers and homework ─────────────────────────
   - id: verify-output
     tier: B
+    band: stretch
     title: Checking the work
     needs: [real-task]
     minutes: 20
@@ -231,6 +264,7 @@ nodes:
     proof: "A check that caught something."
   - id: data-files
     tier: B
+    band: stretch
     title: Spreadsheets and data files
     needs: [folders-context]
     minutes: 30
@@ -238,6 +272,7 @@ nodes:
     proof: "A script in the folder that reproduces the numbers."
   - id: hooks
     tier: B
+    band: advanced
     title: Hooks
     needs: [settings-permissions]
     minutes: 30
@@ -245,6 +280,7 @@ nodes:
     proof: "A hook that ran."
   - id: subagents
     tier: B
+    band: advanced
     title: Subagents and parallel sessions
     needs: [context-hygiene]
     minutes: 30
@@ -252,6 +288,7 @@ nodes:
     proof: "A research result returned to the main session."
   - id: scheduled
     tier: B
+    band: advanced
     title: Running without you
     needs: [write-a-skill, bigquery-mcp]
     minutes: 30
@@ -261,6 +298,7 @@ nodes:
   # ── Tier 7 · Team layer (the follow-up session) ─────────────────────────
   - id: protect-main
     tier: 7
+    band: follow-up
     title: A review before anything is shared
     needs: [share-skill-pr]
     minutes: 20
@@ -268,6 +306,7 @@ nodes:
     proof: "A pull request that could not be merged until a named reviewer approved it."
   - id: skill-routing
     tier: 7
+    band: follow-up
     title: Many skills, one entry point
     needs: [share-skill-pr]
     minutes: 40
@@ -275,6 +314,7 @@ nodes:
     proof: "Two overlapping skills merged or their descriptions separated, and a request that now reaches the right one."
   - id: local-mcp
     tier: B
+    band: advanced
     title: Run a GA4 server yourself
     needs: [bigquery-mcp]
     minutes: 45
@@ -282,6 +322,7 @@ nodes:
     proof: "A GA4 report from a property your group's rules allow, with the property named, and what your sign-in could reach."
   - id: plugin-marketplace
     tier: B
+    band: advanced
     title: Team skills in every folder
     needs: [skill-routing]
     minutes: 45

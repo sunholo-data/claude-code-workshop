@@ -24,7 +24,7 @@ import std/regex (compile, replaceAll, isMatch)
 
 -- ── the tree ───────────────────────────────────────────────────────────────
 
-type Node = { id: string, tier: string, title: string, can: string, needs: [string] }
+type Node = { id: string, tier: string, band: string, title: string, can: string, needs: [string] }
 
 func strOf(j: Json, k: string) -> string =
   match get(j, k) {
@@ -48,7 +48,16 @@ func strsOf(j: Json, k: string) -> [string] =
   }
 
 func nodeOf(j: Json) -> Node =
-  { id: strOf(j, "id"), tier: strOf(j, "tier"), title: strOf(j, "title"), can: strOf(j, "can"), needs: strsOf(j, "needs") }
+  { id: strOf(j, "id"), tier: strOf(j, "tier"), band: strOf(j, "band"), title: strOf(j, "title"), can: strOf(j, "can"), needs: strsOf(j, "needs") }
+
+-- When a node is expected: core is the minimum for everyone on the day.
+func bandLabel(b: string) -> string =
+  if b == "core" then "core: everyone, today"
+  else if b == "stretch" then "stretch: if you finish early"
+  else if b == "homework" then "homework: before the follow-up"
+  else if b == "follow-up" then "together in the follow-up"
+  else if b == "advanced" then "advanced: optional extra"
+  else b
 
 func tierName(t: string) -> string =
   if t == "0" then "Tier 0 · setup"
@@ -191,7 +200,7 @@ export func slide(nodes: [Node], n: Node, md: string) -> string {
     else "<div class=\"card\"><div class=\"h\"><i class=\"fa-solid fa-eye\"></i> Watch for</div><ul>${concatStr(map(\w. "<li>${inline(w)}</li>", watch))}</ul></div>";
   join("\n", [
     "      <section class=\"slide\" data-slide=\"${n.id}\" id=\"${n.id}\">",
-    "        <div class=\"kicker\">${esc(tierName(n.tier))}</div>",
+    "        <div class=\"kicker\">${esc(tierName(n.tier))} · ${esc(bandLabel(n.band))}</div>",
     "        <h2 class=\"slide-title\">${esc(n.title)}</h2>",
     "        <p class=\"ref-can\">${inline(n.can)}</p>",
     "        <div class=\"ref-cols\">",
@@ -222,7 +231,7 @@ export func indexSlide(nodes: [Node]) -> string {
     "        <div class=\"kicker\">Reference</div>",
     "        <h2 class=\"slide-title\">One slide per box, <span class=\"accent\">from the same source</span></h2>",
     "        <div class=\"ref-index\">${concatStr(groups)}</div>",
-    "        <p class=\"foot\">Each slide is generated from <b>lessons/&lt;box&gt;.md</b> and <b>tree/tree.yaml</b>. Add <b>#&lt;box-id&gt;</b> to the address to open one directly.</p>",
+    "        <p class=\"foot\"><b>Core</b> boxes are the minimum for everyone today; each slide says when it's expected. Generated from <b>lessons/&lt;box&gt;.md</b> and <b>tree/tree.yaml</b>. Add <b>#&lt;box-id&gt;</b> to the address to open one directly.</p>",
     "      </section>",
     ""
   ])
