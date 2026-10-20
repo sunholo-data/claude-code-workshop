@@ -165,7 +165,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="top-bar">
     <div class="top-left">
 <img src="../images/logos/sunholo-logo.svg" alt="Sunholo" class="top-logo">
-      <span class="presenter-title">Starter demo</span>
+      <span class="presenter-title">Claude Code workshop</span>
     </div>
     <div class="deck-picker" id="deckPicker">
       <button class="picker-nav" id="pickerPrev" title="Previous deck (↑)"><i class="fas fa-chevron-left"></i></button>
@@ -236,7 +236,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   //   `group`   = optional heading in the jump menu (blocks, acts, appendix).
   // ═══════════════════════════════════════════════════════════════
   const PLAYLIST = [
-    { src: '01-workshop.html', label: 'Claude Code workshop', minutes: 0 },
+    { src: '01-workshop.html', label: 'Claude Code workshop', minutes: 0, group: 'Workshop' },
+    { src: '02-reference.html', label: 'Reference: one slide per box', minutes: 0, group: 'Appendix' },
   ];
 
   // Downloadable PDF for this talk, produced by `node scripts/export-pdf.mjs <folder>`.

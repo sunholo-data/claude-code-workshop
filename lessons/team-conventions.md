@@ -13,9 +13,11 @@ CLAUDE.md points to.
 2. **Predict:** before anyone writes anything, each person writes down privately one kind of
    material they think is fine to give Claude and one they think isn't. Compare as a group.
    Where did you disagree?
-3. Together, write `CONVENTIONS.md` in the place the facilitator names (usually the team's shared
-   repository). **Data handling first**: what's allowed, what isn't, and who to ask when unsure.
-   Quote the group's data rule rather than paraphrasing it.
+3. Together, write the conventions in the shared document the facilitator opens for the group.
+   **Data handling first**: what's allowed, what isn't, and who to ask when unsure. Quote the
+   group's data rule rather than paraphrasing it. Then ask Claude to save a copy as
+   `CONVENTIONS.md` in this workshop folder. In the follow-up it moves into the team's own
+   repository, where everyone's projects can point to it.
 4. Then each person adds one line of their own: a habit, a check, a naming rule, anything you'd
    want a colleague's Claude to follow.
 5. Add one line to your CLAUDE.md (or `CLAUDE.local.md`): *"Follow CONVENTIONS.md."* Ask Claude,

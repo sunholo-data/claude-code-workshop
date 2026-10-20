@@ -26,6 +26,8 @@ repository, but not to its `main`: that only changes through a pull request the 
 
 **Not in a facilitated group?** You won't have permission to push here. Ask Claude to fork the
 repository to your own GitHub account (`gh repo fork --remote`) and push your branch to the fork.
+That needs the GitHub CLI: on Windows too, install it from cli.github.com and sign in with
+`gh auth login` in the terminal pane first.
 
 ## Proof
 

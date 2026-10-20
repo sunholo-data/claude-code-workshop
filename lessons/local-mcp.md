@@ -32,7 +32,8 @@ gcloud auth application-default login \
   --client-id-file=PATH_TO_CLIENT_FILE
 ```
 
-It prints `Credentials saved to file: [PATH]`. Ask Claude to add the server to your practice
+Type it in the terminal pane (**Ctrl+`**), not with `!`: it opens a browser to sign you in, and
+nothing about a sign-in belongs in the conversation. It prints `Credentials saved to file: [PATH]`. Ask Claude to add the server to your practice
 folder's `.mcp.json`: command `uvx`, argument `analytics-mcp`, with that path as
 `GOOGLE_APPLICATION_CREDENTIALS` and your project ID as `GOOGLE_PROJECT_ID`. Restart and check
 `/mcp`.
@@ -48,3 +49,10 @@ folder's `.mcp.json`: command `uvx`, argument `analytics-mcp`, with that path as
 
 A `run_report` result from an allowed property, with the property named, and one sentence on what
 left your laptop to produce it.
+
+## Misconceptions this exposes
+
+- *"It's the same access as the BigQuery connector."* The connector reaches one dataset someone
+  granted you. This server reaches every GA4 property your Google account can open.
+- *"Running it locally keeps the data local."* The server runs on your laptop, but the report it
+  fetches still goes to Claude to answer your question.

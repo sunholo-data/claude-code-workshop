@@ -9,8 +9,10 @@ the whole room's work in their own copy.
 
 1. Start from an up-to-date `main`: ask Claude to switch to `main` and pull.
 2. Ask for a branch named `skill/<your-github-username>`.
-3. Write one small skill in **its own folder**, `.claude/skills/<your-github-username>/SKILL.md`,
-   and change nothing else. Ideas, all things you'd want today:
+3. Write one small skill in **its own folder**,
+   `.claude/skills/<your-github-username>-<skill-name>/SKILL.md` (for example
+   `.claude/skills/mark-explain-diff/`), and change nothing else. The folder name is what everyone
+   will type after `/`, and your username keeps it from clashing with a colleague's. Ideas, all things you'd want today:
    - *explain-diff*: "explain what changed since my last commit, in plain English"
    - *where-was-i*: "summarise my progress.md in three lines"
    - *check-before-push*: "list what's about to be pushed, and anything that looks private"

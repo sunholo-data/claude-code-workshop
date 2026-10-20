@@ -24,13 +24,16 @@ and using one written by someone else.
 ## Layout
 
 ```
-tree/tree.yaml            The skill tree: nodes, prerequisites, outcomes, proof. Source of truth.
+tree/tree.yaml            The skill tree: nodes, bands, blocks, prerequisites, outcomes, proof.
+lessons/<node-id>.md      One page per node: the steps, the proof, the misconceptions.
 docs/agenda.md            The day, block by block, and what each block needs.
 docs/pedagogy.md          How the course teaches, and why.
-lessons/<node-id>.md      One page per node (being written).
+deck/                     01-workshop.html, the facilitator deck; 02-reference.html, one slide per
+                          node; presenter.html, both in one window.
+board/skill-tree.html     The progress board, published as a claude.ai artifact.
+tools/                    build.ail and publish.ail (see "Changing the course").
 samples/                  Generic practice material. Never client data.
-deck/                     The facilitator deck (built with the presentation-template skill), and
-                          02-reference.html: one slide per node, generated from the tree and lessons.
+settings/                 The starter permission rules, one line each on why.
 .claude/skills/workshop-guide/   The skill that walks a learner through the tree.
 overlay.example/          How a group's bespoke configuration is shaped.
 ```
@@ -55,6 +58,38 @@ progress in `progress.md` (not committed). It asks before creating that file; al
 A group's configuration lives outside this repo and is copied into `overlay/` on the day
 (`overlay/` is gitignored). It can require, add or skip nodes, replace sample material, and carry
 the group's own rules — data handling above all. See `overlay.example/`.
+
+## Changing the course
+
+Two sources: `tree/tree.yaml` and `lessons/`. Everything a learner or the room sees about a node
+is built from them, so a change made there reaches every copy:
+
+| Built part | From |
+|---|---|
+| The reference slides (`deck/02-reference.html`) | each lesson's Do, Proof and first two misconceptions; the node's title, band, tier, needs |
+| The skill-tree slide and each block's strip (`deck/01-workshop.html`) | bands, blocks, `predict: group`, and that lesson's Predict step |
+| The board's boxes and blocks (`board/skill-tree.html`) | the nodes and blocks |
+| The bands table and the day's timetable (`docs/agenda.md`) | bands, blocks, their summaries and needs |
+| What the guide sets and checks | the tree and lessons directly, at run time |
+
+To add or change a lesson, edit the lesson (and the node, if it's new), then from the repo root:
+
+```
+ailang run --caps IO,FS tools/build.ail
+```
+
+It checks first and writes nothing if anything disagrees: a node without a lesson or a lesson
+without a node, `needs` naming a missing node, a core or stretch node with no block, two group
+predictions in one block, a lesson with no Do or Proof, a link or image that points nowhere.
+Then republish the board artifact if the nodes changed. To update a hosted copy of the decks:
+
+```
+SITE_DIR=<the site's folder> BOARD_URL=<the group's board> ailang run --caps IO,FS,Env tools/publish.ail
+```
+
+Hand-kept, and so worth a look when a lesson changes: the setup slides and facilitator notes in
+`deck/01-workshop.html`, the board's "Start here" steps, `README.md`, the guide's `SKILL.md`, and
+`settings/README.md` against `settings/starter.json`.
 
 ## Status
 

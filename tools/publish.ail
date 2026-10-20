@@ -1,0 +1,81 @@
+-- Copies the built decks, and the images they show, to a static site that hosts them. Run from
+-- the repository root after tools/build.ail:
+--
+--   SITE_DIR=~/dev/sunholo/presentations/claude-code-workshop \
+--   BOARD_URL=https://claude.ai/artifact/<id> \
+--   ailang run --caps IO,FS,Env tools/publish.ail
+--
+-- For each of deck/01-workshop.html and deck/02-reference.html it writes SITE_DIR/<same name>,
+-- changing only three things, so the hosted copy never drifts from the repo:
+--   ../images/setup/…    becomes images/setup/… (the images are copied next to the decks)
+--   the board link       points at BOARD_URL, this group's board (the repo keeps href="#")
+--   a robots meta line   keeps the hosted copy out of search engines
+-- Other ../ paths (the logo) are left alone: the site keeps its own images/ one level up.
+-- The site's own index.html (its presenter and playlist) is the site's, and is not touched.
+-- It writes files only; committing them, and any pull request, stays with the site's own process.
+
+module tools/publish
+
+import std/fs (readFile, writeFile, fileExists, isDir, mkdirAll, readFileRaw, writeFileBytesResult)
+import std/env (getEnvOr)
+import std/io (println, exit)
+import std/list (map, filter, foldl, length, any)
+import std/string (join, replace, find, substring, length as slen, intToStr, endsWith)
+import std/regex (compile, findAll)
+
+export pure func withRobots(html: string) -> string {
+  let meta = "<meta name=\"robots\" content=\"noindex, nofollow\">";
+  let i = find(html, "<title>");
+  if find(html, meta) >= 0 || i < 0 then html
+  else "${substring(html, 0, i)}${meta}\n${substring(html, i, slen(html))}"
+}
+
+export pure func hosted(html: string, board: string) -> string =
+  withRobots(replace(replace(html, "../images/setup/", "images/setup/"),
+                     "class=\"board-link\" href=\"#\"", "class=\"board-link\" href=\"${board}\""))
+
+-- Every images/setup/<file> a deck refers to.
+func setupImages(html: string) -> [string] =
+  match compile("\\.\\./images/setup/([A-Za-z0-9._-]+)") {
+    Ok(re) => dedupe(map(\m. match m.groups { _ :: g :: _ => g.text, _ => "" }, findAll(re, html))),
+    Err(_) => []
+  }
+
+func dedupe(xs: [string]) -> [string] =
+  foldl(\acc. \x. if x == "" || any(\y. y == x, acc) then acc else acc ++ [x], [], xs)
+
+func copyAll(names: [string], site: string) -> [string] ! {FS} =
+  match names {
+    [] => [],
+    n :: rest => {
+      let failed = match readFileRaw("images/setup/${n}") {
+        Err(e) => ["images/setup/${n}: ${e}"],
+        Ok(b) => match writeFileBytesResult("${site}/images/setup/${n}", b) { Ok(_) => [], Err(e) => ["${site}/images/setup/${n}: ${e}"] }
+      };
+      failed ++ copyAll(rest, site)
+    }
+  }
+
+export func main() -> () ! {IO, FS, Env} {
+  let site = getEnvOr("SITE_DIR", "");
+  let board = getEnvOr("BOARD_URL", "");
+  if site == "" || board == "" then {
+    println("Set SITE_DIR (the folder the decks are served from) and BOARD_URL (this group's progress board).");
+    exit(1)
+  } else if !isDir(site) then { println("${site}: not a folder"); exit(1) }
+  else {
+    let decks = ["01-workshop.html", "02-reference.html"];
+    let htmls = map(\d. readFile("deck/${d}"), decks);
+    let imgs = dedupe(foldl(\acc. \h. acc ++ setupImages(h), [], htmls));
+    let unlinked = filter(\h. find(h, "class=\"board-link\"") >= 0 && find(h, "class=\"board-link\" href=\"#\"") < 0, htmls);
+    if length(unlinked) > 0 then { println("A deck's board link isn't href=\"#\" any more; publish would leave it as it is. Fix the deck first."); exit(1) }
+    else {
+      mkdirAll("${site}/images/setup");
+      writeFile("${site}/01-workshop.html", hosted(readFile("deck/01-workshop.html"), board));
+      writeFile("${site}/02-reference.html", hosted(readFile("deck/02-reference.html"), board));
+      let errs = copyAll(imgs, site);
+      if length(errs) > 0 then { println(join("\n", errs)); exit(1) }
+      else println("${site}: ${join(", ", decks)} and ${intToStr(length(imgs))} images. Review and commit there.")
+    }
+  }
+}

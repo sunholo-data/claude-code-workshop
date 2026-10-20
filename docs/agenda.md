@@ -1,6 +1,6 @@
 # Agenda and what each block needs
 
-A six-hour day plus a follow-up of about two hours, a week later. Times assume 09:00–15:00 with a
+A six-hour day plus a follow-up session a week later. Times assume 09:00–15:00 with a
 30-minute lunch at 12:00 and short breaks on the hour. Every block runs the same way: a demo of at
 most ten minutes, hands-on, then the room compares what happened. Node ids refer to
 [`tree/tree.yaml`](../tree/tree.yaml).
@@ -25,13 +25,15 @@ like it to do, and the email you sign in to Claude with (for the board invite).
 
 Every node in the tree has a `band`, separate from its tier, saying when it's expected:
 
+<!-- bands:begin -->
 | Band | When | Nodes |
 |---|---|---|
-| **core** | The minimum standard: everyone, on the day, in step with the blocks | setup, chat-vs-agent, folders-context, permissions-review, trust-ladder, claude-md, team-conventions, settings-permissions, git-safety-net, clone-branch, use-a-skill, room-pr, connectors, add-mcp, real-task |
-| **stretch** | On the day, for whoever finishes a block's core first | models, context-hygiene, plan-first, settings-tour, skill-anatomy, own-api-key, verify-output, data-files |
-| **homework** | Everyone, before the follow-up (after any unfinished core) | write-a-skill, bigquery-mcp |
-| **follow-up** | Together, in the follow-up | shared-skills-repo, share-skill-pr, protect-main, skill-routing |
-| **advanced** | Extra routes, for anyone who wants more; never expected | hooks, subagents, scheduled, local-mcp, plugin-marketplace |
+| **core** | The minimum standard: everyone, on the day, in step with the blocks | `install`, `git-installed`, `get-workshop`, `chat-vs-agent`, `folders-context`, `permissions-review`, `trust-ladder`, `claude-md`, `team-conventions`, `settings-permissions`, `git-safety-net`, `clone-branch`, `use-a-skill`, `room-pr`, `connectors`, `add-mcp`, `real-task` |
+| **stretch** | On the day, for whoever finishes a block's core first | `plan-first`, `models`, `context-hygiene`, `settings-tour`, `skill-anatomy`, `verify-output`, `data-files` |
+| **homework** | Everyone, before the follow-up (after any unfinished core) | `write-a-skill`, `own-api-key`, `bigquery-mcp` |
+| **follow-up** | Together, in the follow-up | `shared-skills-repo`, `share-skill-pr`, `protect-main`, `skill-routing` |
+| **advanced** | Extra routes, for anyone who wants more; never expected | `hooks`, `subagents`, `scheduled`, `local-mcp`, `plugin-marketplace` |
+<!-- bands:end -->
 
 The core's estimates add up to more than the day's hands-on time; it fits only because several
 nodes run as whole-room blocks. Run each block in step (demo, everyone does the core node), and let
@@ -51,6 +53,7 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 | Organiser | The group's data rule in writing: what may and may not go to a model | |
 | Facilitator | One Developer Knowledge API key per person, restricted to that API, in a project dedicated to the course so they can all be revoked together | |
 | Facilitator | The group overlay in `overlay/` | |
+| Facilitator | One connector everyone has on and the group's data rule allows, for the `connectors` box (a calendar or a shared drive folder are typical) | |
 | Facilitator | Everyone invited to the progress board **by email** from its Share menu, as **Editor**, with link sharing **turned off**. Anyone outside your organisation can save progress only as an email-invited Editor, and only while the board has no public link. Each invitation opened once | |
 | Facilitator | Everyone's GitHub username added to this repository with **Write** access, invitations accepted before the day. `main` is protected by a ruleset: pull requests only, and only admins can merge | |
 | Facilitator | For the homework: a GA4 export in BigQuery (a copy of Google's public sample is enough); a **Web application** OAuth client with redirect `https://claude.ai/api/mcp/auth_callback`, consent screen External in testing with participants as test users; each participant (or their domain) granted MCP Tool User and BigQuery Job User on the project and Data Viewer on that one dataset only; a per-user daily query quota. Send the client ID and secret privately. Test it first with an account holding only those grants, in a chat and in the Code tab | Connectors load when the Desktop app starts: after adding one, quit and reopen it |
@@ -58,16 +61,18 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 
 ## The day
 
-| Time | Block | Nodes | What it needs in the room |
+<!-- day:begin -->
+| Time | Block | Core; stretch | What it needs |
 |---|---|---|---|
-| 09:00 | **Welcome.** The tree on the wall; the self-assessment read back as a distribution, not names. Install triage in parallel. | 0 | Tree printout or slide; the collected self-assessments; a spare person on installs |
-| 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model; then **trust is earned per action**: the same task in Manual, Accept edits and Auto, mapped to the delegation ladder. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned, or downloaded as a ZIP by anyone whose git isn't working yet |
-| 10:45 | **Rules.** CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny. | 2 | A shared document or file for the conventions; the group's data rule; `settings/starter.json` |
-| 11:30 | **Git.** Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`. | 3 | GitHub accounts with Write access to this repository; GitHub sign-in working on each laptop (GitHub CLI on Macs) |
-| 12:00 | Lunch | | |
-| 12:30 | **Skills.** Clone `presentation-template` and build a short deck with its skill; read how the skill is built. Then **one pull request each**: a small skill in its own folder. Around 13:15 the facilitator merges them all on the projector; everyone pulls, types `/`, and runs a colleague's skill. | 4 | github.com/sunholo-data/presentation-template; a browser to view the deck; the facilitator signed in to GitHub to merge |
-| 13:30 | **MCP.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key; how to make your own. | 5 | The lent API keys, handed out individually; `.mcp.json` in this repo |
-| 14:15 | **One real task each**, shown to the room: what you asked, what it did, how you checked it. Self-assessment again. Homework. | capstone | The task ideas from before the day |
+| 09:00 | **1 · Setup.** Who's here, in the chat. Then setup together from the shared screen: the Code tab in Manual, git, the workshop cloned, and the guide started in a new session on it. | `install`, `git-installed`, `get-workshop` | Everyone's Claude sign-in email (board invite) and GitHub username (Write access), collected before the day; a helper for installs in a side room |
+| 09:30 | **2 · Chat to agent.** Files, the folder as context, permissions and diffs; then trust is earned per action: the same task in Manual, Accept edits and Auto. | `chat-vs-agent`, `folders-context`, `permissions-review`, `trust-ladder`; stretch: `plan-first`, `models`, `context-hygiene`, `data-files` | `samples/`, a practice folder with nothing confidential |
+| 10:45 | **3 · Rules.** CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny. | `claude-md`, `team-conventions`, `settings-permissions`; stretch: `settings-tour` | A shared document for the conventions; the group's data rule; `settings/starter.json` |
+| 11:30 | **4 · Git.** Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`. | `git-safety-net`, `clone-branch` | Write access to this repository for everyone; GitHub sign-in working on each laptop (the GitHub CLI on Macs) |
+| 12:00 | *Lunch* | | |
+| 12:30 | **5 · Skills.** Clone `presentation-template` and build a short deck with its skill. Then one pull request each: a small skill in its own folder. The facilitator merges them all on screen; everyone pulls, types `/`, and runs a colleague's skill. | `use-a-skill`, `room-pr`; stretch: `skill-anatomy` | github.com/sunholo-data/presentation-template; the facilitator signed in to GitHub to merge |
+| 13:30 | **6 · Connect.** Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key. | `connectors`, `add-mcp` | One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo |
+| 14:15 | **7 · One real task.** One real task each, shown to the group: what you asked, what it did, how you checked it. Self-assessment again; homework. | `real-task`; stretch: `verify-output` | The task ideas from the Who's here slide |
+<!-- day:end -->
 
 ## Homework
 
@@ -79,7 +84,7 @@ stretch absorb whoever finishes first. The board's room view counts who has reac
 - Optional: one branch node of your choice.
 - Bring one thing the conventions got wrong.
 
-## The follow-up (half a day)
+## The follow-up
 
 The first half finishes the tree as a team; the second half belongs to the group's own decisions,
 which a generic course can't script.
@@ -99,6 +104,6 @@ folder.
 ## After
 
 - Revoke the lent API keys.
-- Remove the group's Write access to this repository, and delete the `practice/` branches.
+- Remove the group's Write access to this repository, and delete the `practice/` and `skill/` branches.
 - Move the group's skills out of `.claude/skills/` into `cohorts/<date>/`, so the next group starts
   with a clean list. Their pull requests stay on GitHub as the record.

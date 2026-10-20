@@ -1,13 +1,15 @@
 # Claude Code workshop — skill tree
 #
-# Source of truth for the workshop. The agenda, the concept map, the pre-session
-# self-assessment and the deck's section order are all read from this file.
+# Source of truth for the workshop, with lessons/<id>.md. tools/build.ail builds the reference
+# slides, the deck's tree slide and block strips, the board's data and the agenda's tables from
+# this file; the workshop-guide skill reads it directly.
 # A client overlay (see README, "Bespoke config") can add nodes, mark nodes
 # required or skipped, and swap sample material — it never edits this file.
 #
 # Each node:
 #   id        stable slug, used by overlays and progress files
-#   tier      0 setup · 1 agent basics · 2 rules · 3 git · 4 skills · 5 connect · 6 share · B branches
+#   tier      0 setup · 1 agent basics · 2 rules · 3 git · 4 skills · 5 connect · 6 share ·
+#             7 team layer · B branches
 #   band      when it's expected, separate from what it teaches:
 #               core       the minimum everyone reaches on the day, in step with the blocks
 #               stretch    on the day, for whoever finishes a block's core first
@@ -23,6 +25,9 @@
 #   can       the outcome, as "I can …" (also the self-assessment question)
 #   proof     what someone else could see that shows it is done
 #
+# Each block: id, title, tagline (a few words for the agenda slide), time, summary (one line for
+# the agenda document), room (what it needs).
+#
 # The trunk (tiers 0–6) ends at `share-skill-pr`; tier 7 is the follow-up session's team layer: everyone in the room
 # contributing to, and pulling from, one shared skills repository. Branches (B)
 # are for people who finish early, and for homework.
@@ -31,15 +36,87 @@ version: 0.1.0
 audience: "People who use Claude (or another AI) in a chat window and have not used an agentic tool."
 end_goal: share-skill-pr
 
+# Words a learner types, copied by hand into several places. tools/build.ail refuses to build
+# if any of those places doesn't hold the phrase exactly, so change it here and there together.
+phrases:
+  - text: "Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then tell me how to start the workshop."
+    in: [deck/01-workshop.html, board/skill-tree.html, README.md, lessons/get-workshop.md]
+  - text: "start the workshop"
+    in: [deck/01-workshop.html, board/skill-tree.html, README.md, lessons/get-workshop.md, .claude/skills/workshop-guide/SKILL.md]
+
+# When a node is expected. `label` is the reference slide's kicker, `when` the agenda's bands
+# table, `note` the board's line under a box's title. The workshop-guide skill's "Bands" section
+# says how the guide treats each one.
+bands:
+  - id: core
+    label: "core: everyone, today"
+    when: "The minimum standard: everyone, on the day, in step with the blocks"
+    note: "The minimum everyone reaches today, in step with the room."
+  - id: stretch
+    label: "stretch: if you finish early"
+    when: "On the day, for whoever finishes a block's core first"
+    note: "For when you've finished this block's core. Not expected of everyone."
+  - id: homework
+    label: "homework: before the follow-up"
+    when: "Everyone, before the follow-up (after any unfinished core)"
+    note: "For everyone, before the follow-up session."
+  - id: follow-up
+    label: "together in the follow-up"
+    when: "Together, in the follow-up"
+    note: "Done together in the follow-up session."
+  - id: advanced
+    label: "advanced: optional extra"
+    when: "Extra routes, for anyone who wants more; never expected"
+    note: "An extra route, if you want more. Never expected."
+
 # The day's blocks, in order. Times are the default agenda; an overlay may move them.
 blocks:
-  - { id: 1, title: "Setup", time: "09:00" }
-  - { id: 2, title: "Chat to agent", time: "09:30" }
-  - { id: 3, title: "Rules", time: "10:45" }
-  - { id: 4, title: "Git", time: "11:30" }
-  - { id: 5, title: "Skills", time: "12:30" }
-  - { id: 6, title: "Connect", time: "13:30" }
-  - { id: 7, title: "One real task", time: "14:15" }
+  - id: 1
+    tagline: "who's here · set up together"
+    title: "Setup"
+    time: "09:00"
+    summary: "Who's here, in the chat. Then setup together from the shared screen: the Code tab in Manual, git, the workshop cloned, and the guide started in a new session on it."
+    room: "Everyone's Claude sign-in email (board invite) and GitHub username (Write access), collected before the day; a helper for installs in a side room"
+  - id: 2
+    tagline: "files, diffs, trust per action"
+    title: "Chat to agent"
+    time: "09:30"
+    summary: "Files, the folder as context, permissions and diffs; then trust is earned per action: the same task in Manual, Accept edits and Auto."
+    room: "`samples/`, a practice folder with nothing confidential"
+  - id: 3
+    tagline: "CLAUDE.md, our conventions, allow · ask · deny"
+    title: "Rules"
+    time: "10:45"
+    summary: "CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny."
+    room: "A shared document for the conventions; the group's data rule; `settings/starter.json`"
+  - id: 4
+    tagline: "undo, then clone, branch, push"
+    title: "Git"
+    time: "11:30"
+    summary: "Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`."
+    room: "Write access to this repository for everyone; GitHub sign-in working on each laptop (the GitHub CLI on Macs)"
+  - id: 5
+    tagline: "use one, then one pull request each"
+    title: "Skills"
+    time: "12:30"
+    summary: "Clone `presentation-template` and build a short deck with its skill. Then one pull request each: a small skill in its own folder. The facilitator merges them all on screen; everyone pulls, types `/`, and runs a colleague's skill."
+    room: "github.com/sunholo-data/presentation-template; the facilitator signed in to GitHub to merge"
+  - id: 6
+    tagline: "connect instead of paste"
+    title: "Connect"
+    time: "13:30"
+    summary: "Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key."
+    room: "One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo"
+  - id: 7
+    tagline: "each, shown to the group · homework"
+    title: "One real task"
+    time: "14:15"
+    summary: "One real task each, shown to the group: what you asked, what it did, how you checked it. Self-assessment again; homework."
+    room: "The task ideas from the Who's here slide"
+
+# Not blocks: shown in the agenda's day table only.
+breaks:
+  - { time: "12:00", title: "Lunch" }
 
 nodes:
   # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
@@ -117,7 +194,7 @@ nodes:
     needs: [permissions-review]
     minutes: 25
     can: "I can say which of Claude's actions I approve every time, which I let through, and which it may never do, and why each sits where it does."
-    proof: "The same task run in Manual, Accept edits and Auto, with a count of what asked in each, and the one action that still asked in Auto."
+    proof: "The same task run in Manual, Accept edits and Auto, with a count of what asked in each, and what Auto did when asked to push."
   - id: models
     tier: 1
     band: stretch
@@ -144,7 +221,7 @@ nodes:
     block: 3
     predict: group
     title: CLAUDE.md — standing instructions
-    needs: [plan-first, folders-context]
+    needs: [folders-context]
     minutes: 20
     can: "I can write a CLAUDE.md and watch it change what Claude does."
     proof: "Before/after: the same request, different behaviour, because of one rule."
@@ -260,13 +337,12 @@ nodes:
     proof: "An answer that came from the MCP tool (Google Developer Knowledge), not from Claude's memory."
   - id: own-api-key
     tier: 5
-    band: stretch
-    block: 6
+    band: homework
     title: Make your own API key
     needs: [add-mcp]
     minutes: 15
     can: "I can create a restricted API key in my own Google Cloud project and swap it in for the one I was lent."
-    proof: "The server still works after the lent key is revoked."
+    proof: "The server answers with your own key in settings.local.json in place of the lent one."
   - id: bigquery-mcp
     tier: 5
     band: homework
@@ -274,7 +350,7 @@ nodes:
     needs: [add-mcp, team-conventions]
     minutes: 30
     can: "I can connect Claude to Google's BigQuery server, query a GA4 export read-only, and say which data I was allowed to reach and why."
-    proof: "A read-only query result from the GA4 sample, and one sentence on what left Google to produce it."
+    proof: "A query result from the GA4 sample through the connector, and one sentence on what left Google to produce it."
   - id: shared-skills-repo
     tier: 6
     band: follow-up

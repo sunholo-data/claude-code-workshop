@@ -3,7 +3,11 @@
 The lent key stops working after the course. This makes one you own. You need a Google account
 and a Google Cloud project; your organisation may already have one you should use. Ask first.
 
-## In the browser (Cloud console)
+## Do
+
+1. **Predict:** when you swap your own key in, what will change for Claude, and what for you?
+
+### In the browser (Cloud console)
 
 1. Open **console.cloud.google.com** and choose the project at the top (or **New project**).
 2. **APIs & Services → Library**, search for **Developer Knowledge API**, click **Enable**.
@@ -13,7 +17,9 @@ and a Google Cloud project; your organisation may already have one you should us
 5. Open `.claude/settings.local.json` yourself and replace the lent key with yours (never paste a
    key into the chat). Start a new session and check `/mcp`.
 
-## Or from the command line
+### Or from the command line
+
+Run these in the terminal pane (**Ctrl+`**), after signing in there with `gcloud auth login`.
 
 ```
 gcloud services enable developerknowledge.googleapis.com --project=PROJECT_ID
@@ -35,4 +41,11 @@ Source: developers.google.com/knowledge/mcp
 
 ## Proof
 
-The server still answers after the lent key is revoked.
+The server answers with your own key in `settings.local.json` in place of the lent one.
+
+## Misconceptions this exposes
+
+- *"A new key means Claude can do more."* Nothing changes for Claude: the same server, the same
+  tools. What changes is who the use is billed to and who can switch it off: you.
+- *"An unrestricted key is simpler."* It is, for anyone who finds it: restricted to one API, a
+  leaked key can do one thing.

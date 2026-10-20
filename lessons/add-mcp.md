@@ -9,10 +9,14 @@ and is revoked after the course. Making your own is the next node, [own-api-key]
 
 ## Do
 
-1. Ask Claude: *"Create .claude/settings.local.json with an env entry GOOGLE_DK_API_KEY set to
-   PASTE-KEY-HERE."* Don't paste the key into the chat: anything in the chat is sent to the model.
-2. Open that file yourself and replace `PASTE-KEY-HERE` with your key. In Finder, the `.claude`
-   folder is hidden: press **⌘⇧.** (Command, Shift, full stop) to show it. Save.
+1. Ask Claude: *"If .claude/settings.local.json doesn't exist, create it with an env entry
+   GOOGLE_DK_API_KEY set to PASTE-KEY-HERE. If it does exist, don't touch it: tell me what to add."*
+   Claude can see whether the file is there but isn't allowed to read it, which is why it asks you
+   to edit an existing one. Don't paste the key into the chat: anything in the chat is sent to the
+   model.
+2. Open that file yourself and put your key in place of `PASTE-KEY-HERE`. If the file was already
+   there, add the `env` part Claude gave you, keeping what's in it. In Finder, the `.claude` folder
+   is hidden: press **⌘⇧.** (Command, Shift, full stop) to show it. Save.
 3. Check it can't reach GitHub: send `!git check-ignore -v .claude/settings.local.json`. It names
    the `.gitignore` line that keeps the file private. Claude itself can't read the file: the
    repo's settings deny it, so the key never enters the chat.

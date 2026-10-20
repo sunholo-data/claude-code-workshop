@@ -32,7 +32,7 @@ you run the command; without it, Claude decides what to run and asks you first.
 
 ## Proof
 
-`git --version` prints a version, and the facilitator has your GitHub username.
+`!git --version` in the Code tab prints a version, and the facilitator has your GitHub username.
 
 ## Misconceptions this exposes
 

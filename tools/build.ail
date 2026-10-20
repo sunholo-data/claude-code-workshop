@@ -1,0 +1,556 @@
+-- Builds every generated part of the workshop from two sources: tree/tree.yaml and
+-- lessons/<id>.md. Run from the repository root after editing either:
+--
+--   ailang run --caps IO,FS tools/build.ail
+--
+-- It checks the sources first and writes nothing if a check fails. Then it rewrites what sits
+-- between paired markers (<!-- name:begin --> … <!-- name:end -->, or /*name:begin*/ in a script):
+--   deck/02-reference.html  reference      one slide per node, plus an index
+--   deck/01-workshop.html   tree           the skill-tree slide: tiers, core and stretch marked
+--                           block:2 … :7   each block's strip: finish these, done early, regroup,
+--                                          and the group prediction (predict: group in the tree)
+--   board/skill-tree.html   nodes, blocks  the progress board's data
+--   docs/agenda.md          bands, day     the bands table and the day's timetable
+-- Everything outside the markers (styles, navigation, hand-written slides, the board's code) is
+-- hand-kept. Each reference slide's id is its node id, so 02-reference.html#trust-ladder opens it.
+--
+-- From a lesson it takes: the "## Do" section (steps, prompts, sub-headings; images dropped),
+-- "## Proof", and the first two bullets of "## Misconceptions this exposes". From the tree:
+-- title, tier, band, block, can, needs, proof. Edit those sources, never the generated parts.
+-- tools/publish.ail copies the result to a hosting site.
+
+module tools/build
+
+import std/yaml (decode as yamlDecode)
+import std/json (Json, get, asString, asArray, asNumber, encode, js, ja, jo, kv)
+import std/fs (readFile, writeFile, fileExists, listDir)
+import std/io (println, exit)
+import std/list (map, filter, foldl, reverse, length, take, concat, head_or, findIndex, flatMap, any)
+import std/string (join, trim, split, replace, startsWith, endsWith, find, substring, length as slen, intToStr, floatToStr, stringToInt)
+import std/regex (compile, replaceAll, isMatch, findAll)
+
+-- ── the tree ───────────────────────────────────────────────────────────────
+
+type Node = { id: string, tier: string, band: string, block: string, predict: string, title: string, can: string, proof: string, needs: [string] }
+
+type Block = { id: string, title: string, tagline: string, time: string, summary: string, room: string }
+
+type Break = { time: string, title: string }
+
+type Band = { id: string, label: string, when: string, note: string }
+
+func strOf(j: Json, k: string) -> string =
+  match get(j, k) {
+    Some(v) => match asString(v) {
+      Some(s) => s,
+      None => match asNumber(v) {
+        Some(n) => floatToStr(n),
+        None => ""
+      }
+    },
+    None => ""
+  }
+
+func strsOf(j: Json, k: string) -> [string] =
+  match get(j, k) {
+    Some(v) => match asArray(v) {
+      Some(xs) => filter(\s. s != "", map(\x. match asString(x) { Some(s) => s, None => "" }, xs)),
+      None => []
+    },
+    None => []
+  }
+
+func nodeOf(j: Json) -> Node =
+  { id: strOf(j, "id"), tier: strOf(j, "tier"), band: strOf(j, "band"), block: strOf(j, "block"), predict: strOf(j, "predict"), title: strOf(j, "title"), can: strOf(j, "can"), proof: strOf(j, "proof"), needs: strsOf(j, "needs") }
+
+func blockOf(j: Json) -> Block = { id: strOf(j, "id"), title: strOf(j, "title"), tagline: strOf(j, "tagline"), time: strOf(j, "time"), summary: strOf(j, "summary"), room: strOf(j, "room") }
+
+func bandOf(j: Json) -> Band = { id: strOf(j, "id"), label: strOf(j, "label"), when: strOf(j, "when"), note: strOf(j, "note") }
+
+func breakOf(j: Json) -> Break = { time: strOf(j, "time"), title: strOf(j, "title") }
+
+func elem(x: string, xs: [string]) -> bool = any(\y. y == x, xs)
+
+func flat(xss: [[string]]) -> [string] = foldl(\a. \b. a ++ b, [], xss)
+
+-- ── checks: every way the sources can disagree with each other ─────────────
+
+-- Paths a lesson links to or shows (markdown links and images), relative to lessons/.
+func refsIn(md: string) -> [string] =
+  match compile("\\]\\(([^)#\\s]+)") {
+    Ok(re) => filter(\p. !startsWith(p, "http") && !startsWith(p, "mailto:"),
+                map(\m. head_or(map(\g. g.text, drop1(m.groups)), ""), findAll(re, md))),
+    Err(_) => []
+  }
+
+func drop1(xs: [a]) -> [a] = match xs { [] => [], _ :: rest => rest }
+
+-- lessons/<p>, with one leading ../ resolved to the repository root.
+func resolve(p: string) -> string =
+  if startsWith(p, "../") then substring(p, 3, slen(p)) else "lessons/${p}"
+
+func nodeErrors(nodes: [Node], blockIds: [string], bandIds: [string], n: Node) -> [string] {
+  let ids = map(\m. m.id, nodes);
+  let dup = if length(filter(\m. m.id == n.id, nodes)) > 1 then ["${n.id}: id used twice"] else [];
+  let needs = map(\x. "${n.id}: needs ${x}, which isn't a node", filter(\x. !elem(x, ids), n.needs));
+  let band = if elem(n.band, bandIds) then [] else ["${n.id}: band '${n.band}' isn't one of ${join(", ", bandIds)}"];
+  let onDay = n.band == "core" || n.band == "stretch";
+  let block =
+    if onDay && !elem(n.block, blockIds) then ["${n.id}: ${n.band} needs a block from the blocks list (has '${n.block}')"]
+    else if !onDay && n.block != "" then ["${n.id}: only core and stretch nodes have a block"]
+    else [];
+  let fields = map(\f. "${n.id}: no ${f}", filter(\f. f != "", [if n.title == "" then "title" else "", if n.can == "" then "can" else "", if n.proof == "" then "proof" else ""]));
+  flat([dup, needs, band, block, fields])
+}
+
+func lessonErrors(n: Node, md: string, missing: [string]) -> [string] {
+  let doS = filter(\l. trim(l) != "", section(md, "Do"));
+  let proofS = filter(\l. trim(l) != "", section(md, "Proof"));
+  let secs = flat([
+    if length(doS) == 0 then ["lessons/${n.id}.md: no ## Do section"] else [],
+    if length(proofS) == 0 then ["lessons/${n.id}.md: no ## Proof section"] else []
+  ]);
+  let refs = map(\p. "lessons/${n.id}.md: links to ${p}, which doesn't exist", missing);
+  let pq = if n.predict == "group" && predictQ(md) == "" then ["${n.id}: predict: group, but its lesson has no **Predict** step"] else [];
+  flat([secs, refs, pq])
+}
+
+func blockErrors(nodes: [Node], b: Block) -> [string] {
+  let groups = filter(\n. n.block == b.id && n.predict == "group", nodes);
+  let core = filter(\n. n.block == b.id && n.band == "core", nodes);
+  flat([
+    if length(groups) > 1 then ["block ${b.id}: ${intToStr(length(groups))} nodes have predict: group; one per block"] else [],
+    if length(core) == 0 then ["block ${b.id}: no core nodes"] else [],
+    if b.summary == "" then ["block ${b.id}: no summary (the agenda's day table needs one)"] else []
+  ])
+}
+
+func lacking(files: [string], t: string) -> [string] ! {FS} =
+  match files {
+    [] => [],
+    f :: rest => (if !fileExists(f) || find(readFile(f), t) < 0 then [f] else []) ++ lacking(rest, t)
+  }
+
+-- Hand-kept copies of a phrase: each file named must hold it exactly.
+func phraseErrors(ps: [Json]) -> [string] ! {FS} =
+  match ps {
+    [] => [],
+    p :: rest => {
+      let t = strOf(p, "text");
+      let bad = lacking(strsOf(p, "in"), t);
+      map(\f. "${f}: doesn't hold \"${t}\" exactly, as tree/tree.yaml's phrases say it should", bad) ++ phraseErrors(rest)
+    }
+  }
+
+-- ── the board's data and the agenda's tables ───────────────────────────────
+
+func nodeJson(n: Node) -> Json =
+  jo([kv("id", js(n.id)), kv("tier", js(n.tier)), kv("band", js(n.band)), kv("block", js(n.block)),
+      kv("predict", js(n.predict)), kv("title", js(n.title)), kv("needs", ja(map(js, n.needs))),
+      kv("can", js(n.can)), kv("proof", js(n.proof))])
+
+func blockJson(b: Block) -> Json = jo([kv("id", js(b.id)), kv("title", js(b.title)), kv("time", js(b.time))])
+
+export func bandsTable(nodes: [Node], bl: [Band]) -> string {
+  let row = \b. "| **${b.id}** | ${b.when} | ${join(", ", map(\n. "`${n.id}`", filter(\n. n.band == b.id, nodes)))} |";
+  "| Band | When | Nodes |\n|---|---|---|\n${join("\n", map(row, bl))}\n"
+}
+
+-- The deck's agenda slide: one row per block, breaks in time order.
+export func agendaHtml(blks: [Block], brks: [Break]) -> string {
+  let row = \b. "          <span class=\"tm\">${b.time}</span><span class=\"it\">${esc(b.title)} <span>· ${esc(b.tagline)}</span></span><span class=\"tr\">block ${b.id}</span>";
+  let brk = \k. "          <span class=\"tm brk\">${k.time}</span><span class=\"it brk\">${esc(k.title)}</span><span class=\"tr\"></span>";
+  let st = foldl(\acc. \b. {
+      let due = filter(\k. !elem(k.time, acc.done) && k.time <= b.time, brks);
+      { rows: acc.rows ++ map(brk, due) ++ [row(b)], done: acc.done ++ map(\k. k.time, due) }
+    }, { rows: [], done: [] }, blks);
+  "${join("\n", st.rows)}\n"
+}
+
+func chipsOf(nodes: [Node], band: string) -> string = concatStr(map(chip, filter(\n. n.band == band, nodes)))
+
+func liOf(nodes: [Node], band: string) -> string =
+  concatStr(map(\n. "<li>${esc(n.title)}</li>", filter(\n. n.band == band, nodes)))
+
+-- The deck's "how far today" cards and homework slide, each a band's boxes.
+func bandParts(nodes: [Node]) -> [(string, string)] = [
+  ("band:stretch", "              Optional, never a race.<br>${chipsOf(nodes, "stretch")}\n"),
+  ("band:homework", "              Any core you didn't finish first, then:<br>${chipsOf(nodes, "homework")}\n"),
+  ("band:advanced", "              For anyone at home in code. Never expected.<br>${chipsOf(nodes, "advanced")}\n"),
+  ("homework", "              <li><b>Any core box you didn't finish</b>, first</li>${liOf(nodes, "homework")}<li>One thing our conventions got wrong</li>\n"),
+  ("followup", "              <li>Homework errors, fixed together</li>${liOf(nodes, "follow-up")}\n")
+]
+
+func ids(ns: [Node]) -> string = join(", ", map(\n. "`${n.id}`", ns))
+
+export func dayTable(nodes: [Node], blks: [Block], brks: [Break]) -> string {
+  let blockRow = \b. {
+    let ns = filter(\n. n.block == b.id, nodes);
+    let core = filter(\n. n.band == "core", ns);
+    let st = filter(\n. n.band == "stretch", ns);
+    let stTxt = if length(st) == 0 then "" else "; stretch: ${ids(st)}";
+    "| ${b.time} | **${b.id} · ${b.title}.** ${b.summary} | ${ids(core)}${stTxt} | ${b.room} |"
+  };
+  -- A break goes before the first block that starts at or after it.
+  let st = foldl(\acc. \b. {
+      let due = filter(\k. !elem(k.time, acc.done) && k.time <= b.time, brks);
+      { rows: acc.rows ++ map(\k. "| ${k.time} | *${k.title}* | | |", due) ++ [blockRow(b)], done: acc.done ++ map(\k. k.time, due) }
+    }, { rows: [], done: [] }, blks);
+  "| Time | Block | Core; stretch | What it needs |\n|---|---|---|---|\n${join("\n", st.rows)}\n"
+}
+
+-- What a band says where: the reference kicker, the agenda's "When" column. From the tree.
+func bandField(bl: [Band], id: string, f: (Band) -> string) -> string =
+  head_or(map(f, filter(\b. b.id == id, bl)), id)
+
+func tierName(t: string) -> string =
+  if t == "0" then "Tier 0 · setup"
+  else if t == "1" then "Tier 1 · chat to agent"
+  else if t == "2" then "Tier 2 · rules"
+  else if t == "3" then "Tier 3 · git"
+  else if t == "4" then "Tier 4 · skills"
+  else if t == "5" then "Tier 5 · connect"
+  else if t == "6" then "Tier 6 · share"
+  else if t == "7" then "Tier 7 · team layer"
+  else "Branch"
+
+-- ── text ───────────────────────────────────────────────────────────────────
+
+export pure func esc(s: string) -> string =
+  replace(replace(replace(s, "&", "&amp;"), "<", "&lt;"), ">", "&gt;")
+
+func rx(p: string, s: string, r: string) -> string =
+  match compile(p) { Ok(re) => replaceAll(re, s, r), Err(_) => s }
+
+-- Inline markdown: links keep their text, then code, bold, italic. Escaped first.
+func inline(s: string) -> string {
+  let a = esc(s);
+  let b = rx("\\[([^\\]]+)\\]\\([^)]+\\)", a, "$1");
+  let c = rx("`([^`]+)`", b, "<code>$1</code>");
+  let d = rx("\\*\\*([^*]+)\\*\\*", c, "<b>$1</b>");
+  rx("\\*([^*]+)\\*", d, "<i>$1</i>")
+}
+
+-- ── a lesson's sections ────────────────────────────────────────────────────
+
+-- The lines under "## <name>", up to the next "## " heading.
+func section(md: string, name: string) -> [string] {
+  let lines = split(md, "\n");
+  let st = foldl(\acc. \l.
+      if startsWith(l, "## ") then { inside: trim(substring(l, 3, slen(l))) == name, out: acc.out }
+      else if acc.inside then { inside: true, out: [l] ++ acc.out }
+      else acc,
+    { inside: false, out: [] }, lines);
+  reverse(st.out)
+}
+
+-- A piece of the Do section. k: "step" | "para" | "head" | "quote" | "code" | "cont"
+-- ("cont": an indented paragraph after a prompt or code, still part of the step above)
+type Piece = { k: string, t: string }
+
+type PState = { bs: [Piece], blank: bool, code: bool }
+
+func isStep(l: string) -> bool = match compile("^[0-9]+\\.\\s") { Ok(re) => isMatch(re, l), Err(_) => false }
+
+func stepText(l: string) -> string = rx("^[0-9]+\\.\\s+", l, "")
+
+func push(st: PState, b: Piece) -> PState = { bs: [b] ++ st.bs, blank: false, code: st.code }
+
+-- Add text to the newest block, with a separator.
+func extend(st: PState, sep: string, t: string) -> PState =
+  match st.bs {
+    [] => push(st, { k: "para", t: t }),
+    b :: rest => { bs: [{ k: b.k, t: "${b.t}${sep}${t}" }] ++ rest, blank: false, code: st.code }
+  }
+
+func lastKind(st: PState) -> string = match st.bs { [] => "", b :: _ => b.k }
+
+func lastEmpty(st: PState) -> bool = match st.bs { [] => false, b :: _ => b.t == "" }
+
+func step(st: PState, raw: string) -> PState {
+  let t = trim(raw);
+  let indented = startsWith(raw, " ");
+  if startsWith(t, "```") then
+    (if st.code then { bs: st.bs, blank: false, code: false }
+     else { bs: [{ k: "code", t: "" }] ++ st.bs, blank: false, code: true })
+  else if st.code then
+    (if lastKind(st) == "code" && lastEmpty(st) then extend(st, "", t) else extend(st, "\n", t))
+  else if t == "" then { bs: st.bs, blank: true, code: false }
+  else if startsWith(t, "![") then st
+  else if isStep(t) && !indented then push(st, { k: "step", t: stepText(t) })
+  else if startsWith(t, "### ") then push(st, { k: "head", t: substring(t, 4, slen(t)) })
+  else if startsWith(t, "> ") || t == ">" then
+    { let q = trim(substring(t, 1, slen(t))); if lastKind(st) == "quote" && !st.blank then extend(st, " ", q) else push(st, { k: "quote", t: q }) }
+  else if startsWith(t, "- ") && indented then extend(st, "\n• ", substring(t, 2, slen(t)))
+  else if indented then
+    (if lastKind(st) == "step" || ((lastKind(st) == "para" || lastKind(st) == "cont") && !st.blank) then extend(st, " ", t)
+     else if lastKind(st) == "code" || lastKind(st) == "quote" || lastKind(st) == "cont" then push(st, { k: "cont", t: t })
+     else push(st, { k: "para", t: t }))
+  else if lastKind(st) == "para" && !st.blank then extend(st, " ", t)
+  else push(st, { k: "para", t: t })
+}
+
+export func pieces(lines: [string]) -> [Piece] =
+  reverse(foldl(\st. \l. step(st, l), { bs: [], blank: false, code: false }, lines).bs)
+
+func renderStep(t: string) -> string =
+  join("<br>", map(\p. inline(p), split(t, "\n")))
+
+-- Consecutive steps share one <ol>; a prompt or code between steps stays inside the list item
+-- before it, so numbering carries on.
+func renderPieces(bs: [Piece]) -> string {
+  let st = foldl(\acc. \b.
+      if b.k == "step" then
+        { out: "${acc.out}${if acc.open then "</li>" else "<ol>"}<li>${renderStep(b.t)}", open: true }
+      else if (b.k == "quote" || b.k == "code") && acc.open then
+        { out: "${acc.out}<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>", open: true }
+      else if b.k == "cont" && acc.open then
+        { out: "${acc.out}<p>${inline(b.t)}</p>", open: true }
+      else {
+        let pre = if acc.open then "</li></ol>" else "";
+        let body =
+          if b.k == "head" then "<p class=\"ref-h\">${inline(b.t)}</p>"
+          else if b.k == "quote" || b.k == "code" then "<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>"
+          else "<p>${inline(b.t)}</p>";
+        { out: "${acc.out}${pre}${body}", open: false }
+      },
+    { out: "", open: false }, bs);
+  if st.open then "${st.out}</li></ol>" else st.out
+}
+
+-- Paragraph text of a short section, joined.
+func prose(lines: [string]) -> string =
+  trim(join(" ", filter(\l. !startsWith(trim(l), "!["), map(\l. trim(l), lines))))
+
+-- The first n "- " bullets, continuation lines folded in.
+func bullets(lines: [string], n: int) -> [string] {
+  let bs = foldl(\acc. \l.
+      if startsWith(l, "- ") then [substring(l, 2, slen(l))] ++ acc
+      else if trim(l) != "" then match acc { [] => acc, b :: rest => ["${b} ${trim(l)}"] ++ rest }
+      else acc,
+    [], lines);
+  take(n, reverse(bs))
+}
+
+-- ── slides ─────────────────────────────────────────────────────────────────
+
+func titleOf(nodes: [Node], id: string) -> string =
+  head_or(map(\n. n.title, filter(\n. n.id == id, nodes)), id)
+
+func link(id: string, text: string) -> string = "<a href=\"#${id}\">${esc(text)}</a>"
+
+export func slide(nodes: [Node], bl: [Band], n: Node, md: string) -> string {
+  let doHtml = renderPieces(pieces(section(md, "Do")));
+  let proof = prose(section(md, "Proof"));
+  let watch = bullets(section(md, "Misconceptions this exposes"), 2);
+  let needs = if length(n.needs) == 0 then "nothing" else join(" · ", map(\x. link(x, titleOf(nodes, x)), n.needs));
+  let watchHtml = if length(watch) == 0 then ""
+    else "<div class=\"card\"><div class=\"h\"><i class=\"fa-solid fa-eye\"></i> Watch for</div><ul>${concatStr(map(\w. "<li>${inline(w)}</li>", watch))}</ul></div>";
+  join("\n", [
+    "      <section class=\"slide\" data-slide=\"${n.id}\" id=\"${n.id}\">",
+    "        <div class=\"kicker\">${esc(tierName(n.tier))} · ${esc(bandField(bl, n.band, \b. b.label))}</div>",
+    "        <h2 class=\"slide-title\">${esc(n.title)}</h2>",
+    "        <p class=\"ref-can\">${inline(n.can)}</p>",
+    "        <div class=\"ref-cols\">",
+    "          <div class=\"card ref-do\"><div class=\"h\"><i class=\"fa-solid fa-list-ol\"></i> Do</div>${doHtml}</div>",
+    "          <div class=\"ref-side\">",
+    "            <div class=\"card hot\"><div class=\"h\"><i class=\"fa-solid fa-check\"></i> Proof</div><div class=\"s\">${inline(proof)}</div></div>",
+    "            ${watchHtml}",
+    "            <p class=\"ref-meta\">Needs: ${needs}<br>Source: lessons/${n.id}.md · <a href=\"#index\">all boxes</a></p>",
+    "          </div>",
+    "        </div>",
+    "      </section>",
+    ""
+  ])
+}
+
+func concatStr(xs: [string]) -> string = join("", xs)
+
+func tierGroup(nodes: [Node], t: string) -> string {
+  let ns = filter(\n. n.tier == t, nodes);
+  if length(ns) == 0 then "" else "<h3>${esc(tierName(t))}</h3>${concatStr(map(\n. "<p>${link(n.id, n.title)}</p>", ns))}"
+}
+
+export func indexSlide(nodes: [Node]) -> string {
+  let tiers = ["0", "1", "2", "3", "4", "5", "6", "7", "B"];
+  let groups = map(\t. tierGroup(nodes, t), tiers);
+  join("\n", [
+    "      <section class=\"slide active\" data-slide=\"index\" id=\"index\">",
+    "        <div class=\"kicker\">Reference</div>",
+    "        <h2 class=\"slide-title\">One slide per box, <span class=\"accent\">from the same source</span></h2>",
+    "        <div class=\"ref-index\">${concatStr(groups)}</div>",
+    "        <p class=\"foot\"><b>Core</b> boxes are the minimum for everyone today; each slide says when it's expected. Generated from <b>lessons/&lt;box&gt;.md</b> and <b>tree/tree.yaml</b>. Add <b>#&lt;box-id&gt;</b> to the address to open one directly.</p>",
+    "      </section>",
+    ""
+  ])
+}
+
+func ordered(nodes: [Node]) -> [Node] =
+  flatMap(\t. filter(\n. n.tier == t, nodes), ["0", "1", "2", "3", "4", "5", "6", "7", "B"])
+
+-- Replace what sits between <!-- name:begin --> and <!-- name:end -->.
+export func splice(frame: string, name: string, body: string) -> Option[string] =
+  spliceWith(frame, "<!-- ${name}:begin -->", "<!-- ${name}:end -->", body)
+
+-- The same, between /*name:begin*/ and /*name:end*/, for data inside a script.
+func spliceJs(frame: string, name: string, body: string) -> Option[string] =
+  spliceWith(frame, "/*${name}:begin*/", "/*${name}:end*/", body)
+
+func spliceWith(frame: string, b: string, e: string, body: string) -> Option[string] {
+  let i = find(frame, b);
+  let j = find(frame, e);
+  if i < 0 || j < i then None
+  else Some("${substring(frame, 0, i + slen(b))}\n${body}${substring(frame, j, slen(frame))}")
+}
+
+-- ── the main deck: skill-tree slide and block strips ───────────────────────
+
+func chipClass(b: string) -> string =
+  if b == "core" then "chip core"
+  else if b == "stretch" then "chip st"
+  else if b == "advanced" then "chip adv"
+  else "chip later"
+
+func chip(n: Node) -> string = "<span class=\"${chipClass(n.band)}\">${esc(n.title)}</span>"
+
+func tierRow(nodes: [Node], t: string, label: string) -> string {
+  let ns = filter(\n. n.tier == t, nodes);
+  if length(ns) == 0 then ""
+  else "<div class=\"tier\"><span class=\"tn\">${if t == "B" then "+" else t}</span><span class=\"tl\">${esc(label)}</span>${concatStr(map(chip, ns))}</div>"
+}
+
+export func treeHtml(nodes: [Node]) -> string {
+  let rows = [("0", "Setup"), ("1", "Chat → agent"), ("2", "Rules"), ("3", "Git"), ("4", "Skills"), ("5", "Connect"), ("6", "Share"), ("7", "Team layer"), ("B", "Branches")];
+  let body = concatStr(map(\r. match r { (t, l) => tierRow(nodes, t, l) }, rows));
+  "        <div class=\"tree\">${body}</div>\n        <p class=\"treekey\"><span class=\"chip core\">core</span> everyone, today <span class=\"chip st\">stretch</span> if you finish early <span class=\"chip later\">later</span> homework or follow-up <span class=\"chip adv\">advanced</span> optional</p>\n"
+}
+
+-- The text after "Predict:" in the lesson's Do step that holds it.
+export func predictQ(md: string) -> string {
+  let steps = filter(\p. p.k == "step" && find(p.t, "**Predict") >= 0, pieces(section(md, "Do")));
+  match steps {
+    [] => "",
+    p :: _ => {
+      let t = p.t;
+      let i = find(t, "Predict");
+      let rest = substring(t, i + 7, slen(t));
+      let r2 = if startsWith(rest, ":**") then substring(rest, 3, slen(rest)) else if startsWith(rest, "**") then substring(rest, 2, slen(rest)) else rest;
+      trim(head_or(split(r2, "\n"), r2))
+    }
+  }
+}
+
+export func strip(b: Block, nodes: [Node], q: string) -> string {
+  let ns = filter(\n. n.block == b.id, nodes);
+  let core = filter(\n. n.band == "core", ns);
+  let st = filter(\n. n.band == "stretch", ns);
+  let early = if length(st) == 0 then "help someone, or pick an advanced box" else concatStr(map(chip, st));
+  let pq = if q == "" then "" else "<span class=\"bk-row\"><b>Predict together, in the chat:</b> ${inline(q)}</span>";
+  "        <div class=\"blockstrip\"><span class=\"bk\">Block ${b.id} · ${esc(b.title)}</span>${pq}<span class=\"bk-row\"><b>Finish:</b> ${concatStr(map(chip, core))} <b>Done early:</b> ${early}</span><span class=\"bk-row bk-regroup\">We regroup when the board shows most of us have finished block ${b.id}.</span></div>\n"
+}
+
+-- ── shell ──────────────────────────────────────────────────────────────────
+
+func objsOf(tree: Json, k: string) -> [Json] =
+  match get(tree, k) { Some(v) => match asArray(v) { Some(xs) => xs, None => [] }, None => [] }
+
+-- Splice each (marker, body) into the frame, in turn; Err(marker) if one is missing.
+func spliceAll(frame: string, parts: [(string, string)]) -> Result[string, string] =
+  foldl(\acc. \p. match acc {
+      Err(e) => Err(e),
+      Ok(f) => match p { (name, body) => match splice(f, name, body) { Some(out) => Ok(out), None => Err(name) } }
+    }, Ok(frame), parts)
+
+func spliceAllJs(frame: string, parts: [(string, string)]) -> Result[string, string] =
+  foldl(\acc. \p. match acc {
+      Err(e) => Err(e),
+      Ok(f) => match p { (name, body) => match spliceJs(f, name, body) { Some(out) => Ok(out), None => Err(name) } }
+    }, Ok(frame), parts)
+
+func lessonFiles() -> [string] ! {FS} =
+  map(\f. substring(f, 0, slen(f) - 3), filter(\f. endsWith(f, ".md"), listDir("lessons")))
+
+-- A lesson's links and images that point at nothing.
+func missingRefs(md: string) -> [string] ! {FS} =
+  filter(\p. !fileExists(resolve(p)), refsIn(md))
+
+func writeAll(outs: [Out]) -> () ! {FS} =
+  match outs { [] => (), o :: rest => { writeFile(o.path, o.text); writeAll(rest) } }
+
+func lessonErrsAll(ns: [Node], mdOf: (string) -> string) -> [string] ! {FS} =
+  match ns {
+    [] => [],
+    n :: rest => lessonErrors(n, mdOf(n.id), missingRefs(mdOf(n.id))) ++ lessonErrsAll(rest, mdOf)
+  }
+
+type Out = { path: string, text: string, note: string }
+
+-- Every output, or the first marker that couldn't be found.
+-- The board keeps the tree's own order; the slides go by tier.
+func render(raw: [Node], blks: [Block], brks: [Break], bl: [Band], goal: string, mdOf: (string) -> string) -> Result[[Out], string] ! {FS} {
+  let nodes = ordered(raw);
+  let slides = map(\n. slide(nodes, bl, n, mdOf(n.id)), nodes);
+  let groupQ = \b. head_or(map(\n. predictQ(mdOf(n.id)), filter(\n. n.block == b.id && n.predict == "group", nodes)), "");
+  let strips = map(\b. ("block:${b.id}", strip(b, nodes, groupQ(b))), filter(\b. b.id != "1", blks));
+  let boardNodes = raw;
+  match spliceAll(readFile("deck/02-reference.html"), [("reference", "${indexSlide(nodes)}${concatStr(slides)}")]) {
+    Err(m) => Err("deck/02-reference.html: marker ${m}"),
+    Ok(ref) => match spliceAll(readFile("deck/01-workshop.html"), [("tree", treeHtml(nodes)), ("agenda", agendaHtml(blks, brks))] ++ bandParts(nodes) ++ strips) {
+      Err(m) => Err("deck/01-workshop.html: marker ${m}"),
+      Ok(deck) => match spliceAllJs(readFile("board/skill-tree.html"), [("nodes", encode(ja(map(nodeJson, boardNodes)))), ("blocks", encode(ja(map(blockJson, blks)))), ("goal", encode(js(goal))), ("bandnote", encode(jo(map(\b. kv(b.id, js(b.note)), bl))))]) {
+        Err(m) => Err("board/skill-tree.html: marker ${m}"),
+        Ok(board) => match spliceAll(readFile("docs/agenda.md"), [("bands", bandsTable(nodes, bl)), ("day", dayTable(nodes, blks, brks))]) {
+          Err(m) => Err("docs/agenda.md: marker ${m}"),
+          Ok(agenda) => Ok([
+            { path: "deck/02-reference.html", text: ref, note: "${intToStr(length(nodes))} reference slides and an index" },
+            { path: "deck/01-workshop.html", text: deck, note: "skill tree, agenda, band cards, homework and ${intToStr(length(strips))} block strips" },
+            { path: "board/skill-tree.html", text: board, note: "${intToStr(length(boardNodes))} boxes, ${intToStr(length(blks))} blocks (republish the board artifact)" },
+            { path: "docs/agenda.md", text: agenda, note: "bands table and the day's timetable" }
+          ])
+        }
+      }
+    }
+  }
+}
+
+export func main() -> () ! {IO, FS} {
+  match yamlDecode(readFile("tree/tree.yaml")) {
+    Err(e) => { println("tree/tree.yaml: ${e}"); exit(1) },
+    Ok(tree) => {
+      let raw = map(nodeOf, objsOf(tree, "nodes"));
+      let blks = map(blockOf, objsOf(tree, "blocks"));
+      let brks = map(breakOf, objsOf(tree, "breaks"));
+      let bl = map(bandOf, objsOf(tree, "bands"));
+      let goal = strOf(tree, "end_goal");
+      let ids = map(\n. n.id, raw);
+      let noLesson = map(\n. "${n.id}: no lessons/${n.id}.md", filter(\n. !fileExists("lessons/${n.id}.md"), raw));
+      let noNode = map(\f. "lessons/${f}.md: no node with that id in the tree", filter(\f. !elem(f, ids), lessonFiles()));
+      let blockIds = map(\b. b.id, blks);
+      let top = flat([
+        if length(bl) == 0 then ["tree/tree.yaml: no bands list"] else [],
+        if elem(goal, ids) then [] else ["end_goal '${goal}' isn't a node"],
+        map(\b. "block ${b.id}: no tagline (the agenda slide needs one)", filter(\b. b.tagline == "", blks))
+      ]);
+      let structural = flat([top, noLesson, noNode, flatMap(\n. nodeErrors(raw, blockIds, map(\b. b.id, bl), n), raw), flatMap(\b. blockErrors(raw, b), blks)]);
+      if length(raw) == 0 then { println("no nodes in tree/tree.yaml"); exit(1) }
+      else if length(noLesson) > 0 then { println(join("\n", structural)); exit(1) }
+      else {
+        let mds = map(\n. (n.id, readFile("lessons/${n.id}.md")), raw);
+        let mdOf = \id. head_or(map(\p. match p { (_, m) => m }, filter(\p. match p { (k, _) => k == id }, mds)), "");
+        let lessonErrs = lessonErrsAll(raw, mdOf);
+        let errs = structural ++ lessonErrs ++ phraseErrors(objsOf(tree, "phrases"));
+        if length(errs) > 0 then {
+          println("Nothing written. Fix these first:");
+          println(join("\n", map(\e. "  ${e}", errs)));
+          exit(1)
+        } else match render(raw, blks, brks, bl, goal, mdOf) {
+          Err(m) => { println("${m} not found; nothing written"); exit(1) },
+          Ok(outs) => {
+            writeAll(outs);
+            println(join("\n", map(\o. "${o.path}: ${o.note}", outs)))
+          }
+        }
+      }
+    }
+  }
+}

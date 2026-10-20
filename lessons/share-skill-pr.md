@@ -9,7 +9,7 @@ and every change to it has a name and a reason attached.
 ## Do
 
 1. In your session on the team repository, ask Claude for a branch called
-   `<your-name>-<skill-name>`.
+   `skill/<your-github-username>-<skill-name>`.
 2. Copy your skill folder from [write-a-skill](write-a-skill.md) into `.claude/skills/`. Check that
    its name doesn't clash with an existing skill, and that its description doesn't overlap one. If it
    does, see [skill-routing](skill-routing.md).

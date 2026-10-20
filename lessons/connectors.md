@@ -13,7 +13,7 @@ opens it gets the same ones. This repository has one; [add-mcp](add-mcp.md) uses
 
 ## Do
 
-1. Click **+** next to the prompt box and choose **Connectors**. Which are on? Each one's tools are
+1. Find the **Connectors** list in the panel on the right of the Code tab. Which are on? Each one's tools are
    available to Claude in this session.
 2. Choose a question you could answer from a source your group's rules allow (a calendar or a
    shared drive folder are typical). Check the rule before you start.

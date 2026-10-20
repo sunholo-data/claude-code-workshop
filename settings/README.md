@@ -4,7 +4,9 @@
 derived from a working practitioner's own settings, cut down for people who are not developers.
 This workshop's own `.claude/settings.json` uses these rules too, starts every session in
 **Manual** (`"defaultMode": "default"`), and asks before anyone edits the course files. Copy the `permissions` block into the team repository's `.claude/settings.json` (shared, committed)
-and keep personal additions in `.claude/settings.local.json`.
+and keep personal additions in `.claude/settings.local.json`. `starter.json` leaves the mode alone; add
+`"defaultMode": "default"` to the block if the team wants every session to start in Manual
+(see [settings-tour](../lessons/settings-tour.md)).
 
 Rules are checked **deny, then ask, then allow**: the first match wins, so an allow rule can never
 open up something a deny or ask rule covers.

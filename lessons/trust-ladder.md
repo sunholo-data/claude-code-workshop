@@ -19,23 +19,25 @@ from Sunholo's Decision Budget, and Claude Code's permission modes and rules map
    folder (not inside it), make it a git repository, and then open a **+ New session** on it. It has
    no rules yet, which is the point. You'll run the same task three times, so each run needs a fresh copy.
 2. The task, each time: *"Sort the files in ladder-practice into folders by type, write a short
-   README listing them, and commit."*
+   README listing them, and commit."* The first commit on a new laptop may stop to ask for your
+   name and email: that's git, not Claude. Give them once and it won't ask again.
 3. **Predict:** how many times will Claude stop and ask in **Manual**? In **Accept edits**? In
    **Auto**? Write your three numbers down.
 4. Run it in **Manual** and count the prompts. Then reset the copy, switch to **Accept edits**,
    and run it again. Then **Auto**. (If Auto isn't in the mode selector, your plan or organisation
    hasn't enabled it; do the first two.)
-5. Still in Auto, ask: *"Now push this to a new branch on GitHub."* **Predict** first: will it
-   ask? With no rules yet, that depends on a background check, not on you. In the next node you add
-   an ask rule for `git push`, and from then on it stops for you even in Auto. That is a ceiling:
-   publishing stays at proposing, permanently.
+5. Still in Auto, ask: *"Now push this to GitHub."* **Predict** first: will it ask, try, or
+   explain? This copy has no GitHub repository yet (that's block 4), and with no rules, whether
+   Auto stops is a background check's call, not yours. In block 3 you add an ask rule for
+   `git push`, and from then on it stops for you even in Auto. That is a ceiling: publishing stays
+   at proposing, permanently.
 6. In Manual mode, find a command you've approved several times without changing anything. Choose
-   **Yes, and don't ask again**. You've just promoted one action from proposing to automated, on
+   **Always allow**. You've just promoted one action from proposing to automated, on
    the evidence of how often you changed nothing.
 
 ## Proof
 
-Your three predicted and three actual prompt counts, and the one action that still asked in Auto.
+Your three predicted and three actual prompt counts, and what Auto did when you asked it to push.
 
 ## Misconceptions this exposes
 

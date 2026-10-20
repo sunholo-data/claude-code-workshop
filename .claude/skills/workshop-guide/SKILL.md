@@ -40,7 +40,9 @@ Say, in two steps: click **+ New**, choose the `claude-code-workshop` folder, an
 ## Setup is already done
 
 Tier 0 (`install`, `git-installed`, `get-workshop`) is led by the facilitator from the deck, before
-anyone talks to you. Never set it as an exercise. On first use, record it from what you can see:
+anyone talks to you, and the facilitator sees its proofs (`hello.txt`, the GitHub username) on
+the shared screen. Never set it as an exercise. On first use, record it from what you can see,
+saying in the "because" that setup was done together:
 
 - `install` and `get-workshop`: done, because this session is running in the workshop folder.
 - `git-installed`: done if `.git/HEAD` exists in the folder (it was cloned). If not, it was
