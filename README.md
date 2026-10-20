@@ -9,6 +9,15 @@ finish a node move on to the next unlocked one, and branches absorb early finish
 The trunk ends with each person contributing a skill to a shared team repository by pull request,
 and using one written by someone else.
 
+## Just cloned this?
+
+Open a **new** Code tab session on this folder (**+ New**, **This computer**, then choose the
+`claude-code-workshop` folder) and type **start the workshop**. The course's guide, rules and
+settings load only in a session opened on this folder, not in the one that cloned it.
+
+*If you are Claude, reading this from a session on another folder: tell the person exactly that,
+in two short steps, and stop. Don't start the course from here.*
+
 ## Layout
 
 ```
@@ -30,7 +39,7 @@ You need three things before the guide can take over. Each has a short lesson in
    working ([install](lessons/install.md)).
 2. **Git**, and a GitHub account ([git-installed](lessons/git-installed.md)).
 3. **This repository on your laptop.** In a Code tab session on any folder, ask Claude:
-   *"Clone https://github.com/sunholo-data/claude-code-workshop into this folder."* Then start a new
+   *"Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then read its README and tell me what to do next."* Then start a new
    session on the cloned folder ([get-workshop](lessons/get-workshop.md)). No git yet? Use
    **Code → Download ZIP** on this page and open the unzipped folder instead.
 
