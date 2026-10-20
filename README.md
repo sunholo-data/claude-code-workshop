@@ -2,8 +2,9 @@
 
 ## Just cloned this?
 
-Open a **new** Code tab session on this folder (**+ New**, **This computer**, then choose the
-`claude-code-workshop` folder) and type **start the workshop**. The course's guide, rules and
+Open a **new** Code tab session on this folder: **+ New**, then the folder button under the message
+box, **Open folder…**, and choose `claude-code-workshop` itself. Type **start the workshop**, and
+choose **Trust workspace** when asked. The course's guide, rules and
 settings load only in a session opened on this folder, not in the one that cloned it.
 
 *If you are Claude in a session opened on another folder: tell the person those two steps and

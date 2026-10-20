@@ -27,9 +27,16 @@ Do this before the day, after `install` and `git-installed`.
    This is the first of many approvals; reading them is the habit the whole day builds.
    Then it tells you the next step, from the README: a new session on the workshop folder.
    Asking for the one thing you want next, rather than "what's in it?", gets a short answer.
-5. Start a **new session** (**+ New** at the top left). Choose **This computer**, **Select folder**, and pick
-   the new `claude-code-workshop` folder *inside* `claude-test`.
-6. Type **start the workshop**. The guide reads the course and offers you somewhere to start. The
+5. Start a **new session** (**+ New** at the top left). Click the folder button under the message
+   box: it still says `claude-test`. Choose **Open folder…**, go into `claude-test`, and pick
+   `claude-code-workshop`. Check the button now says `claude-code-workshop`.
+6. You'll see **This workspace isn't trusted**. A folder you downloaded can carry its own Claude
+   settings, so Claude asks before using them. Type **start the workshop**, send it, and choose
+   **Trust workspace**: that's what lets the course's guide, rules and settings load.
+
+   **Predict first:** what would it mean to trust a folder you hadn't read?
+
+7. The guide reads the course and offers you somewhere to start. The
    first time, it asks to create `progress.md`, your own record of what you've done. Allow it.
 
 ### If git isn't working yet
