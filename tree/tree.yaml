@@ -22,7 +22,7 @@ audience: "People who use Claude (or another AI) in a chat window and have not u
 end_goal: share-skill-pr
 
 nodes:
-  # ── Tier 0 · Setup (before the session) ─────────────────────────────────
+  # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
   - id: install
     tier: 0
     title: Claude Desktop, Code tab
@@ -33,16 +33,23 @@ nodes:
   - id: git-installed
     tier: 0
     title: Git and a GitHub account
-    needs: []
+    needs: [install]
     minutes: 10
     can: "I have git installed and a GitHub account I can sign in to."
     proof: "`git --version` prints a version; GitHub username sent to the facilitator."
+  - id: get-workshop
+    tier: 0
+    title: Get the workshop
+    needs: [install, git-installed]
+    minutes: 10
+    can: "I can have Claude clone a repository from GitHub, and open a session on it."
+    proof: "The guide answered \"start the workshop\" in a session on the cloned folder; progress.md exists."
 
   # ── Tier 1 · From chat to agent ─────────────────────────────────────────
   - id: chat-vs-agent
     tier: 1
     title: Chat versus agent
-    needs: [install]
+    needs: [get-workshop]
     minutes: 20
     can: "I can explain what changes when the AI reads and writes files and runs commands, instead of me pasting text in and out."
     proof: "Claude edited a file you then opened and checked yourself."

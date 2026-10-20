@@ -12,6 +12,7 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Each participant | Claude Desktop installed, signed in with a paid plan, Code tab working (`install`) | |
 | Each participant | Git installed. On a Mac, `xcode-select --install`; on Windows, Git for Windows (`git-installed`) | |
 | Each participant | A GitHub account, username sent to the facilitator | |
+| Each participant | This repository cloned, a session open on it, and "start the workshop" answered (`get-workshop`) | |
 | Each participant | The self-assessment: every node's *I can…* answered yes / partly / no | |
 | Each participant | One small, real task they'd like help with. An idea is enough | |
 | Organiser | A GitHub organisation, and an empty team skills repository in it | |
@@ -26,7 +27,7 @@ most ten minutes, hands-on, then the room compares what happened. Node ids refer
 | Time | Block | Nodes | What it needs in the room |
 |---|---|---|---|
 | 09:00 | **Welcome.** The tree on the wall; the self-assessment read back as a distribution, not names. Install triage in parallel. | 0 | Tree printout or slide; the collected self-assessments; a spare person on installs |
-| 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model; then **trust is earned per action**: the same task in Manual, Accept edits and Auto, mapped to the delegation ladder. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned or downloaded |
+| 09:30 | **Chat to agent.** Files, the folder as context, permissions and diffs, Plan mode, choosing a model; then **trust is earned per action**: the same task in Manual, Accept edits and Auto, mapped to the delegation ladder. | 1 | `samples/` (a practice folder with nothing confidential); this repo cloned, or downloaded as a ZIP by anyone whose git isn't working yet |
 | 10:45 | **Rules.** CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny. | 2 | A shared document or file for the conventions; the group's data rule; `settings/starter.json` |
 | 11:30 | **Git.** Commit, see what changed, go back; clone, branch, push. | 3 | GitHub accounts; the team skills repository, which is also the practice repository |
 | 12:00 | Lunch | | |

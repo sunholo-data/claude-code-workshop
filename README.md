@@ -24,8 +24,18 @@ overlay.example/          How a group's bespoke configuration is shaped.
 
 ## Start
 
-Open this folder in the Code tab and type **"start the workshop"**. The `workshop-guide` skill
-takes it from there and keeps your progress in `progress.md` (not committed).
+You need three things before the guide can take over. Each has a short lesson in `lessons/`.
+
+1. **Claude Desktop** from claude.com/download, signed in on a paid plan, with the **Code** tab
+   working ([install](lessons/install.md)).
+2. **Git**, and a GitHub account ([git-installed](lessons/git-installed.md)).
+3. **This repository on your laptop.** In a Code tab session on any folder, ask Claude:
+   *"Clone https://github.com/sunholo-data/claude-code-workshop into this folder."* Then start a new
+   session on the cloned folder ([get-workshop](lessons/get-workshop.md)). No git yet? Use
+   **Code → Download ZIP** on this page and open the unzipped folder instead.
+
+Then type **start the workshop**. The `workshop-guide` skill takes it from there and keeps your
+progress in `progress.md` (not committed). It asks before creating that file; allow it.
 
 ## Bespoke config
 

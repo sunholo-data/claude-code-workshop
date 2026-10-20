@@ -7,7 +7,7 @@ with one small edit.
 
 ## Do
 
-1. Open this workshop folder in the Code tab (**Local**, **Select folder**). Keep the mode on
+1. Open this workshop folder in the Code tab (**This computer**, **Select folder**). Keep the mode on
    **Manual**.
 2. Open `samples/tagging-plan.md` yourself and skim it. It is a made-up plan for a made-up shop.
 3. **Predict:** you ask *"In samples/tagging-plan.md, mark the search event as Live and add a

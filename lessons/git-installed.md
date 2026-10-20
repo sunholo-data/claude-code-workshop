@@ -1,5 +1,7 @@
 # Git and a GitHub account
 
+*In the workshop, the facilitator walks the room through this from the slides. This page is for doing it beforehand, or afterwards on your own.*
+
 Git keeps a history of a folder, so any change Claude makes can be seen and undone. GitHub is
 where the team's shared work lives. The Code tab does **not** include git, so it is the one thing
 you install yourself. Do this before the day.

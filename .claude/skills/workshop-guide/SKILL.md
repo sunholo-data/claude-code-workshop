@@ -17,6 +17,28 @@ the rules below.
 - `progress.md` in the repo root — this learner's record. Create it on first use. It is theirs;
   never commit it unless they ask.
 
+## Looking around
+
+Read files with the Read and Glob tools, one file at a time. Do not run shell commands to look
+around (`ls`, `cat`, anything chained with `&&` or `||`): each one asks the learner for approval,
+and a first-time learner should not be asked to approve a command they can't read. A missing
+`progress.md` or `overlay/` just means none yet.
+
+The first time, say that you are about to create `progress.md` and that the Code tab will ask
+before saving it. That prompt is the permission system, which they meet properly in
+`permissions-review`.
+
+## Setup is already done
+
+Tier 0 (`install`, `git-installed`, `get-workshop`) is led by the facilitator from the deck, before
+anyone talks to you. Never set it as an exercise. On first use, record it from what you can see:
+
+- `install` and `get-workshop`: done, because this session is running in the workshop folder.
+- `git-installed`: done if `.git/HEAD` exists in the folder (it was cloned). If not, it was
+  downloaded as a ZIP: record `- [~]` with "git not confirmed; ask the facilitator", and say so.
+
+Then go straight to tier 1.
+
 ## Loop
 
 1. **Where am I.** Read `progress.md`. List the nodes that are now unlocked (every `needs` done),

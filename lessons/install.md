@@ -1,5 +1,7 @@
 # Claude Desktop, Code tab
 
+*In the workshop, the facilitator walks the room through this from the slides. This page is for doing it beforehand, or afterwards on your own.*
+
 The Code tab is Claude with hands: it works inside a folder on your computer, reading and writing
 the files there. The desktop app already includes Claude Code, so there is nothing else to install
 (no Node.js, no command line). It needs a paid plan: Pro, Max, Team or Enterprise. Do this before
@@ -11,7 +13,7 @@ the day, and bring any error message with you.
 2. Click the **Code** tab at the top. If it asks you to upgrade, your plan doesn't include it;
    tell the facilitator before the day.
 3. Make an empty folder somewhere easy to find, for example `claude-test` in your Documents.
-4. In the Code tab choose **Local**, then **Select folder**, and pick `claude-test`.
+4. In the Code tab choose **This computer**, then **Select folder**, and pick `claude-test`.
 5. In the selector next to the send button, choose **Manual**.
 6. **Predict:** you type *"Create a file called hello.txt that says hello"*. Will the file just
    appear? Will Claude ask you first? Where on your computer will it go?
