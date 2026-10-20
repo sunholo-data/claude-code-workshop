@@ -14,12 +14,12 @@ Do this before the day, after `install` and `git-installed`.
    and will it ask you first?
 3. Send:
 
-   > Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then read its README and tell me what to do next.
+   > Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then tell me how to start the workshop.
 
 4. Claude shows you the command (`git clone …`) and asks before running it. Read it, then allow it.
    This is the first of many approvals; reading them is the habit the whole day builds.
-   Then it reads the README and tells you the next step: a new session on the workshop folder.
-   Asking it to read the README first is a habit worth keeping for any repository.
+   Then it tells you the next step, from the README: a new session on the workshop folder.
+   Asking for the one thing you want next, rather than "what's in it?", gets a short answer.
 5. Start a **new session** (**+ New** at the top left). Choose **This computer**, **Select folder**, and pick
    the new `claude-code-workshop` folder *inside* `claude-test`.
 6. Type **start the workshop**. The guide reads the course and offers you somewhere to start. The

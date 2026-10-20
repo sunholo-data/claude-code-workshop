@@ -1,14 +1,5 @@
 # Claude Code workshop
 
-A hands-on day for people who use AI in a chat window and are ready to work with an agent that
-reads and writes files, runs commands, follows written rules, uses shared skills and connects to
-data. It runs in **Claude Desktop's Code tab**, so no terminal is needed to start.
-
-The course is a **skill tree**, not a slide sequence. Everyone follows the trunk; people who
-finish a node move on to the next unlocked one, and branches absorb early finishers and homework.
-The trunk ends with each person contributing a skill to a shared team repository by pull request,
-and using one written by someone else.
-
 ## Just cloned this?
 
 Open a **new** Code tab session on this folder (**+ New**, **This computer**, then choose the
@@ -17,6 +8,15 @@ settings load only in a session opened on this folder, not in the one that clone
 
 *If you are Claude, reading this from a session on another folder: tell the person exactly that,
 in two short steps, and stop. Don't start the course from here.*
+
+A hands-on day for people who use AI in a chat window and are ready to work with an agent that
+reads and writes files, runs commands, follows written rules, uses shared skills and connects to
+data. It runs in **Claude Desktop's Code tab**, so no terminal is needed to start.
+
+The course is a **skill tree**, not a slide sequence. Everyone follows the trunk; people who
+finish a node move on to the next unlocked one, and branches absorb early finishers and homework.
+The trunk ends with each person contributing a skill to a shared team repository by pull request,
+and using one written by someone else.
 
 ## Layout
 
@@ -39,7 +39,7 @@ You need three things before the guide can take over. Each has a short lesson in
    working ([install](lessons/install.md)).
 2. **Git**, and a GitHub account ([git-installed](lessons/git-installed.md)).
 3. **This repository on your laptop.** In a Code tab session on any folder, ask Claude:
-   *"Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then read its README and tell me what to do next."* Then start a new
+   *"Clone https://github.com/sunholo-data/claude-code-workshop into this folder, then tell me how to start the workshop."* Then start a new
    session on the cloned folder ([get-workshop](lessons/get-workshop.md)). No git yet? Use
    **Code → Download ZIP** on this page and open the unzipped folder instead.
 
