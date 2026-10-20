@@ -90,7 +90,7 @@ textarea{width:100%;box-sizing:border-box;min-height:88px;resize:vertical;border
     <div>
       <div class="brand"><svg viewBox="0 0 300 300" aria-hidden="true"><circle cx="107" cy="150" r="80" fill="#f9a697" opacity=".3"/><circle cx="130" cy="150" r="80" fill="#e73c17" opacity=".3"/><circle cx="153" cy="150" r="80" fill="#e73c17"/></svg>Sunholo</div>
       <h1>Claude Code Skill Tree</h1>
-      <p class="sub">Each box is something you'll be able to do. An arrow means "do this first". Mark a box done when you can show its proof, and say how, so others can learn from it.</p>
+      <p class="sub">Each box is something you'll be able to do. An arrow means "do this first". Mark a box done when you can show its proof, and say what you noticed, so others can learn from it.</p>
     </div>
     <div class="row" style="align-items:center">
       <a class="btn" href="https://www.sunholo.com/presentations/claude-code-workshop/" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Slides</a>
@@ -101,6 +101,27 @@ textarea{width:100%;box-sizing:border-box;min-height:88px;resize:vertical;border
       </div>
     </div>
   </header>
+  <style>
+    .start{border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper);padding:14px 18px}
+    .start summary{font-weight:700;color:var(--slate);cursor:pointer;min-height:28px}
+    .start ol{margin:12px 0 4px;padding-left:1.3em;display:flex;flex-direction:column;gap:12px;max-width:80ch}
+    .start li{line-height:1.5}
+    .cmd{display:flex;gap:8px;align-items:stretch;margin-top:6px;flex-wrap:wrap}
+    .cmd code{flex:1 1 280px;font:13px var(--mono);background:var(--ground);border-left:3px solid var(--action);padding:8px 10px;overflow-wrap:anywhere;user-select:all}
+    .cmd .btn{min-height:36px;padding:6px 12px;font-size:13px}
+  </style>
+  <details class="start" id="start" open>
+    <summary>Start here: get the workshop onto your laptop</summary>
+    <ol>
+      <li>In Claude Desktop, click <b>Code</b> (the <b>&lt;/&gt;</b> button, top left). Click <b>+ New</b>, choose <b>This computer</b> and an empty folder, such as <b>claude-test</b> in Documents. Then click the mode button that says <b>Auto</b> and choose <b>Manual</b>.</li>
+      <li>Send this. Claude shows you a <b>git clone</b> command first: read it, then allow it.
+        <div class="cmd"><code>Clone https://github.com/sunholo-data/claude-code-workshop into this folder.</code><button type="button" class="btn copy">Copy</button></div></li>
+      <li>Click <b>+ New</b> again and choose the new <b>claude-code-workshop</b> folder, inside the one you used. Then send:
+        <div class="cmd"><code>start the workshop</code><button type="button" class="btn copy">Copy</button></div>
+        The guide asks to create <b>progress.md</b>, your own record. Allow it.</li>
+    </ol>
+    <p class="note">Git not working yet? On the <a href="https://github.com/sunholo-data/claude-code-workshop" target="_blank" rel="noopener">course repo</a>, click <b>Code</b> then <b>Download ZIP</b>, unzip it, and choose that folder in step 3.</p>
+  </details>
   <div class="bar-top"><div class="legend" id="legend"></div><p class="status" id="status">Connecting…</p></div>
   <div class="main">
     <div class="graph-box"><div class="graph" id="graph"></div></div>
@@ -311,6 +332,11 @@ function setView(v){ S.view = v; for (const [id, val] of [["v-me","me"],["v-room
 document.getElementById("v-me").addEventListener("click", () => setView("me"));
 document.getElementById("v-room").addEventListener("click", () => setView("room"));
 
+for (const b of document.querySelectorAll(".copy")) b.addEventListener("click", async () => {
+  const code = b.previousElementSibling;
+  try { await navigator.clipboard.writeText(code.textContent); b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 1500); }
+  catch { const r = document.createRange(); r.selectNodeContents(code); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Selected: press ⌘C"; }
+});
 render();
 (async () => {
   const c = window.claude;
