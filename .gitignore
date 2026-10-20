@@ -7,3 +7,4 @@ CLAUDE.local.md
 client_secret*.json
 *oauth-client*.json
 .ailang/
+images/setup/claude-code-overview.png
