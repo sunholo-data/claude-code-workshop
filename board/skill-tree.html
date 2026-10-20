@@ -258,7 +258,7 @@ function renderAside(){
     if (st === "locked"){
       P.append(el("p", "note", "Unlocks after: " + n.needs.filter(x => mineOf(x) !== "done").map(x => byId[x].title).join(", ") + "."));
     } else if (S.mode !== "live"){
-      P.append(el("p", "note", "Saving isn't available in this view."));
+      P.append(el("p", "note", "Your progress can't be saved from this link. Ask the facilitator to invite you by email, then open the invitation."));
     } else if (S.canWrite === false){
       P.append(el("p", "note", "You can see this board but not save to it. Ask the facilitator to invite you as an editor."));
     } else {
@@ -289,7 +289,7 @@ function renderAside(){
 function renderStatus(){
   const s = document.getElementById("status");
   if (S.mode === "connecting") { s.textContent = "Connecting…"; return; }
-  if (S.mode === "offline") { s.textContent = "Not connected: the tree without saved progress."; return; }
+  if (S.mode === "offline") { s.textContent = "View only: invite needed to save progress."; return; }
   const n = Object.values(S.mine).filter(r => r.s === "done").length;
   s.replaceChildren(document.createTextNode("You: "), el("b", null, `${n} of ${NODES.length} done`), document.createTextNode(` · ${S.room.length} on the board`));
 }
