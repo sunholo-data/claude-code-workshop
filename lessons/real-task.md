@@ -8,16 +8,35 @@ of the same shape.
 
 ## Do
 
-1. Make a folder for the task and make it a git repository (ask Claude). Put in only the files
-   the task needs and the rules allow.
-2. Write your request as a short brief: what you want, which files (`@`), and what "done" looks
-   like. Use **Plan** mode if it has more than a couple of steps.
-3. **Predict:** before you send it, write one line on what you expect Claude to do, and one on
+**Where:** first a session on the `claude-code-workshop` folder, in Manual, to make a folder called
+`real-task` next to it with the workshop's starter rules. Then a **+ New** session on `real-task`,
+in Manual.
+
+1. Make the folder. A new folder has no rules of its own, so this copies the starter ones in:
+
+   > Make a folder called real-task next to this workshop folder, not inside it. Make it a git repository, copy the permissions block from settings/starter.json into real-task/.claude/settings.json, and commit.
+
+   **You should see:** `real-task` with a `.claude/settings.json` and one commit.
+2. **+ New**, the folder button, **Open folder…**, choose `real-task`, and set **Manual**. If it
+   asks whether you trust the folder, say yes: that's what lets its rules load. Put in only the
+   files the task needs and your group's data rule allows: copy them into `real-task` in Finder or
+   File Explorer, or ask Claude for a made-up stand-in of the same shape.
+3. Write your request as a short brief: what you want, which files (`@`), and what "done" looks
+   like. If it has more than a couple of steps, switch to **Plan** first. The shape:
+
+   > I want <the result>. Use @<file> and @<file>. Done means <what you'll check>. Show me a plan first.
+
+4. **Predict:** before you send it, write one line on what you expect Claude to do, and one on
    where you think it will go wrong.
-4. Run it. Commit when something works. Reject or revert what doesn't.
-5. **Check it** against something you trust: open the files, recount a number, compare with the
+5. Run it. When something works:
+
+   > Commit this with a message saying what changed.
+
+   Reject what you don't want, or ask *"undo the last commit's change"* as in
+   [git-safety-net](git-safety-net.md).
+6. **Check it** against something you trust: open the files, recount a number, compare with the
    original, or ask Claude to show its evidence and check that yourself.
-6. Prepare three sentences for the room: what you asked, what it did, how you checked it. Include
+7. Prepare three sentences for the room: what you asked, what it did, how you checked it. Include
    where it went wrong, if it did; that's the most useful part for everyone else.
 
 ## Proof
