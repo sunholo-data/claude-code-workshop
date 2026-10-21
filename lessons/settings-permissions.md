@@ -17,14 +17,22 @@ mode selector has no screen for editing rules, so you edit the file, or ask Clau
    action on and why.
 2. **Predict:** with these rules, which of these will just happen, which will ask, and which will
    be refused? *Commit a change. Push it. Delete a file. Read a file called `.env`.*
-3. In your `ladder-practice` repository, ask Claude to copy the `permissions` block from
-   `settings/starter.json` **in the workshop folder** (`../claude-code-workshop/settings/starter.json`:
-   `ladder-practice` is a copy of `samples/` only) into `.claude/settings.json`. Reading outside the
-   session's folder will ask first: that's the rules working. Read the result before you approve it.
-4. Start a new session there, in **Auto**. Ask for each of the four actions in step 2 (make a
-   `.env` file with one made-up line first). Compare with your prediction.
-5. Open `.claude/settings.local.json` and find the rule you promoted in the trust-ladder node.
-   Decide whether it belongs in the team's file or only in yours.
+3. Build a fresh practice folder that has something for every rule to act on. In a session on
+   the workshop folder, ask Claude:
+
+   > Make a folder called rules-practice next to this one. Copy samples/ into it, make it a git repository and commit. Next to it, make an empty repository with git init --bare rules-practice-remote.git and add it to rules-practice as origin, so there is somewhere to push without GitHub. In rules-practice, write a .env file with the one line API_KEY=not-a-real-key and add .env to .gitignore. Last, copy the permissions block from settings/starter.json into rules-practice/.claude/settings.json and commit that.
+
+   Read the result before you approve it. The order matters: once the rules are in, Claude can't
+   even create a `.env`, because a deny on reading a file also blocks writing it.
+4. Start a **+ New session** on `rules-practice`, in **Auto**. If it asks whether you trust the
+   folder, say yes: until you do, the file's allow rules wait. Then ask, one at a time: *add a line to
+   tagging-plan.md and commit it*, *push it*, *delete tagging-plan.md*, *show me
+   what's in .env*. Compare with your prediction.
+5. Switch to **Manual** and ask for something that isn't in the rules, such as *"move
+   daily-sessions.csv into a data folder"*. When it asks, choose **Always allow**. Then open
+   `rules-practice/.claude/settings.local.json` yourself, in Finder or an editor, not by asking
+   Claude: reading that file is on the deny list. Find the rule you just promoted and decide whether
+   it belongs in the team's file or only in yours.
 6. Add one rule of your own for something in your real work that should always ask, and say why.
 
 ## Proof
@@ -39,4 +47,5 @@ The settings file in use, one rule you promoted yourself, and the push or the de
   checked first, which is why `git checkout` asks even though moving between branches is safe:
   use `git switch` for that.
 - *"A deny rule makes something impossible."* It stops the command as Claude writes it. For
-  anything that truly must not happen, take the access away too.
+  anything that truly must not happen, take the access away too. If Claude reaches `.env` some
+  other way, such as a shell command, in step 4, you've seen this happen.
