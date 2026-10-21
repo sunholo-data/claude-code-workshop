@@ -2,8 +2,10 @@
 
 `starter.json` is a first set of permission rules for a team that is new to Claude Code. It is
 derived from a working practitioner's own settings, cut down for people who are not developers.
-This workshop's own `.claude/settings.json` uses these rules too, starts every session in
-**Manual** (`"defaultMode": "default"`), and asks before anyone edits the course files. Copy the `permissions` block into the team repository's `.claude/settings.json` (shared, committed)
+This workshop's own `.claude/settings.json` uses these rules too, sets new sessions to start in
+**Manual** (`"defaultMode": "default"`), and asks before anyone edits the course files. In the
+Desktop app, a mode you pick in the selector is remembered for the folder and beats `defaultMode`
+there. Copy the `permissions` block into the team repository's `.claude/settings.json` (shared, committed)
 and keep personal additions in `.claude/settings.local.json`. `starter.json` leaves the mode alone; add
 `"defaultMode": "default"` to the block if the team wants every session to start in Manual
 (see [settings-tour](../lessons/settings-tour.md)).
@@ -19,7 +21,7 @@ open up something a deny or ask rule covers.
 | allow | `git switch`, `git fetch`, `git pull` | automated | Moving between branches and fetching others' work changes nothing anyone else sees. |
 | allow | `mkdir`; Google's documentation sites and the Developer Knowledge MCP tools | automated | Read-only or trivially reversible. |
 | ask | **`git push`** | proposing, as a ceiling | Pushing publishes: after it, other people see the change. The author of these rules approves every push by hand and has never promoted it. |
-| ask | `git checkout`, `git restore`, `git reset`, `git rebase`, `git clean`, `git stash`, `git rm` | proposing | Each can throw away work that isn't committed yet (`git checkout .` discards every uncommitted change). Use `git switch` to change branch; it is allowed. |
+| ask | `git checkout`, `git restore`, `git reset`, `git rebase`, `git clean`, `git stash`, `git rm` | proposing | Each can throw away work that isn't committed yet (`git checkout .` discards every change you haven't staged). Use `git switch` to change branch; it is allowed. |
 | ask | `rm` | proposing | Deleting is the classic irreversible mistake. |
 | ask | `curl` | proposing | It can send data anywhere. Teams with a data-handling rule want to see each one. |
 | ask | `gh pr merge` | proposing | Merging is the review decision; it stays with a person. |

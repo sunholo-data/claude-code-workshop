@@ -17,7 +17,7 @@ Settings worth knowing:
 
 | Setting | What it does |
 |---|---|
-| `permissions.defaultMode` | The mode a new session starts in: `default` is Manual; also `acceptEdits`, `plan`, `auto` |
+| `permissions.defaultMode` | The mode a new session starts in: `default` is Manual; also `acceptEdits`, `plan`, `auto`. `auto` works only from your own `~/.claude/settings.json` |
 | `model`, `effortLevel` | The model and effort a new session starts with |
 | `language` | Claude answers in this language, for example `"french"` |
 | `env` | Variables every session gets, such as an API key |
@@ -32,18 +32,43 @@ Its own **Settings → Claude Code** screen holds app things, such as the worktr
 
 ## Do
 
+**Where:** a session on the `claude-code-workshop` folder, in Manual, then **+ New** sessions on a
+new, empty folder called `settings-test` next to it.
+
 1. **Predict:** which file does each of these belong in? *Every new folder starts in Manual. Your
    API key. Claude answers in French. Claude may read the team's shared folder of briefs.*
-2. Ask Claude which file each one belongs in, and why. Compare with your prediction. The key is
-   the one with a fixed answer: `settings.local.json`, as in [add-mcp](add-mcp.md).
-3. Ask Claude to set `permissions.defaultMode` to `default` in your `~/.claude/settings.json`. That
-   file is outside this project, so it asks before saving: read the change, then approve.
-4. Make an empty folder and start a new session on it. Which mode does the selector show?
-5. Now pick **Accept edits** in the selector and start another session on the same folder. Which
-   mode does it start in this time, and what does that tell you about the selector?
-6. Ask Claude what else settings can change, and choose one that would help your own work (a
-   default model, the language it answers in, a folder outside this one). Put it in the file you
-   think it belongs in, start a new session, and check it worked.
+2. Ask:
+
+   > Which settings file does each of these belong in, and why: every new folder starts in Manual; my API key; Claude answers in French; Claude may read the team's shared folder of briefs.
+
+   Compare with your prediction. The key is the one with a fixed answer: `settings.local.json`, as
+   in [add-mcp](add-mcp.md).
+3. Set a start mode you'll be able to see. Manual may already be what a new session starts in, so
+   use Accept edits:
+
+   > Set permissions.defaultMode to acceptEdits in my ~/.claude/settings.json, keeping everything else in it. Then make an empty folder called settings-test next to this workshop folder.
+
+   **You should see:** a prompt to save `~/.claude/settings.json`: it's outside this project, so it
+   asks. Read the change, then approve.
+4. **+ New**, the folder button, **Open folder…**, choose `settings-test`.
+
+   **You should see:** the mode button says **Accept edits**. Still Manual? Quit Claude Desktop,
+   open it again, and start a new session on `settings-test`.
+5. Now pick **Manual** in the selector, then **+ New** on `settings-test` again. Which mode does it
+   start in this time, and what does that tell you about the selector?
+
+   **You should see:** **Manual**: the mode you picked is remembered for this folder and beats
+   `defaultMode` there.
+6. Take it out again, so new folders don't save edits without asking. Back in the workshop session:
+
+   > Remove permissions.defaultMode from my ~/.claude/settings.json, keeping everything else.
+
+7. Choose one setting that would help your own work (a default model, the language it answers in,
+   a folder outside this one), and ask:
+
+   > Add <the setting> to <the file you chose>, and tell me how to check it worked.
+
+   Start a new session and check it.
 
 ## Proof
 
