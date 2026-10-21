@@ -14,9 +14,11 @@
 -- Everything outside the markers (styles, navigation, hand-written slides, the board's code) is
 -- hand-kept. Each reference slide's id is its node id, so 02-reference.html#trust-ladder opens it.
 --
--- From a lesson it takes: the "## Do" section (steps, prompts, sub-headings; images dropped),
+-- From a lesson it takes: the "## Do" section (steps, prompts, sub-headings, images),
 -- "## Proof", and the first two bullets of "## Misconceptions this exposes". From the tree:
 -- title, tier, band, block, can, needs, proof. Edit those sources, never the generated parts.
+-- Core and follow-up cards are also held to the card shape (README, "Writing a card"); a card
+-- that misses it is reported after the build, not yet refused.
 -- tools/publish.ail copies the result to a hosting site.
 
 module tools/build
@@ -26,7 +28,7 @@ import std/json (Json, get, asString, asArray, asNumber, encode, js, ja, jo, kv)
 import std/fs (readFile, writeFile, fileExists, listDir)
 import std/io (println, exit)
 import std/list (map, filter, foldl, reverse, length, take, concat, head_or, findIndex, flatMap, any)
-import std/string (join, trim, split, replace, startsWith, endsWith, find, substring, length as slen, intToStr, floatToStr, stringToInt)
+import std/string (join, trim, split, replace, startsWith, endsWith, find, substring, length as slen, intToStr, floatToStr, stringToInt, toLower)
 import std/regex (compile, replaceAll, isMatch, findAll)
 
 -- ── the tree ───────────────────────────────────────────────────────────────
@@ -113,6 +115,25 @@ func lessonErrors(n: Node, md: string, missing: [string]) -> [string] {
   let refs = map(\p. "lessons/${n.id}.md: links to ${p}, which doesn't exist", missing);
   let pq = if n.predict == "group" && predictQ(md) == "" then ["${n.id}: predict: group, but its lesson has no **Predict** step"] else [];
   flat([secs, refs, pq])
+}
+
+-- Phrases that sent people the wrong way on the day: each leaves the participant to guess.
+func vaguePhrases() -> [string] =
+  ["a practice folder", "your practice folder", "an export or copy", "reset the copy",
+   "something like", "or similar", "any folder", "your repository"]
+
+-- The card shape, for the cards everyone does: Do opens with where the work happens, and says
+-- nothing the participant has to guess.
+func cardWarnings(n: Node, md: string) -> [string] {
+  let doS = filter(\l. trim(l) != "", section(md, "Do"));
+  let opens = match doS { [] => false, l :: _ => startsWith(trim(l), "**Where:**") };
+  let low = toLower(join("\n", doS));
+  let vague = filter(\p. find(low, p) >= 0, vaguePhrases());
+  if n.band != "core" && n.band != "follow-up" then []
+  else flat([
+    if opens then [] else ["lessons/${n.id}.md: Do doesn't open with **Where:**"],
+    map(\p. "lessons/${n.id}.md: \"${p}\" leaves the participant to guess", vague)
+  ])
 }
 
 func blockErrors(nodes: [Node], b: Block) -> [string] {
@@ -244,7 +265,7 @@ func section(md: string, name: string) -> [string] {
   reverse(st.out)
 }
 
--- A piece of the Do section. k: "step" | "para" | "head" | "quote" | "code" | "cont"
+-- A piece of the Do section. k: "step" | "para" | "head" | "quote" | "code" | "cont" | "img"
 -- ("cont": an indented paragraph after a prompt or code, still part of the step above)
 type Piece = { k: string, t: string }
 
@@ -276,15 +297,18 @@ func step(st: PState, raw: string) -> PState {
   else if st.code then
     (if lastKind(st) == "code" && lastEmpty(st) then extend(st, "", t) else extend(st, "\n", t))
   else if t == "" then { bs: st.bs, blank: true, code: false }
-  else if startsWith(t, "![") then st
+  else if startsWith(t, "![") then push(st, { k: "img", t: t })
   else if isStep(t) && !indented then push(st, { k: "step", t: stepText(t) })
   else if startsWith(t, "### ") then push(st, { k: "head", t: substring(t, 4, slen(t)) })
   else if startsWith(t, "> ") || t == ">" then
     { let q = trim(substring(t, 1, slen(t))); if lastKind(st) == "quote" && !st.blank then extend(st, " ", q) else push(st, { k: "quote", t: q }) }
+  -- A bullet after a prompt or image is the step's own text, not part of the prompt.
+  else if startsWith(t, "- ") && indented && elem(lastKind(st), ["quote", "code", "img"]) then
+    push(st, { k: "cont", t: "• ${substring(t, 2, slen(t))}" })
   else if startsWith(t, "- ") && indented then extend(st, "\n• ", substring(t, 2, slen(t)))
   else if indented then
     (if lastKind(st) == "step" || ((lastKind(st) == "para" || lastKind(st) == "cont") && !st.blank) then extend(st, " ", t)
-     else if lastKind(st) == "code" || lastKind(st) == "quote" || lastKind(st) == "cont" then push(st, { k: "cont", t: t })
+     else if elem(lastKind(st), ["code", "quote", "cont", "img"]) then push(st, { k: "cont", t: t })
      else push(st, { k: "para", t: t }))
   else if lastKind(st) == "para" && !st.blank then extend(st, " ", t)
   else push(st, { k: "para", t: t })
@@ -296,6 +320,10 @@ export func pieces(lines: [string]) -> [Piece] =
 func renderStep(t: string) -> string =
   join("<br>", map(\p. inline(p), split(t, "\n")))
 
+-- ![alt](path) as an image; the path is the lesson's own, which also resolves from deck/.
+func renderImg(t: string) -> string =
+  rx("^!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)$", esc(t), "<img class=\"ref-img\" src=\"$2\" alt=\"$1\">")
+
 -- Consecutive steps share one <ol>; a prompt or code between steps stays inside the list item
 -- before it, so numbering carries on.
 func renderPieces(bs: [Piece]) -> string {
@@ -304,12 +332,15 @@ func renderPieces(bs: [Piece]) -> string {
         { out: "${acc.out}${if acc.open then "</li>" else "<ol>"}<li>${renderStep(b.t)}", open: true }
       else if (b.k == "quote" || b.k == "code") && acc.open then
         { out: "${acc.out}<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>", open: true }
+      else if b.k == "img" && acc.open then
+        { out: "${acc.out}${renderImg(b.t)}", open: true }
       else if b.k == "cont" && acc.open then
-        { out: "${acc.out}<p>${inline(b.t)}</p>", open: true }
+        { out: "${acc.out}<p>${renderStep(b.t)}</p>", open: true }
       else {
         let pre = if acc.open then "</li></ol>" else "";
         let body =
           if b.k == "head" then "<p class=\"ref-h\">${inline(b.t)}</p>"
+          else if b.k == "img" then renderImg(b.t)
           else if b.k == "quote" || b.k == "code" then "<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>"
           else "<p>${inline(b.t)}</p>";
         { out: "${acc.out}${pre}${body}", open: false }
@@ -547,7 +578,12 @@ export func main() -> () ! {IO, FS} {
           Err(m) => { println("${m} not found; nothing written"); exit(1) },
           Ok(outs) => {
             writeAll(outs);
-            println(join("\n", map(\o. "${o.path}: ${o.note}", outs)))
+            println(join("\n", map(\o. "${o.path}: ${o.note}", outs)));
+            let shape = flatMap(\n. cardWarnings(n, mdOf(n.id)), raw);
+            if length(shape) > 0 then {
+              println("Cards not yet in the card shape (README, \"Writing a card\"):");
+              println(join("\n", map(\w. "  ${w}", shape)))
+            } else ()
           }
         }
       }

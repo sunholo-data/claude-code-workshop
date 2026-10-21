@@ -7,7 +7,7 @@
 --
 -- For each of deck/01-workshop.html and deck/02-reference.html it writes SITE_DIR/<same name>,
 -- changing only three things, so the hosted copy never drifts from the repo:
---   ../images/setup/…    becomes images/setup/… (the images are copied next to the decks)
+--   ../images/setup/…, ../images/cards/…   become images/setup/…, images/cards/… (copied next to the decks)
 --   the board link       points at BOARD_URL, this group's board (the repo keeps href="#")
 --   a robots meta line   keeps the hosted copy out of search engines
 -- Other ../ paths (the logo) are left alone: the site keeps its own images/ one level up.
@@ -31,12 +31,12 @@ export pure func withRobots(html: string) -> string {
 }
 
 export pure func hosted(html: string, board: string) -> string =
-  withRobots(replace(replace(html, "../images/setup/", "images/setup/"),
+  withRobots(replace(replace(replace(html, "../images/setup/", "images/setup/"), "../images/cards/", "images/cards/"),
                      "class=\"board-link\" href=\"#\"", "class=\"board-link\" href=\"${board}\""))
 
--- Every images/setup/<file> a deck refers to.
+-- Every images/setup/<file> and images/cards/<file> a deck refers to, as "setup/<file>".
 func setupImages(html: string) -> [string] =
-  match compile("\\.\\./images/setup/([A-Za-z0-9._-]+)") {
+  match compile("\\.\\./images/((?:setup|cards)/[A-Za-z0-9._-]+)") {
     Ok(re) => dedupe(map(\m. match m.groups { _ :: g :: _ => g.text, _ => "" }, findAll(re, html))),
     Err(_) => []
   }
@@ -48,9 +48,9 @@ func copyAll(names: [string], site: string) -> [string] ! {FS} =
   match names {
     [] => [],
     n :: rest => {
-      let failed = match readFileRaw("images/setup/${n}") {
-        Err(e) => ["images/setup/${n}: ${e}"],
-        Ok(b) => match writeFileBytesResult("${site}/images/setup/${n}", b) { Ok(_) => [], Err(e) => ["${site}/images/setup/${n}: ${e}"] }
+      let failed = match readFileRaw("images/${n}") {
+        Err(e) => ["images/${n}: ${e}"],
+        Ok(b) => match writeFileBytesResult("${site}/images/${n}", b) { Ok(_) => [], Err(e) => ["${site}/images/${n}: ${e}"] }
       };
       failed ++ copyAll(rest, site)
     }
@@ -71,6 +71,7 @@ export func main() -> () ! {IO, FS, Env} {
     if length(unlinked) > 0 then { println("A deck's board link isn't href=\"#\" any more; publish would leave it as it is. Fix the deck first."); exit(1) }
     else {
       mkdirAll("${site}/images/setup");
+      mkdirAll("${site}/images/cards");
       writeFile("${site}/01-workshop.html", hosted(readFile("deck/01-workshop.html"), board));
       writeFile("${site}/02-reference.html", hosted(readFile("deck/02-reference.html"), board));
       let errs = copyAll(imgs, site);

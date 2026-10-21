@@ -7,37 +7,49 @@ repository, but not to its `main`: that only changes through a pull request the 
 
 ## Do
 
-1. You already cloned this workshop repository. That clone is today's practice repository: click
-   **+ New** and choose the `claude-code-workshop` folder, **not** a practice folder from an
-   earlier exercise. Those were made with `git init` and have nowhere to push to.
-2. **Sign-in check** ([the GitHub check](git-installed.md#the-github-check)). Send each line and
-   fix anything that isn't good before going on:
-   - `!git remote -v`: a `github.com/…/claude-code-workshop` address. Nothing? You're in the wrong
-     folder.
-   - `!git config user.email`: your email. Nothing? Ask Claude to set your git name and email.
-   - `!gh auth status`: `Logged in to github.com account <you>`.
-   - `!gh repo view --json viewerPermission`: `WRITE` or better. `READ` means the facilitator
-     hasn't added you yet, or you haven't accepted the invitation (email, or
-     github.com/notifications).
+**Where:** a **+ New** session on the `claude-code-workshop` folder you cloned at the start, in
+Manual. Not `ladder-practice`, `rules-practice` or `workshop-practice`: those were made with
+`git init` and have nowhere to push to.
 
-   `gh` not found, or not logged in? On a Mac git can't ask for your sign-in on its own, so
-   GitHub CLI is needed (on Windows too, for this check): install it from cli.github.com, then in the terminal pane (**Ctrl** and the backtick key) type `gh auth login`,
-   choose the browser option, and afterwards `gh auth setup-git`. Use the terminal pane, not `!`:
-   sign-in asks you questions, and anything run with `!` lands in the conversation. Never paste a
-   password or token into the chat.
-3. Ask: *"Make a branch called practice/<your-github-username>."*
-4. Make one small change (a line in your own `notes/<your-github-username>.md`) and ask Claude to
-   commit it.
-5. **Predict:** you ask Claude to push the branch. Will it ask you first? Will your change appear
-   on the `main` branch on GitHub?
-6. Ask it to push. Then open the repository on GitHub, find the branch list, and open yours.
-7. Now try the thing you shouldn't be able to do: ask Claude to push your commit straight to
-   `main`. Read what GitHub says back.
+1. Check which folder you're in, and that it can reach GitHub.
 
-**Not in a facilitated group?** You won't have permission to push here. Ask Claude to fork the
-repository to your own GitHub account (`gh repo fork --remote`) and push your branch to the fork.
-That needs the GitHub CLI: on Windows too, install it from cli.github.com and sign in with
-`gh auth login` in the terminal pane first.
+   ![Which folders can push: the clone can, practice folders can't](../images/cards/where-things-live.svg)
+
+   Send each line (the `!` runs it without Claude):
+   - `!git remote -v`. **You should see:** a `github.com/…/claude-code-workshop` address. Nothing? Wrong folder: **+ New**, choose `claude-code-workshop`.
+   - `!git config user.email`. **You should see:** your email. Nothing? Ask Claude: *"Set my git name to <your name> and email to <the email on your GitHub account>, for every repository."*
+   - `!gh auth status`. **You should see:** `Logged in to github.com account <you>`. Not found, or not logged in? Install GitHub CLI from cli.github.com, then in the terminal pane (**Ctrl** and the backtick key) type `gh auth login`, choose the browser, and then `gh auth setup-git`. Never in the chat, never with `!`.
+   - `!gh repo view --json viewerPermission`. **You should see:** `WRITE` or `ADMIN`. `READ`? The facilitator hasn't added you yet, or you haven't accepted the invitation (your email, or github.com/notifications). Tell the facilitator and wait.
+2. Put back anything earlier exercises changed here, so your branch carries only today's work:
+
+   > Show me git status. If any tracked files are changed, list them, then put them back to match the last commit. Leave untracked files alone.
+
+   **You should see:** a list, a request to run `git restore` (approve it), then a clean status. Untracked files such as `CONVENTIONS.md` stay, and that's fine.
+3. Make your branch. Use your GitHub username:
+
+   > Make a branch called practice/<your-github-username> and switch to it.
+
+   **You should see:** `Switched to a new branch`, with no prompt: `git switch` is allowed. If it asks to run `git checkout -b` instead, that's an ask rule; approve it.
+4. Make one change and commit only that file:
+
+   > Create notes/<your-github-username>.md with one line saying what you want from this course. Commit only that file.
+
+   **You should see:** one new file, and a commit with `1 file changed`. More than one file? Say *"undo that commit, then commit only notes/<your-github-username>.md"*.
+5. **Predict:** you ask Claude to push the branch. Will it ask you first? Will your change appear on the `main` branch on GitHub?
+6. Push it:
+
+   > Push this branch to GitHub.
+
+   **You should see:** an approval prompt (push is an ask rule; approve it), then `* [new branch]`. On github.com/sunholo-data/claude-code-workshop, open the **branches** list and find yours. It may ask twice the first time, once more to set the upstream.
+7. Now try what you shouldn't be able to do:
+
+   > Push this branch's commit straight to main on GitHub, with git push origin HEAD:main. Don't merge anything into my local main.
+
+   **You should see:** `! [remote rejected]` and `Changes must be made through a pull request`. That refusal is the proof. If Claude offers to merge into `main` locally or to force the push, say no.
+
+**Not in a facilitated group?** You can't push to this repository. Ask Claude to fork it to your
+own account with `gh repo fork --remote` and push your branch there. Step 7 won't be refused on
+your own fork: that refusal needs the group's repository and its rule.
 
 ## Proof
 

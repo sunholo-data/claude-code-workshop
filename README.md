@@ -91,6 +91,32 @@ Hand-kept, and so worth a look when a lesson changes: the setup slides and facil
 `deck/01-workshop.html`, the board's "Start here" steps, `README.md`, the guide's `SKILL.md`, and
 `settings/README.md` against `settings/starter.json`.
 
+## Writing a card
+
+A lesson's Do section is the card people work from, usually without anyone to ask. On the first
+run the main barrier was not the content but steps that left people guessing: which folder, what
+to type, what should happen. So every core and follow-up card has this shape:
+
+1. **Do opens with `**Where:**`**: the folder, the session and the mode, e.g. *"a session on the
+   `claude-code-workshop` folder, in Manual"*. Say it again in a step that changes folder.
+2. **Every message to Claude is a prompt block** (`> ` lines), exact words, ready to paste. No
+   "something like", no "or" between two routes on a core card; the second route goes in a
+   stretch box.
+3. **Each step that does something says what you should see**, and the one most likely fix if
+   not, as indented lines after it: `You should see: …` / `If not: …`.
+4. **The card builds what it needs.** No folder, file, remote or rule left over from an earlier
+   card, unless that card is in `needs` and nothing in between resets it. If the facilitator must
+   set something up (collaborators, keys, a connector an Owner enables), the card says so and the
+   facilitator notes in the overlay list it.
+5. **A picture where a step is about place.** Images go in `images/cards/` (diagrams, SVG with
+   their own white panel so both deck themes read them) or `images/setup/` (screenshots), linked
+   as `![what it shows](../images/cards/<file>)` inside the step. The slides show them.
+6. **Walk it literally before the day**: a fresh folder, the stated rules, the stated account.
+
+The build reports every core and follow-up card that doesn't open with `**Where:**` or uses a
+phrase that left people guessing ("a practice folder", "reset the copy", "something like", …).
+It reports rather than refuses while the older cards are brought into line.
+
 ## Status
 
 Draft, started 19 Oct 2026. Clone it and make it your own; a private copy is fine.

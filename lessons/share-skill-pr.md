@@ -8,21 +8,41 @@ and every change to it has a name and a reason attached.
 
 ## Do
 
-1. Run [the GitHub check](git-installed.md#the-github-check) in your session on the team
-   repository: it's a different repository from the workshop, so your access to it is checked
-   separately. Then ask Claude for a branch called
-   `skill/<your-github-username>-<skill-name>`.
-2. Copy your skill folder from [write-a-skill](write-a-skill.md) into `.claude/skills/`. Check that
-   its name doesn't clash with an existing skill, and that its description doesn't overlap one. If it
-   does, see [skill-routing](skill-routing.md).
-3. Commit, push, and ask Claude to open a pull request. This needs the GitHub CLI, `gh`; without it,
-   open the pull request on GitHub in the browser. In the description, write what the skill does, a
-   request to test it with, and what a correct result looks like.
+**Where:** a session on the team repository's folder from [shared-skills-repo](shared-skills-repo.md),
+in Manual, with its four checks good. Your skill is in `skill-work` from
+[write-a-skill](write-a-skill.md).
+
+1. Start from what's on GitHub, on your own branch:
+
+   > Switch to main and pull, then make a branch called skill/<your-github-username>-<skill-name> and switch to it.
+
+2. Bring your skill in, and check it doesn't collide:
+
+   > Copy my skill folder from ../skill-work/.claude/skills/ into .claude/skills/ here. Then tell me whether its name or its description overlaps any skill already in this folder.
+
+   **You should see:** a request to read outside this folder (approve: it's your own `skill-work`),
+   one new folder, and a yes or no on overlaps. An overlap? See [skill-routing](skill-routing.md)
+   before going on.
+3. Commit, push and open the pull request:
+
+   > Commit only my skill's folder. Push the branch and open a pull request into main with gh. Body: what the skill does, one request to test it with, and what a correct result looks like.
+
+   **You should see:** prompts for the push and for `gh pr create` (approve both), then a link.
 4. **Predict:** what will your reviewer ask you to change?
-5. Review a pull request from the **other** group: switch to their branch, start a new session, run
-   their test request, and leave at least one comment on GitHub about what happened.
-6. Answer your own review. Push the fix to the same branch; the pull request updates itself.
-7. Once a reviewer merges it, someone in the other group pulls and uses your skill.
+5. Review a pull request from the **other** group, as a colleague meeting their skill for the
+   first time:
+
+   > List the open pull requests. Check out number <N> with gh pr checkout.
+
+   Then **+ New** for a fresh session on this folder, send their test request in your own words,
+   and don't help. Back in the first session:
+
+   > Leave a comment on pull request <N> saying what happened when I ran it: <what you saw>.
+
+6. Answer your own review: ask Claude to make the change your reviewer asked for, commit it and
+   push to the same branch. The pull request updates itself.
+7. A reviewer named in the overlay (`reviewers`) merges it. Then someone in the other group
+   switches to `main`, pulls, and uses your skill.
 
 ## Proof
 

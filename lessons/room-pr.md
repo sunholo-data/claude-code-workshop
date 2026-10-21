@@ -7,28 +7,55 @@ the whole room's work in their own copy.
 
 ## Do
 
-1. Start from an up-to-date `main`: ask Claude to switch to `main` and pull. If you skipped
-   [clone-branch](clone-branch.md) or its push failed, run
-   [the GitHub check](git-installed.md#the-github-check) first.
-2. Ask for a branch named `skill/<your-github-username>`.
-3. Write one small skill in **its own folder**,
-   `.claude/skills/<your-github-username>-<skill-name>/SKILL.md` (for example
-   `.claude/skills/mark-explain-diff/`), and change nothing else. The folder name is what everyone
-   will type after `/`, and your username keeps it from clashing with a colleague's. Ideas, all things you'd want today:
-   - *explain-diff*: "explain what changed since my last commit, in plain English"
-   - *where-was-i*: "summarise my progress.md in three lines"
-   - *check-before-push*: "list what's about to be pushed, and anything that looks private"
+**Where:** a session on the `claude-code-workshop` folder, in Manual, after
+[clone-branch](clone-branch.md) worked. If it didn't, do its step 1 (the GitHub check) first.
 
-   Give it a `description` that says when it should be used, in words someone else would type.
-4. Try it yourself in a **new session** (skills load when a session starts), then commit.
+![Your branch, your pull request, everyone's copy](../images/cards/branch-pr-flow.svg)
+
+1. Start from what's on GitHub now:
+
+   > Switch to main and pull. Then show me git status.
+
+   **You should see:** `Already up to date` or a list of new files, then `nothing to commit` or only
+   untracked files. If it says your main is *ahead of* `origin/main`, ask: *"Make my local main
+   match origin/main exactly"* and approve the `git reset` it asks for.
+2. Make your branch:
+
+   > Make a branch called skill/<your-github-username> and switch to it.
+
+3. Write one small skill in its own folder. Pick one idea, or bring your own:
+   *explain-diff* (explain what changed since my last commit, in plain English), *where-was-i*
+   (summarise my progress.md in three lines), *check-before-push* (list what's about to be
+   pushed, and anything that looks private).
+
+   > Write a skill in .claude/skills/<your-github-username>-<skill-name>/SKILL.md that <what it does>. Set its name to <your-github-username>-<skill-name>, the same as the folder. Write the description as the words a colleague would type when they want it. Change no other file.
+
+   **You should see:** one new `SKILL.md`, and a request to save it (approve). The `name:` line is
+   what everyone will type after `/`; with your username in it, it can't clash with a colleague's.
+4. Test it the way a colleague will meet it: click **+ New** for a fresh session on the same
+   folder, type `/` and find your skill, then run it. Back in this session:
+
+   > Commit only the .claude/skills/<your-github-username>-<skill-name> folder.
+
+   **You should see:** a commit with `1 file changed`. More? Say *"undo that commit, then commit only
+   my skill folder"*.
 5. **Predict:** after you push and open a pull request, will your skill appear in your
    neighbour's Code tab? When will it?
-6. Push the branch, and ask Claude to open a pull request (or open it on GitHub: the yellow
-   **Compare & pull request** banner). Say in one line what the skill does.
+6. Push and open the pull request:
+
+   > Push this branch, then open a pull request into main with gh. Title: my skill's name. Body: one line on what it does and one request to test it with.
+
+   **You should see:** two approval prompts (push, then `gh pr create`), then a pull request link.
+   No `gh`? Open github.com/sunholo-data/claude-code-workshop and click the yellow **Compare &
+   pull request** banner.
 7. Wait for the facilitator to merge. You can't merge it yourself: `main` only changes through a
-   reviewed pull request. Look at the PR on GitHub while you wait.
-8. When everything is merged, ask Claude to switch to `main` and pull. Start a **new session**,
-   type `/`, and find your skill and the others. Run one written by someone else.
+   reviewed pull request. Open your pull request's link while you wait.
+8. When the facilitator says everything is merged:
+
+   > Switch to main and pull.
+
+   Then **+ New** for a fresh session, type `/`, and find your skill and the others. Run one a
+   colleague wrote.
 
 ## Proof
 
