@@ -411,7 +411,7 @@ nodes:
     tier: B
     band: advanced
     title: Hooks
-    needs: [settings-permissions]
+    needs: [settings-permissions, use-a-skill]
     minutes: 30
     can: "I can make something happen automatically before or after Claude acts."
     proof: "A hook that ran."
