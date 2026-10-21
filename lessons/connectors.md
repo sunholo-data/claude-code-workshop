@@ -14,14 +14,22 @@ opens it gets the same ones. This repository has one; [add-mcp](add-mcp.md) uses
 ## Do
 
 1. Find the **Connectors** list in the panel on the right of the Code tab. Which are on? Each one's tools are
-   available to Claude in this session.
-2. Choose a question you could answer from a source your group's rules allow (a calendar or a
-   shared drive folder are typical). Check the rule before you start.
-3. **Export route:** put an export or copy of the data in the folder and ask the question with
-   `@` on that file. Write down exactly what you gave it.
-4. **Predict:** you ask the same question in a new session, with the connector on and no file.
-   What will Claude fetch? More than your export, or less?
-5. Ask. Expand the tool calls: which tool, with what search terms, and what came back.
+   available to Claude in this session. If **Google Drive** isn't connected, connect it and sign in
+   with your work Google account. (On a Team or Enterprise plan, if it isn't listed, an Owner has to
+   turn it on for the organisation first.) No Google? Use any connector your group's rules allow.
+2. Pick **one Google Doc** your group's rules allow you to share with a model, such as your own
+   notes from an earlier session. Not a client folder, and not a calendar or mailbox: those name
+   clients in almost every item. Write down a question whose answer is in that doc.
+3. **Export route:** in the doc, **File → Download → Markdown (.md)**. Save it into a folder called
+   `exports` inside the workshop folder: git ignores that folder, so the export can't be committed
+   to this public repository by accident. Ask the question with `@exports/` and the file's name.
+   Write down exactly what you gave it: one file, as it was when you downloaded it.
+4. **Predict:** you ask the same question in a new session, with no file, so Claude has to use the
+   connector. What will it fetch? More than your export, or less?
+5. Ask Claude to delete the export (it will ask first: deleting is an ask rule). Start a **+ New**
+   session, ask the same question without `@`, and expand the tool calls: which tool, with what
+   search terms, and what came back. If the results show anything your rules don't allow, such as
+   a client document, stop and say so. That is what "it reaches what your account reaches" looks like.
 6. Say the data path out loud: where the data came from, which tool fetched it, whose account it
    ran as, and where it went next.
 
