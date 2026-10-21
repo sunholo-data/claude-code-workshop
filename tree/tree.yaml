@@ -48,6 +48,10 @@ phrases:
 # table, `note` the board's line under a box's title. The workshop-guide skill's "Bands" section
 # says how the guide treats each one.
 bands:
+  - id: pre-work
+    label: "pre-work: before the day"
+    when: "On your own, before the day, from the card; the facilitator checks the proof at the start"
+    note: "Do this before the day, on your own, from its card. Bring the proof."
   - id: core
     label: "core: everyone, today"
     when: "The minimum standard: everyone, on the day, in step with the blocks"
@@ -75,42 +79,36 @@ blocks:
     tagline: "who's here · set up together"
     title: "Setup"
     time: "09:00"
-    summary: "Who's here, in the chat. Then setup together from the shared screen: the Code tab in Manual, git, the workshop cloned, and the guide started in a new session on it."
-    room: "Everyone's Claude sign-in email (board invite) and GitHub username (Write access), collected before the day; a helper for installs in a side room"
+    summary: "Who's here, in the chat. Then setup together from the shared screen: the Code tab in Manual, git and Node checked, the workshop cloned, and the guide started in a new session on it. Check the pre-work proofs (Git as undo; Clone, branch, push)."
+    room: "Everyone's Claude sign-in email (board invite) and GitHub username, collected before the day, with Write access added and accepted so the Git pre-work can be done; a helper for installs in a side room"
   - id: 2
     tagline: "files, diffs, trust per action"
     title: "Chat to agent"
-    time: "09:30"
+    time: "09:45"
     summary: "Files, the folder as context, permissions and diffs; then trust is earned per action: the same task in Manual, Accept edits and Auto."
     room: "`samples/`, a practice folder with nothing confidential"
   - id: 3
     tagline: "CLAUDE.md, our conventions, allow · ask · deny"
     title: "Rules"
-    time: "10:45"
-    summary: "CLAUDE.md before and after; the group writes its conventions together, data handling first; then the settings that enforce them: allow, ask, deny."
-    room: "A shared document for the conventions; the group's data rule; `settings/starter.json`"
+    time: "11:20"
+    summary: "CLAUDE.md before and after; then the settings that enforce rules: allow, ask, deny. Writing the team's conventions together is a stretch box here, or a session of its own."
+    room: "The group's data rule; `settings/starter.json`; for the conventions stretch box, a shared document"
   - id: 4
-    tagline: "undo, then clone, branch, push"
-    title: "Git"
-    time: "11:30"
-    summary: "Commit, see what changed, go back; branch and push to this repository, and watch GitHub refuse a push to `main`."
-    room: "Write access to this repository for everyone; GitHub sign-in working on each laptop (the GitHub CLI on Macs)"
-  - id: 5
-    tagline: "use one, then one pull request each"
+    tagline: "use someone else's, then read how it's built"
     title: "Skills"
-    time: "12:30"
-    summary: "Clone `presentation-template` and build a short deck with its skill. Then one pull request each: a small skill in its own folder. The facilitator merges them all on screen; everyone pulls, types `/`, and runs a colleague's skill."
-    room: "github.com/sunholo-data/presentation-template; the facilitator signed in to GitHub to merge"
-  - id: 6
+    time: "12:35"
+    summary: "Clone `presentation-template` and build a short deck with its skill; then read how it's built. Sharing a skill by pull request is the follow-up's first job."
+    room: "github.com/sunholo-data/presentation-template; Node installed (the skill's lint runs on it)"
+  - id: 5
     tagline: "connect instead of paste"
     title: "Connect"
-    time: "13:30"
+    time: "13:05"
     summary: "Pasting an export versus connecting the source; add Google Developer Knowledge with a lent key."
     room: "One connector everyone has on and the data rule allows; the lent API keys, handed to each person privately; `.mcp.json` in this repo; for the stretch box, a web page everyone may check (the group's own site)"
-  - id: 7
+  - id: 6
     tagline: "each, shown to the group · homework"
     title: "One real task"
-    time: "14:15"
+    time: "14:10"
     summary: "One real task each, shown to the group: what you asked, what it did, how you checked it. Self-assessment again; homework."
     room: "The task ideas from the Who's here slide"
 
@@ -119,7 +117,9 @@ blocks:
 # block's core minutes fit between its start and the next block, less any breaks inside it.
 day_end: "15:00"
 breaks:
-  - { time: "12:00", title: "Lunch", minutes: 30 }
+  - { time: "11:05", title: "Break", minutes: 15 }
+  - { time: "12:05", title: "Lunch", minutes: 30 }
+  - { time: "13:55", title: "Break", minutes: 15 }
 
 nodes:
   # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
@@ -230,7 +230,7 @@ nodes:
     proof: "Before/after: the same request, different behaviour, because of one rule."
   - id: team-conventions
     tier: 2
-    band: core
+    band: stretch
     block: 3
     title: Team conventions and data handling
     needs: [claude-md]
@@ -260,9 +260,7 @@ nodes:
   # ── Tier 3 · Git, as the safety net and the sharing mechanism ───────────
   - id: git-safety-net
     tier: 3
-    band: core
-    block: 4
-    predict: group
+    band: pre-work
     title: Git as undo
     needs: [permissions-review, git-installed]
     minutes: 20
@@ -270,8 +268,7 @@ nodes:
     proof: "Three commits in a log; one change undone."
   - id: clone-branch
     tier: 3
-    band: core
-    block: 4
+    band: pre-work
     title: Clone, branch, push
     needs: [git-safety-net]
     minutes: 20
@@ -282,9 +279,9 @@ nodes:
   - id: use-a-skill
     tier: 4
     band: core
-    block: 5
+    block: 4
     title: Use someone else's skill
-    needs: [clone-branch, claude-md]
+    needs: [claude-md]
     minutes: 30
     can: "I can clone a repo that carries a skill and get the result its author intended, without knowing how."
     proof: "A three-slide deck built with presentation-template's presentation-slides skill, passing its lint."
@@ -292,7 +289,7 @@ nodes:
   - id: skill-anatomy
     tier: 4
     band: stretch
-    block: 5
+    block: 4
     title: How a skill is built
     needs: [use-a-skill]
     minutes: 20
@@ -309,8 +306,7 @@ nodes:
 
   - id: room-pr
     tier: 4
-    band: core
-    block: 5
+    band: follow-up
     predict: group
     title: Your skill, in everyone's copy
     needs: [use-a-skill, clone-branch]
@@ -322,7 +318,7 @@ nodes:
   - id: connectors
     tier: 5
     band: core
-    block: 6
+    block: 5
     predict: group
     title: Connectors and MCP
     needs: [team-conventions]
@@ -332,7 +328,7 @@ nodes:
   - id: add-mcp
     tier: 5
     band: core
-    block: 6
+    block: 5
     title: Add a remote MCP server
     needs: [connectors]
     minutes: 30
@@ -375,9 +371,9 @@ nodes:
   - id: real-task
     tier: 6
     band: core
-    block: 7
+    block: 6
     title: One real task, end to end
-    needs: [claude-md, settings-permissions, git-safety-net]
+    needs: [claude-md, settings-permissions]
     minutes: 45
     can: "I can take a real piece of my own work from request to checked result in the new mode."
     proof: "Shown to the room: what you asked, what it did, how you checked it."
@@ -386,7 +382,7 @@ nodes:
   - id: verify-output
     tier: B
     band: stretch
-    block: 7
+    block: 6
     title: Checking the work
     needs: [real-task]
     minutes: 20
@@ -404,7 +400,7 @@ nodes:
   - id: page-tags
     tier: B
     band: stretch
-    block: 6
+    block: 5
     title: Check a page's tags
     needs: [connectors]
     minutes: 25
