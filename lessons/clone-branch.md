@@ -8,15 +8,15 @@ repository, but not to its `main`: that only changes through a pull request the 
 ## Do
 
 **Where:** a **+ New** session on the `claude-code-workshop` folder you cloned at the start, in
-Manual. Not `ladder-practice`, `rules-practice` or `workshop-practice`: those were made with
-`git init` and have nowhere to push to.
+Manual. Not `ladder-manual`, `rules-practice` or `workshop-practice`: those were made with
+`git init` and push, if at all, only to a folder on your laptop.
 
 1. Check which folder you're in, and that it can reach GitHub.
 
    ![Which folders can push: the clone can, practice folders can't](../images/cards/where-things-live.svg)
 
    Send each line (the `!` runs it without Claude):
-   - `!git remote -v`. **You should see:** a `github.com/…/claude-code-workshop` address. Nothing? Wrong folder: **+ New**, choose `claude-code-workshop`.
+   - `!git remote -v`. **You should see:** a `github.com/…/claude-code-workshop` address. Nothing, or a path on your laptop? Wrong folder: **+ New**, choose `claude-code-workshop`.
    - `!git config user.email`. **You should see:** your email. Nothing? Ask Claude: *"Set my git name to <your name> and email to <the email on your GitHub account>, for every repository."*
    - `!gh auth status`. **You should see:** `Logged in to github.com account <you>`. Not found, or not logged in? Install GitHub CLI from cli.github.com, then in the terminal pane (**Ctrl** and the backtick key) type `gh auth login`, choose the browser, and then `gh auth setup-git`. Never in the chat, never with `!`.
    - `!gh repo view --json viewerPermission`. **You should see:** `WRITE` or `ADMIN`. `READ`? The facilitator hasn't added you yet, or you haven't accepted the invitation (your email, or github.com/notifications). Tell the facilitator and wait.

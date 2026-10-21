@@ -15,25 +15,61 @@ from Sunholo's Decision Budget, and Claude Code's permission modes and rules map
 
 ## Do
 
-1. Ask Claude to copy `samples/` to a new folder called `ladder-practice` **next to** the workshop
-   folder (not inside it), make it a git repository, and then open a **+ New session** on it. It has
-   no rules yet, which is the point. You'll run the same task three times, so each run needs a fresh copy.
-2. The task, each time: *"Sort the files in ladder-practice into folders by type, write a short
-   README listing them, and commit."* The first commit on a new laptop may stop to ask for your
-   name and email: that's git, not Claude. Give them once and it won't ask again.
-3. **Predict:** how many times will Claude stop and ask in **Manual**? In **Accept edits**? In
-   **Auto**? Write your three numbers down.
-4. Run it in **Manual** and count the prompts. Then reset the copy, switch to **Accept edits**,
-   and run it again. Then **Auto**. (If Auto isn't in the mode selector, your plan or organisation
-   hasn't enabled it; do the first two.)
-5. Still in Auto, ask: *"Now push this to GitHub."* **Predict** first: will it ask, try, or
-   explain? This copy has no GitHub repository yet (that's block 4), and with no rules, whether
-   Auto stops is a background check's call, not yours. In block 3 you add an ask rule for
-   `git push`, and from then on it stops for you even in Auto. That is a ceiling: publishing stays
-   at proposing, permanently.
-6. In Manual mode, find a command you've approved several times without changing anything. Choose
-   **Always allow**. You've just promoted one action from proposing to automated, on
-   the evidence of how often you changed nothing.
+**Where:** first a session on the `claude-code-workshop` folder, in Manual, to build three copies.
+Then one **+ New** session on each copy, which you open yourself: `ladder-manual` in Manual,
+`ladder-accept` in Accept edits, `ladder-auto` in Auto. The copies have no rules of their own
+yet, which is the point.
+
+1. Check git knows who you are. Send:
+
+   ```
+   !git config user.email
+   ```
+
+   **You should see:** your email. Nothing? Git won't ask you later: a commit either stops with
+   *"Author identity unknown"* or, on a Mac, goes through under a made-up name from your laptop's
+   name. Set it now:
+
+   > Set my git name to <your name> and email to <the email on your GitHub account>, for every repository.
+
+2. Build the three copies, each with its own first commit and its own place to push to. In the
+   workshop session:
+
+   > Next to this workshop folder, not inside it, make three folders: ladder-manual, ladder-accept and ladder-auto. Copy the files in samples/ into each one, not the samples folder itself. Make each a git repository and commit those files. Then, also next to this folder, make three empty repositories with git init --bare: ladder-manual-remote.git, ladder-accept-remote.git and ladder-auto-remote.git. Add each one to its folder as the remote called origin.
+
+   **You should see:** several approval prompts (approve them: this session's prompts don't
+   count), then three folders and three `.git` repositories next to `claude-code-workshop`.
+   Check with `!ls ..`. Nothing goes to GitHub: each copy pushes only to a folder on your laptop.
+3. **Predict:** you'll send the task below once in each copy. How many times will Claude stop and
+   ask in **Manual**? In **Accept edits**? In **Auto**? Write your three numbers down.
+
+   > Sort the files in this folder into folders by type, write a short README listing them, and commit.
+4. **+ New**, open `ladder-manual`, set the mode to **Manual**, and send the task from step 3. Count every
+   approval prompt.
+
+   **You should see:** a prompt for most steps: making folders, moving files, writing the README,
+   committing. If it asks whether you trust the folder, say yes; that one doesn't count.
+5. **+ New**, open `ladder-accept`, set **Accept edits**, send the task, count.
+6. **+ New**, open `ladder-auto`, set **Auto**, send the task, count.
+
+   No **Auto** in the mode selector? Your plan or organisation hasn't turned it on. Do 4 and 5,
+   and skip step 7.
+7. Still in the `ladder-auto` session, guess first: will it ask, try, or refuse? Then:
+
+   > Now push this to origin.
+
+   **You should see:** either a push to `ladder-auto-remote.git` or a prompt. With no rules,
+   whether Auto stops is a background check's call, not yours. In block 3 you add an ask rule
+   for `git push`, and from then on it stops for you even in Auto. That is a ceiling: publishing
+   stays at proposing, permanently.
+8. Go back to the `ladder-manual` session and ask for one more small change:
+
+   > Add one line to the README saying when these files were sorted, and commit it.
+
+   When it asks to run `git commit`, choose **Always allow**. Then ask for another line and a
+   commit. **You should see:** no prompt for the commit this time. You've promoted one action from
+   proposing to automated, on the evidence that you approved it each time without changing
+   anything. The rule is saved in this folder only.
 
 ## Proof
 

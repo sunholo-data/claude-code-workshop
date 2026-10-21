@@ -191,7 +191,7 @@ nodes:
     block: 2
     predict: group
     title: Trust is earned per action
-    needs: [permissions-review]
+    needs: [permissions-review, git-installed]
     minutes: 25
     can: "I can say which of Claude's actions I approve every time, which I let through, and which it may never do, and why each sits where it does."
     proof: "The same task run in Manual, Accept edits and Auto, with a count of what asked in each, and what Auto did when asked to push."
