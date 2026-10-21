@@ -7,7 +7,9 @@ the whole room's work in their own copy.
 
 ## Do
 
-1. Start from an up-to-date `main`: ask Claude to switch to `main` and pull.
+1. Start from an up-to-date `main`: ask Claude to switch to `main` and pull. If you skipped
+   [clone-branch](clone-branch.md) or its push failed, run
+   [the GitHub check](git-installed.md#the-github-check) first.
 2. Ask for a branch named `skill/<your-github-username>`.
 3. Write one small skill in **its own folder**,
    `.claude/skills/<your-github-username>-<skill-name>/SKILL.md` (for example

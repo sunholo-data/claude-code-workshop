@@ -32,7 +32,7 @@ gcloud auth application-default login \
   --client-id-file=PATH_TO_CLIENT_FILE
 ```
 
-Type it in the terminal pane (**Ctrl+`**), not with `!`: it opens a browser to sign you in, and
+Type it in the terminal pane (**Ctrl** and the backtick key), not with `!`: it opens a browser to sign you in, and
 nothing about a sign-in belongs in the conversation. It prints `Credentials saved to file: [PATH]`. Ask Claude to add the server to your practice
 folder's `.mcp.json`: command `uvx`, argument `analytics-mcp`, with that path as
 `GOOGLE_APPLICATION_CREDENTIALS` and your project ID as `GOOGLE_PROJECT_ID`. Restart and check

@@ -19,7 +19,7 @@ and a Google Cloud project; your organisation may already have one you should us
 
 ### Or from the command line
 
-Run these in the terminal pane (**Ctrl+`**), after signing in there with `gcloud auth login`.
+Run these in the terminal pane (**Ctrl** and the backtick key), after signing in there with `gcloud auth login`.
 
 ```
 gcloud services enable developerknowledge.googleapis.com --project=PROJECT_ID

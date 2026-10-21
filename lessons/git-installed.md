@@ -27,6 +27,23 @@ you install yourself. Do this before the day.
    use for work, and turn on two-factor sign-in when it offers.
 6. Send your GitHub username (not your password) to the facilitator.
 
+## The GitHub check
+
+Run this before any step that pushes ([clone-branch](clone-branch.md), [room-pr](room-pr.md),
+[share-skill-pr](share-skill-pr.md)), and again whenever a push fails. In a session on the
+repository you'll push to, send each line with `!` and read what comes back:
+
+| Send | Good | If not |
+|---|---|---|
+| `!git remote -v` | a `github.com/…` address for the repository you mean to push to | Nothing printed: this folder isn't a clone. You're probably in a practice folder: **+ New** and choose the clone. |
+| `!git config user.email` | your email | Nothing: ask Claude to set your git name and email (the email on your GitHub account). |
+| `!gh auth status` | `Logged in to github.com account <you>` | `command not found`: install GitHub CLI from cli.github.com. Not logged in: in the terminal pane, `gh auth login` then `gh auth setup-git`. |
+| `!gh repo view --json viewerPermission` | `WRITE`, `MAINTAIN` or `ADMIN` | `READ`: you can't push here yet. The facilitator adds you; then accept the invitation by email or at github.com/notifications, and check again. |
+
+Or ask Claude: *"Run the GitHub check from lessons/git-installed.md, one command at a time, and
+tell me what to fix."* Signing in stays yours, in the terminal pane; `gh auth status` hides the
+token, so its output is safe in the conversation.
+
 You could also ask Claude to check for git and explain what it finds. The difference: with `!`
 you run the command; without it, Claude decides what to run and asks you first.
 

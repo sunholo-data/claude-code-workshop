@@ -124,6 +124,24 @@ When a step or a proof needs a command run by the learner, have them send it wit
 see it. Never use `!` for signing in to anything: that belongs in the terminal pane or a browser,
 out of the conversation.
 
+## Before anything that pushes
+
+Before starting `clone-branch`, `room-pr`, `share-skill-pr` or `shared-skills-repo`, and whenever a
+push or pull request fails, run the GitHub check in `lessons/git-installed.md` first, unless
+`progress.md` shows it passed in this folder. Have the learner send its four `!` lines, one at a
+time, so they see each result. Go on only when all four are good, and say which row failed and its
+fix if not:
+
+- **No remote** means the session isn't on a clone, almost always a practice folder: tell them to
+  click **+ New** and choose the clone, then stop.
+- **`READ` permission** means the facilitator hasn't added them yet, or they haven't accepted the
+  invitation. Nothing in the session fixes it: say so, park the node in `progress.md`, and offer
+  something that doesn't push.
+- **Not signed in** is fixed in the terminal pane (`gh auth login`, then `gh auth setup-git`),
+  never with `!` and never by pasting anything into the chat.
+
+Record a pass as `- [x] github-check — <date> — because <account> has <permission> on <repo>`.
+
 ## Don't
 
 - Do the task before they've sent it, or do more than they asked.

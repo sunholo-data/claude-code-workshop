@@ -8,7 +8,9 @@ and every change to it has a name and a reason attached.
 
 ## Do
 
-1. In your session on the team repository, ask Claude for a branch called
+1. Run [the GitHub check](git-installed.md#the-github-check) in your session on the team
+   repository: it's a different repository from the workshop, so your access to it is checked
+   separately. Then ask Claude for a branch called
    `skill/<your-github-username>-<skill-name>`.
 2. Copy your skill folder from [write-a-skill](write-a-skill.md) into `.claude/skills/`. Check that
    its name doesn't clash with an existing skill, and that its description doesn't overlap one. If it
