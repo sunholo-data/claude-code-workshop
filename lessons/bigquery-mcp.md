@@ -13,33 +13,57 @@ just written down.
 
 ## You need
 
-- The **Client ID** and **Client secret** for the connector. Your facilitator sends them to you
-  privately. Never paste them into a chat with Claude or into this repository.
-- The Google account your facilitator granted access to, usually your work account.
+From your facilitator, privately:
 
-If your organisation's admin has already added BigQuery for everyone, skip step 1 and click
-**Connect** on it instead.
+- The **Client ID** and **Client secret** for the connector. Never paste them into a chat with
+  Claude or into this repository.
+- The **Google Cloud project ID** the queries run in, and the **dataset** that holds the GA4
+  sample, written as `<project>.<dataset>`. Every BigQuery tool needs a project ID; Claude can't
+  guess it.
+- Which Google account they granted, usually your work account. The grant is three roles on that
+  project: **MCP Tool User** (`roles/mcp.toolUser`), **BigQuery Job User**
+  (`roles/bigquery.jobUser`) and **BigQuery Data Viewer** (`roles/bigquery.dataViewer`), the last
+  ideally on the one dataset. Not **BigQuery User**: that one can create datasets.
+
+Who adds the connector depends on your plan. On **Team** or **Enterprise**, only an Owner can add a
+custom connector, in **Organization settings → Connectors**; everyone else finds it under
+**Customize → Connectors** and clicks **Connect**: skip step 1. On **Pro** or **Max**, you add it
+yourself in step 1.
 
 ## Do
 
-1. In claude.ai, open **Settings → Connectors → Add custom connector**. Name it `BigQuery`, set the
-   URL to `https://bigquery.googleapis.com/mcp`, open **Advanced settings**, and paste the Client
-   ID and secret. Click **Add**.
+**Where:** claude.ai settings in the desktop app for steps 1 and 2, then a session on the
+`claude-code-workshop` folder, in Manual.
+
+1. **Pro or Max only.** Open **Customize → Connectors**, click **+ Add**, then **Add custom
+   connector**. Name it `BigQuery` and set the URL to `https://bigquery.googleapis.com/mcp`. Where
+   it asks how to sign in, choose to use your own OAuth client (it may be labelled **Use your own
+   OAuth client**) and paste the Client ID and secret. Click **Add**. The labels on this screen
+   change often; if yours differ, look for the OAuth client fields.
 2. Click **Connect**. Google asks you to sign in: choose the account your facilitator named.
    *"Google hasn't verified this app"* is expected for a practice setup; choose **Continue**, then
    allow BigQuery access.
-3. **Quit the Desktop app and open it again.** It reads your connectors when it starts, so one you
-   added while it was open isn't there yet.
-4. Start a new Code tab session on your practice folder. Check that **BigQuery** is in the
-   **Connectors** list on the right.
-5. **Predict:** ask *"Using the BigQuery connector, what were the top five events in the GA4 sample
-   in January 2021, and how many users triggered each?"* Which tool will Claude use? Roughly how
-   many page views?
-6. Run it. The tool calls are labelled **BigQuery: …**; open one and read the SQL before you read
-   the answer. Is it counting what you asked?
-7. Ask a question you'd ask of a real client, for example where people drop out between viewing
-   an item and adding it to the cart. Check one number yourself in the SQL.
-8. Ask Claude to list the datasets it can see. Is anything there you shouldn't be able to reach?
+3. **Quit the Desktop app and open it again**, then open a session on `claude-code-workshop`.
+   Click **+** next to the message box, then **Connectors**.
+
+   **You should see:** **BigQuery** in the list, turned on.
+4. **Predict:** you'll ask for the top five events in January 2021 and how many users triggered
+   each. Which tool will Claude use? Which event do you expect at the top, and roughly how many
+   users?
+5. Send, with the IDs from your facilitator:
+
+   > Using the BigQuery connector, in project <project ID>, query the dataset <project>.<dataset>: what were the top five events in January 2021, and how many users triggered each?
+
+   The tool calls are labelled **BigQuery: …**; open one and read the SQL before you read the
+   answer. Is it counting users, not events, and only January?
+6. Ask a question you'd ask of a real client, in the same project and dataset, for example where
+   people drop out between viewing an item and adding it to the cart. Check one number yourself in
+   the SQL.
+7. See what you can reach:
+
+   > Using the BigQuery connector, list the datasets in project <project ID>.
+
+   That lists one project. Is anything there you shouldn't be able to reach?
 
 ## Proof
 
@@ -53,6 +77,8 @@ produce it.
 - **Connected, but "does not have permission".** Your account hasn't been granted access yet, or
   you signed in with a different account. Disconnect, then connect again with the right one.
 - **No BigQuery in the Code tab.** Quit and reopen the Desktop app (step 3).
+- **"projectId is required" or a guessed project.** Name the project ID in the request, as in
+  step 5.
 - **Claude runs a `bq` command instead.** You have Google's command-line tools installed, and Claude
   reached for them. Say *"use the BigQuery connector, not the command line"*.
 

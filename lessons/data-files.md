@@ -8,19 +8,43 @@ counts, and hand it to a colleague who wants to check. The practice file is
 
 ## Do
 
-1. Make a practice folder, copy `samples/daily-sessions.csv` into it, and start a **+ New session**
-   on that folder.
-2. Ask Claude to **describe** the file before analysing it: its columns, how many rows, the date
-   range, and anything that looks odd.
-3. **Predict:** you ask *"What is purchases per session on weekdays versus weekends?"* Will Claude
+**Where:** first a session on the `claude-code-workshop` folder, in Manual, to make a folder
+called `data-practice` next to it. Then a **+ New** session on `data-practice`, in Manual. It has
+no rules of its own, so Manual asks before every command and edit.
+
+1. In the workshop session, send:
+
+   > Make a folder called data-practice next to this workshop folder, not inside it, and copy samples/daily-sessions.csv into it.
+
+   **You should see:** one or two prompts (approve), then `data-practice` with one file in it.
+2. **+ New**, the folder button, **Open folder…**, choose `data-practice`, and set **Manual**.
+   **You should see:** the folder button says `data-practice`.
+3. Ask Claude to describe the file before analysing it:
+
+   > Describe daily-sessions.csv: its columns, how many rows, the date range, and anything that looks odd.
+
+4. **Predict:** you ask *"What is purchases per session on weekdays versus weekends?"* Will Claude
    work it out in its head, or write a script?
-4. Ask it, adding: *"Write a script in `scripts/` that I can rerun, and tell me the command to run
-   it."* If the language it wants isn't installed, it can check what you have, or install what it
-   needs. Read each command before you approve it.
-5. Open the script. Find the line that decides which days count as the weekend.
-6. Run it yourself: send the command Claude gave you, with a `!` in front.
-7. Change one number in the CSV, run it again, and check the result moved the way you expected.
-8. Ask for the output as a small table file next to the script, so the numbers have a source.
+5. Send:
+
+   > What is purchases per session on weekdays versus weekends? Write a script in scripts/ that I can rerun, and tell me the command to run it.
+
+   **You should see:** a new file in `scripts/`, the answer, and a command. If the language it wants
+   isn't installed, it will say so and offer to check what you have or install it. Read each
+   command before you approve it.
+6. Open the script. Find the line that decides which days count as the weekend.
+7. Run it yourself: send the command Claude gave you, with a `!` in front.
+
+   **You should see:** the same numbers Claude reported.
+8. Open `daily-sessions.csv` in `data-practice`, change one number of purchases, save, and run the
+   command again. Did the result move the way you expected?
+9. Ask for the output as a small table file next to the script, so the numbers have a source:
+
+   > Make the script also write its results to scripts/results.csv.
+
+10. To record it, go back to the session on `claude-code-workshop` (in the sidebar, or **+ New**
+    on that folder) and tell the guide *"I've done data-files"*: `progress.md` lives there, not in
+    `data-practice`.
 
 ## Proof
 

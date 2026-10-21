@@ -30,14 +30,15 @@ import std/io (println, exit)
 import std/list (map, filter, foldl, reverse, length, take, concat, head_or, findIndex, flatMap, any)
 import std/string (join, trim, split, replace, startsWith, endsWith, find, substring, length as slen, intToStr, floatToStr, stringToInt, toLower)
 import std/regex (compile, replaceAll, isMatch, findAll)
+import std/math (floatToInt)
 
 -- ── the tree ───────────────────────────────────────────────────────────────
 
-type Node = { id: string, tier: string, band: string, block: string, predict: string, title: string, can: string, proof: string, needs: [string] }
+type Node = { id: string, tier: string, band: string, block: string, predict: string, title: string, can: string, proof: string, needs: [string], minutes: int }
 
 type Block = { id: string, title: string, tagline: string, time: string, summary: string, room: string }
 
-type Break = { time: string, title: string }
+type Break = { time: string, title: string, minutes: int }
 
 type Band = { id: string, label: string, when: string, note: string }
 
@@ -62,14 +63,24 @@ func strsOf(j: Json, k: string) -> [string] =
     None => []
   }
 
+-- A whole number of minutes, written either as a number or as a string; 0 if absent.
+func intOf(j: Json, k: string) -> int =
+  match get(j, k) {
+    Some(v) => match asNumber(v) {
+      Some(n) => floatToInt(n),
+      None => match asString(v) { Some(s) => match stringToInt(s) { Some(i) => i, None => 0 }, None => 0 }
+    },
+    None => 0
+  }
+
 func nodeOf(j: Json) -> Node =
-  { id: strOf(j, "id"), tier: strOf(j, "tier"), band: strOf(j, "band"), block: strOf(j, "block"), predict: strOf(j, "predict"), title: strOf(j, "title"), can: strOf(j, "can"), proof: strOf(j, "proof"), needs: strsOf(j, "needs") }
+  { id: strOf(j, "id"), tier: strOf(j, "tier"), band: strOf(j, "band"), block: strOf(j, "block"), predict: strOf(j, "predict"), title: strOf(j, "title"), can: strOf(j, "can"), proof: strOf(j, "proof"), needs: strsOf(j, "needs"), minutes: intOf(j, "minutes") }
 
 func blockOf(j: Json) -> Block = { id: strOf(j, "id"), title: strOf(j, "title"), tagline: strOf(j, "tagline"), time: strOf(j, "time"), summary: strOf(j, "summary"), room: strOf(j, "room") }
 
 func bandOf(j: Json) -> Band = { id: strOf(j, "id"), label: strOf(j, "label"), when: strOf(j, "when"), note: strOf(j, "note") }
 
-func breakOf(j: Json) -> Break = { time: strOf(j, "time"), title: strOf(j, "title") }
+func breakOf(j: Json) -> Break = { time: strOf(j, "time"), title: strOf(j, "title"), minutes: intOf(j, "minutes") }
 
 func elem(x: string, xs: [string]) -> bool = any(\y. y == x, xs)
 
@@ -136,6 +147,37 @@ func cardWarnings(n: Node, md: string) -> [string] {
   ])
 }
 
+-- "HH:MM" as minutes since midnight; 0 if it isn't one.
+func clockMins(t: string) -> int =
+  match split(t, ":") {
+    [h, m] => match (stringToInt(h), stringToInt(m)) { (Some(a), Some(b)) => a * 60 + b, _ => 0 },
+    _ => 0
+  }
+
+func sumInts(xs: [int]) -> int = foldl(\a. \x. a + x, 0, xs)
+
+-- The time a block has: to the next block (or the end of the day), less any breaks inside it.
+func slotMins(blks: [Block], brks: [Break], dayEnd: string, b: Block) -> int {
+  let start = clockMins(b.time);
+  let later = filter(\t. t > start, map(\x. clockMins(x.time), blks));
+  let stop = foldl(\a. \t. if t < a then t else a, clockMins(dayEnd), later);
+  let inside = filter(\k. clockMins(k.time) >= start && clockMins(k.time) < stop, brks);
+  stop - start - sumInts(map(\k. k.minutes, inside))
+}
+
+func coreMins(nodes: [Node], b: Block) -> int =
+  sumInts(map(\n. n.minutes, filter(\n. n.block == b.id && n.band == "core", nodes)))
+
+func aboutMins(m: int) -> string = if m > 0 then " · about ${intToStr(m)} min" else ""
+
+-- Reported after the build: a block whose core cards need more time than the agenda gives it.
+func timingWarnings(nodes: [Node], blks: [Block], brks: [Break], dayEnd: string) -> [string] =
+  flatMap(\b. {
+      let need = coreMins(nodes, b);
+      let have = slotMins(blks, brks, dayEnd, b);
+      if need > have then ["block ${b.id} · ${b.title}: core cards take about ${intToStr(need)} min; the agenda gives it ${intToStr(have)}"] else []
+    }, blks)
+
 func blockErrors(nodes: [Node], b: Block) -> [string] {
   let groups = filter(\n. n.block == b.id && n.predict == "group", nodes);
   let core = filter(\n. n.block == b.id && n.band == "core", nodes);
@@ -168,7 +210,7 @@ func phraseErrors(ps: [Json]) -> [string] ! {FS} =
 func nodeJson(n: Node) -> Json =
   jo([kv("id", js(n.id)), kv("tier", js(n.tier)), kv("band", js(n.band)), kv("block", js(n.block)),
       kv("predict", js(n.predict)), kv("title", js(n.title)), kv("needs", ja(map(js, n.needs))),
-      kv("can", js(n.can)), kv("proof", js(n.proof))])
+      kv("can", js(n.can)), kv("proof", js(n.proof)), kv("minutes", js(intToStr(n.minutes)))])
 
 func blockJson(b: Block) -> Json = jo([kv("id", js(b.id)), kv("title", js(b.title)), kv("time", js(b.time))])
 
@@ -204,13 +246,14 @@ func bandParts(nodes: [Node]) -> [(string, string)] = [
 
 func ids(ns: [Node]) -> string = join(", ", map(\n. "`${n.id}`", ns))
 
-export func dayTable(nodes: [Node], blks: [Block], brks: [Break]) -> string {
+export func dayTable(nodes: [Node], blks: [Block], brks: [Break], dayEnd: string) -> string {
   let blockRow = \b. {
     let ns = filter(\n. n.block == b.id, nodes);
     let core = filter(\n. n.band == "core", ns);
     let st = filter(\n. n.band == "stretch", ns);
     let stTxt = if length(st) == 0 then "" else "; stretch: ${ids(st)}";
-    "| ${b.time} | **${b.id} · ${b.title}.** ${b.summary} | ${ids(core)}${stTxt} | ${b.room} |"
+    let fit = "core about ${intToStr(coreMins(nodes, b))} of ${intToStr(slotMins(blks, brks, dayEnd, b))} min";
+    "| ${b.time} | **${b.id} · ${b.title}.** ${b.summary} | ${ids(core)}${stTxt} (${fit}) | ${b.room} |"
   };
   -- A break goes before the first block that starts at or after it.
   let st = foldl(\acc. \b. {
@@ -379,7 +422,7 @@ export func slide(nodes: [Node], bl: [Band], n: Node, md: string) -> string {
     else "<div class=\"card\"><div class=\"h\"><i class=\"fa-solid fa-eye\"></i> Watch for</div><ul>${concatStr(map(\w. "<li>${inline(w)}</li>", watch))}</ul></div>";
   join("\n", [
     "      <section class=\"slide\" data-slide=\"${n.id}\" id=\"${n.id}\">",
-    "        <div class=\"kicker\">${esc(tierName(n.tier))} · ${esc(bandField(bl, n.band, \b. b.label))}</div>",
+    "        <div class=\"kicker\">${esc(tierName(n.tier))} · ${esc(bandField(bl, n.band, \b. b.label))}${aboutMins(n.minutes)}</div>",
     "        <h2 class=\"slide-title\">${esc(n.title)}</h2>",
     "        <p class=\"ref-can\">${inline(n.can)}</p>",
     "        <div class=\"ref-cols\">",
@@ -518,7 +561,7 @@ type Out = { path: string, text: string, note: string }
 
 -- Every output, or the first marker that couldn't be found.
 -- The board keeps the tree's own order; the slides go by tier.
-func render(raw: [Node], blks: [Block], brks: [Break], bl: [Band], goal: string, mdOf: (string) -> string) -> Result[[Out], string] ! {FS} {
+func render(raw: [Node], blks: [Block], brks: [Break], bl: [Band], goal: string, dayEnd: string, mdOf: (string) -> string) -> Result[[Out], string] ! {FS} {
   let nodes = ordered(raw);
   let slides = map(\n. slide(nodes, bl, n, mdOf(n.id)), nodes);
   let groupQ = \b. head_or(map(\n. predictQ(mdOf(n.id)), filter(\n. n.block == b.id && n.predict == "group", nodes)), "");
@@ -530,7 +573,7 @@ func render(raw: [Node], blks: [Block], brks: [Break], bl: [Band], goal: string,
       Err(m) => Err("deck/01-workshop.html: marker ${m}"),
       Ok(deck) => match spliceAllJs(readFile("board/skill-tree.html"), [("nodes", encode(ja(map(nodeJson, boardNodes)))), ("blocks", encode(ja(map(blockJson, blks)))), ("goal", encode(js(goal))), ("bandnote", encode(jo(map(\b. kv(b.id, js(b.note)), bl))))]) {
         Err(m) => Err("board/skill-tree.html: marker ${m}"),
-        Ok(board) => match spliceAll(readFile("docs/agenda.md"), [("bands", bandsTable(nodes, bl)), ("day", dayTable(nodes, blks, brks))]) {
+        Ok(board) => match spliceAll(readFile("docs/agenda.md"), [("bands", bandsTable(nodes, bl)), ("day", dayTable(nodes, blks, brks, dayEnd))]) {
           Err(m) => Err("docs/agenda.md: marker ${m}"),
           Ok(agenda) => Ok([
             { path: "deck/02-reference.html", text: ref, note: "${intToStr(length(nodes))} reference slides and an index" },
@@ -574,11 +617,16 @@ export func main() -> () ! {IO, FS} {
           println("Nothing written. Fix these first:");
           println(join("\n", map(\e. "  ${e}", errs)));
           exit(1)
-        } else match render(raw, blks, brks, bl, goal, mdOf) {
+        } else match render(raw, blks, brks, bl, goal, strOf(tree, "day_end"), mdOf) {
           Err(m) => { println("${m} not found; nothing written"); exit(1) },
           Ok(outs) => {
             writeAll(outs);
             println(join("\n", map(\o. "${o.path}: ${o.note}", outs)));
+            let timing = timingWarnings(raw, blks, brks, strOf(tree, "day_end"));
+            if length(timing) > 0 then {
+              println("Blocks that don't fit the agenda (minutes in tree/tree.yaml):");
+              println(join("\n", map(\w. "  ${w}", timing)))
+            } else ();
             let shape = flatMap(\n. cardWarnings(n, mdOf(n.id)), raw);
             if length(shape) > 0 then {
               println("Cards not yet in the card shape (README, \"Writing a card\"):");

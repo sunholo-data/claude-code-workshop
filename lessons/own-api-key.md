@@ -5,6 +5,9 @@ and a Google Cloud project; your organisation may already have one you should us
 
 ## Do
 
+**Where:** the Google Cloud console in your browser (or the terminal pane), then a session on the
+`claude-code-workshop` folder, in Manual.
+
 1. **Predict:** when you swap your own key in, what will change for Claude, and what for you?
 
 ### In the browser (Cloud console)
@@ -15,11 +18,17 @@ and a Google Cloud project; your organisation may already have one you should us
 4. Click the new key, then under **API restrictions** choose **Restrict key**, tick
    **Developer Knowledge API**, and **Save**. Name it something you'll recognise later.
 5. Open `.claude/settings.local.json` yourself and replace the lent key with yours (never paste a
-   key into the chat). Start a new session and check `/mcp`.
+   key into the chat). Start a **+ New** session on the workshop folder and ask *"Which tools do you have from the
+   google-developer-knowledge server?"*
 
 ### Or from the command line
 
-Run these in the terminal pane (**Ctrl** and the backtick key), after signing in there with `gcloud auth login`.
+This needs `gcloud`, the Google Cloud command line. Check in the terminal pane (**Ctrl** and the
+backtick key) with `gcloud --version`. Not found? Install the Google Cloud CLI from
+**docs.cloud.google.com/sdk/docs/install**: on Windows, download and run
+`GoogleCloudSDKInstaller.exe`; on a Mac, download the archive for your chip (Apple silicon or
+Intel), unpack it and run `./google-cloud-sdk/install.sh`, as the page shows. Then close and reopen
+the terminal pane, and sign in there with `gcloud auth login`. Run these in the terminal pane:
 
 ```
 gcloud services enable developerknowledge.googleapis.com --project=PROJECT_ID

@@ -13,24 +13,45 @@ opens it gets the same ones. This repository has one; [add-mcp](add-mcp.md) uses
 
 ## Do
 
-1. Find the **Connectors** list in the panel on the right of the Code tab. Which are on? Each one's tools are
-   available to Claude in this session. If **Google Drive** isn't connected, connect it and sign in
-   with your work Google account. (On a Team or Enterprise plan, if it isn't listed, an Owner has to
-   turn it on for the organisation first.) No Google? Use any connector your group's rules allow.
+**Where:** a session on the `claude-code-workshop` folder, in Manual, then a **+ New** session on
+the same folder. No API key in this card: connectors sign in with your own account. The key comes
+in the next card, [add-mcp](add-mcp.md).
+
+1. See which connectors are on: click **+** next to the message box and choose **Connectors** (it
+   may say **Add connectors**). Not there? Try **Settings → Connectors** from your profile menu at
+   the bottom left; the app has moved this between versions. Each connector that's on gives Claude its tools in this session.
+   If **Google Drive** isn't connected, connect it and sign in with your work Google account.
+
+   **You should see:** **Google Drive** listed as connected. Not listed at all, on a Team or
+   Enterprise plan? An Owner has to turn it on for the organisation first: tell the facilitator,
+   and use a connector your group's rules allow instead.
 2. Pick **one Google Doc** your group's rules allow you to share with a model, such as your own
    notes from an earlier session. Not a client folder, and not a calendar or mailbox: those name
    clients in almost every item. Write down a question whose answer is in that doc.
 3. **Export route:** in the doc, **File → Download → Markdown (.md)**. Save it into a folder called
-   `exports` inside the workshop folder: git ignores that folder, so the export can't be committed
-   to this public repository by accident. Ask the question with `@exports/` and the file's name.
-   Write down exactly what you gave it: one file, as it was when you downloaded it.
+   `exports` inside the workshop folder (make the folder if it isn't there): git ignores it, so the
+   export can't be committed to this public repository by accident. Then type `@exports/`, pick
+   the file, and ask your question after it:
+
+   > @exports/<your file> <your question>
+
+   **You should see:** an answer from that one file. Write down exactly what you gave it: one file,
+   as it was when you downloaded it.
 4. **Predict:** you ask the same question in a new session, with no file, so Claude has to use the
    connector. What will it fetch? More than your export, or less?
-5. Ask Claude to delete the export (it will ask first: deleting is an ask rule). Start a **+ New**
-   session, ask the same question without `@`, and expand the tool calls: which tool, with what
-   search terms, and what came back. If the results show anything your rules don't allow, such as
-   a client document, stop and say so. That is what "it reaches what your account reaches" looks like.
-6. Say the data path out loud: where the data came from, which tool fetched it, whose account it
+5. Delete the export, so the next session can't find it in the folder:
+
+   > Delete the file in exports/.
+
+   **You should see:** a prompt for `rm` (deleting is an ask rule): approve it.
+6. **+ New**, open `claude-code-workshop`, Manual, and ask the same question without `@`:
+
+   > Using Google Drive, <your question>
+
+   Expand the tool calls: which tool, with what search terms, and what came back. If the results
+   show anything your rules don't allow, such as a client document, stop and say so. That is what
+   "it reaches what your account reaches" looks like.
+7. Say the data path out loud: where the data came from, which tool fetched it, whose account it
    ran as, and where it went next.
 
 ## Proof

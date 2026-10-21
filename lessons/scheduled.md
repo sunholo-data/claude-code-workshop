@@ -1,10 +1,11 @@
 # Running without you
 
-In the Code tab, **Routines** runs a task on a schedule. A **local** routine runs on your machine
-with your files and tools, but only while the app is open and the computer is awake. A **remote**
-routine runs in the cloud even when your computer is off, but starts from a fresh copy of the
-repository, without your local files. Either way, the hard part is not the schedule. It is what has
-to be true before anything should run with nobody watching:
+In the Code tab, **Scheduled** (in the sidebar, or under its **More** menu) runs a task on a
+schedule. A **local** task runs on your computer with your files and tools, but only while the app
+is open and the computer is awake. A **cloud** task (Anthropic's docs used to call these routines)
+runs even when your computer is off, but starts from a fresh copy of a GitHub repository, without
+your local files. Either way, the hard part is not the schedule. It is what has to be true before
+anything should run with nobody watching:
 
 - it has run correctly **by hand**, several times, with no corrections from you;
 - it ends with a **check that can fail**, tried on a small test set whose right answers you know;
@@ -14,19 +15,33 @@ to be true before anything should run with nobody watching:
 
 ## Do
 
-1. Pick your skill from [write-a-skill](write-a-skill.md), or the report from
-   [bigquery-mcp](bigquery-mcp.md). Run it by hand three times. If you corrected
-   it, it isn't ready.
-2. Add a check to the instructions: *"Finish by checking <what a wrong result looks like>. Write
-   the result to `runs/<date>.md` with PASS or FAIL as the first line, and say why."*
+**Where:** your `skill-work` folder from [write-a-skill](write-a-skill.md), first in a **+ New**
+session in Manual, then in the **Scheduled** page of the sidebar.
+
+1. Run your skill by hand three times, each in a **+ New** session on `skill-work`. If you
+   corrected it, it isn't ready. (Done [bigquery-mcp](bigquery-mcp.md)? Its report works too.)
+2. Add a check to the skill's instructions:
+
+   > Add a last step to my skill: finish by checking <what a wrong result looks like>, and write the result to runs/<today's date>.md with PASS or FAIL as the first line and one sentence on why. Commit.
+
 3. **Predict:** the first scheduled run needs a permission you haven't given. What happens, and who
    finds out?
-4. Click **Routines → New routine → Local**. Fill in the name, the instructions, the folder and the
-   permission mode, and set the schedule to **Manual**. Click **Run now** and watch: approve with
-   "always allow" only what you're happy for it to do every time, forever.
-5. Change the schedule to **Hourly** (or ask Claude for any other timing), keep the app open, and
-   come back to the **Scheduled** section in the sidebar.
-6. Answer in one sentence: if this failed on a day you were away, who would notice, and how?
+4. Click **Scheduled** in the sidebar, then **New task** (if a menu opens, choose **Set up
+   manually**). Fill in the name and the instructions, for example *"Run /<your skill>"*. Open
+   **Advanced settings** and turn on **Only on this computer**, then choose `skill-work` as the
+   **Local folder** and **Manual** as the permission mode. Set the frequency to **Daily** for now,
+   and **Create**.
+
+   **You should see:** the task's page, with **Run now**. The labels may differ slightly between
+   versions of the app.
+5. Click **Run now** and watch. In Manual, a run stops at each permission prompt until you answer:
+   choose "always allow" only for what you're happy for it to do every time, forever.
+
+   **You should see:** a new `runs/` file with PASS or FAIL. What you allowed is listed on the task's
+   page under **Always allowed**.
+6. **Edit** the task and set the frequency to **Hourly**. Keep the app open and the computer awake,
+   and come back to **Scheduled** after the hour.
+7. Answer in one sentence: if this failed on a day you were away, who would notice, and how?
 
 ## Proof
 
@@ -35,8 +50,9 @@ start yourself.
 
 ## Misconceptions this exposes
 
-- *"Scheduled means it happens on time."* A local routine is skipped while the computer sleeps and
-  catches up once when it wakes, so a 9am task can run at 11pm. Write the instructions for that.
+- *"Scheduled means it happens on time."* A local task is skipped while the computer sleeps, and
+  runs once to catch up when it wakes, so a 9am task can run at 11pm. Write the instructions for
+  that.
 - *"It worked while I watched, so it'll work alone."* Alone, a missing permission stalls the run
   until someone answers, and an approval given too freely is used every time.
 - *"No news is good news."* Silence can mean it didn't run at all. Decide where failure shows up.

@@ -6,23 +6,34 @@ a `description`. Claude has the name and description of every available skill in
 the time, and the description is what makes it pick this one. The **body** below the frontmatter
 holds the instructions, which Claude reads only once it uses the skill. Anything else in the folder
 travels with it: `resources/` for reference notes the body points to, and `scripts/` for programs
-Claude runs rather than reads. A skill in a repository's `.claude/skills/` loads only in sessions
-opened on that repository.
+Claude runs rather than reads. A skill in a repository's `.claude/skills/` loads in sessions opened on
+that repository or a folder inside it, and in sessions that add the repository with `/add-dir`.
+Claude picks up a new or edited skill straight away, without a new session.
 
 ## Do
 
-1. In your `presentation-template` session from [use-a-skill](use-a-skill.md), open
-   `.claude/skills/presentation-slides/SKILL.md`.
+**Where:** your session on the `presentation-template` folder from [use-a-skill](use-a-skill.md),
+in Manual, then **+ New** sessions on the same folder.
+
+1. Open `.claude/skills/presentation-slides/SKILL.md` in an editor, or ask:
+
+   > Show me .claude/skills/presentation-slides/SKILL.md, the frontmatter first.
+
 2. Find the three parts. Copy out the description. List the files in `resources/` and `scripts/`,
-   and for each one find the sentence in the body that tells Claude when to use it.
+   and for each one find the sentence in the body that tells Claude when to use it, or note that
+   none exists. (At least one file has none: what does that mean for when Claude will open it?)
 3. **Predict:** which of these will trigger the skill? *"Make me some slides"*, *"I need something to
    show on the screen on Thursday"*, *"Turn these notes into something I can present."* Write yes or
    no for each.
-4. Try each in a **fresh** session on the folder, so nothing carries over. Afterwards, ask *"Which
-   skill did you use, if any?"*
+4. Try each in a **fresh** session (**+ New** on `presentation-template`), so nothing carries over.
+   Afterwards, ask:
+
+   > Which skill did you use, if any?
+
 5. Pick a phrase you would really say that missed, or only just hit. Edit the description so it
    covers that phrase, without making it so broad that it fires on any request about a document.
-6. Start a new session and try your phrase again.
+6. **+ New** again and try your phrase. Claude would see the edit in the old session too, but a new
+   one is the clean test: nothing from the earlier attempts carries over.
 
 ## Proof
 

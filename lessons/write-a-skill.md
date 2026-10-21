@@ -25,18 +25,22 @@ Then **+ New** on `skill-work`, in Manual.
    **You should see:** one new `SKILL.md`. Read it before you approve it.
 4. Check the description. Is it in the words you'd use when you need this, and does it say when the
    skill should **not** be used? If not, ask Claude to rewrite it in your words.
-5. If the output has a fixed format, ask for a template in the skill's `resources/` folder. If a
+5. If the skill needs a tool to be open or connected (the Browser pane, a connector, an MCP
+   server), say so near the top of `SKILL.md`, with what to do if it isn't: *"This needs the page
+   open in the Browser pane. If it isn't, ask the person to open it first."* A skill that worked in
+   your session can fail in a colleague's for exactly this reason.
+6. If the output has a fixed format, ask for a template in the skill's `resources/` folder. If a
    step is mechanical, such as counting, renaming or reformatting, ask for a script in `scripts/`
    instead of an instruction.
-6. **Predict:** a colleague asks for the task in their own words. What will they get, and at which
+7. **Predict:** a colleague asks for the task in their own words. What will they get, and at which
    step will they need to ask you something?
-7. Test it yourself as a stranger would: **+ New** for a fresh session on `skill-work`, ask for the
+8. Test it yourself as a stranger would: **+ New** for a fresh session on `skill-work`, ask for the
    task in different words from the description, and don't help. Fix what you had to explain.
    Then commit:
 
    > Commit the skill folder.
 
-8. Bring it to the next session. There it goes into the team's repository by pull request
+9. Bring it to the next session. There it goes into the team's repository by pull request
    ([share-skill-pr](share-skill-pr.md)), and a colleague runs it as the review: that's the
    colleague test.
 
