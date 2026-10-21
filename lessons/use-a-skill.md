@@ -8,23 +8,51 @@ layout mistake that most often breaks a slide.
 
 ## Do
 
-1. In a session on any folder, ask Claude: *"Clone https://github.com/sunholo-data/presentation-template
-   into my Documents folder."* Then start a **+ New session** on the cloned folder. The skill only
-   loads in a session opened on that folder.
-2. Open `demo/presenter.html` in your browser to see a finished deck. The arrow keys move between
-   slides; the sun/moon button switches theme.
-3. **Predict:** you are going to ask for a deck without naming the skill. Will Claude use it
+**Where:** first a session on the `claude-code-workshop` folder, in Manual, to clone. Then a
+**+ New** session on the cloned `presentation-template` folder, in Manual. That session has its
+own `CLAUDE.md` and skill, and none of the workshop's: no guide, and none of its permission rules,
+so Manual asks before every command and edit.
+
+1. Clone the template next to the workshop folder:
+
+   > Clone https://github.com/sunholo-data/presentation-template next to this workshop folder, not inside it.
+
+   **You should see:** a `git clone` request (approve), then `presentation-template` next to
+   `claude-code-workshop`.
+2. **+ New**, the folder button, **Open folder…**, choose `presentation-template`, and set
+   **Manual**. The skill only loads in a session opened on that folder.
+
+   **You should see:** the folder button says `presentation-template`. Type `/` and
+   `presentation-slides` is in the list.
+3. Open `demo/presenter.html` in your browser (double-click it in Finder or File Explorer) to see a
+   finished deck. The arrow keys move between slides; the sun/moon button switches theme.
+4. **Predict:** you are going to ask for a deck without naming the skill. Will Claude use it
    anyway? Which files will it open first?
-4. Ask: *"Build a 3-slide deck in `my-deck/` about <something you know well>."* Watch which files
-   it reads before it writes anything.
-5. Run the check yourself by sending this with a `!` in front, or ask Claude to run it:
+5. Send, with a topic you know well:
+
+   > Build a 3-slide deck in my-deck/ about <something you know well>.
+
+   Watch which files it reads before it writes anything. The skill mentions a `frontend-design`
+   skill: you don't have it, and you don't need it. Ignore that line, and say no if Claude offers to
+   install it.
+
+   **You should see:** Claude reading `SKILL.md` and its `resources/`, then a request to create a
+   file in `my-deck/` (approve).
+6. Run the check yourself. The repository's own instructions tell Claude to lint the folder, which
+   checks nothing (see below), so name the files. Send:
+
    ```
    !node .claude/skills/presentation-slides/scripts/lint-slides.mjs my-deck/*.html
    ```
-   No output means it passed. It needs Node: if `node` is not found, ask Claude to install it, or
-   skip the lint and do step 6 carefully.
-6. Open your deck in the browser. Switch theme. Then make the window tall and narrow: does anything
+
+   **You should see:** no output: it passed. A list of `file:line` problems? Ask Claude to fix
+   them and run the line again. `node: command not found`? Your laptop has no Node: skip the lint,
+   tell the facilitator, and do step 7 carefully.
+7. Open your deck in the browser. Switch theme. Then make the window tall and narrow: does anything
    spill off the slide?
+8. Record it in the workshop: go back to your session on `claude-code-workshop` (in the sidebar)
+   and tell the guide *"I've done use-a-skill"*, with the lint command you ran. `progress.md` lives
+   there, not in `presentation-template`.
 
 ## Proof
 
