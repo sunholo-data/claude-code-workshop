@@ -7,14 +7,24 @@ answer.
 
 ## Do
 
-1. In a session on this workshop folder, type `@` and start typing `tagging`. Pick
-   `samples/tagging-plan.md` from the list. Do the same for `samples/daily-sessions.csv`.
-2. Ask: *"Why did newsletter signups drop to zero, and what explains the jump in sessions on
-   19 September?"*
-3. **Predict** before you send: which part can it answer from these two files, and which part
-   can't it? What will it do with the part it can't?
-4. Send it. Check: did it find the rename in the tagging plan? What did it say about 19 September?
-5. Ask: *"Which files did you read to answer that? What would you need to explain the 19th?"*
+**Where:** a session on the `claude-code-workshop` folder, in Manual.
+
+1. In the message box, type `@` and then `tagging`, and pick `samples/tagging-plan.md` from the
+   list. Then type `@` and `daily`, and pick `samples/daily-sessions.csv`.
+
+   **You should see:** both file names in the message box.
+2. **Predict:** after the two files, you'll ask the question below. Which part can Claude answer
+   from these two files, and which part can't it? What will it do with the part it can't?
+
+   > Why did newsletter signups drop to zero, and what explains the jump in sessions on 19 September?
+
+3. Type that question after the two file names, and send it.
+
+   **You should see:** an answer that finds the rename in the tagging plan. Check what it says
+   about 19 September.
+4. Then ask:
+
+   > Which files did you read to answer that? What would you need to explain the 19th?
 
 ## Proof
 

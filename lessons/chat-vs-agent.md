@@ -7,15 +7,25 @@ with one small edit.
 
 ## Do
 
-1. Open this workshop folder in the Code tab (**+ New**, **This computer**, then the folder button and **Open folder…**). Keep the mode on
-   **Manual**.
-2. Open `samples/tagging-plan.md` yourself and skim it. It is a made-up plan for a made-up shop.
-3. **Predict:** you ask *"In samples/tagging-plan.md, mark the search event as Live and add a
-   row to the change log for today."* What will Claude do first: answer from memory, or read the
-   file? What will it ask you before saving anything?
-4. Send it. Watch the steps it shows: reading, then proposing a change. Accept it.
-5. Open the file again yourself. Is the change exactly what you asked for, and nothing else?
-6. Compare: how would you have done this in a chat window? Count the copy-and-paste steps.
+**Where:** a session on the `claude-code-workshop` folder, in Manual: the one where you typed
+**start the workshop**. If you closed it: **+ New**, the folder button, **Open folder…**, choose
+`claude-code-workshop`, and set the mode to **Manual**.
+
+1. Open `samples/tagging-plan.md` yourself, in Finder or File Explorer, and skim it. It is a
+   made-up plan for a made-up shop.
+2. **Predict:** you send the prompt in step 3. What will Claude do first: answer from memory, or
+   read the file? What will it ask you before saving anything?
+3. Send:
+
+   > In samples/tagging-plan.md, mark the search event as Live and add a row to the change log for today.
+
+   **You should see:** Claude reading the file, then a proposed change in red and green, and a
+   request to save it. Accept it. It asked nothing? Check the mode button says **Manual**.
+4. Open the file again yourself. Is the change exactly what you asked for, and nothing else?
+5. Compare: how would you have done this in a chat window? Count the copy-and-paste steps.
+
+You'll put `samples/` back as it was at the end of
+[permissions-review](permissions-review.md), so leave the change for now.
 
 ## Proof
 
