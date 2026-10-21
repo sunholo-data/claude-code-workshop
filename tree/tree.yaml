@@ -427,7 +427,7 @@ nodes:
     tier: B
     band: advanced
     title: Running without you
-    needs: [write-a-skill, bigquery-mcp]
+    needs: [write-a-skill]
     minutes: 30
     can: "I can describe what it takes for a task to run on a schedule, and what has to be true before it should."
     proof: "A scheduled run's output."
