@@ -18,7 +18,8 @@ and a Google Cloud project; your organisation may already have one you should us
 4. Click the new key, then under **API restrictions** choose **Restrict key**, tick
    **Developer Knowledge API**, and **Save**. Name it something you'll recognise later.
 5. Open `.claude/settings.local.json` yourself and replace the lent key with yours (never paste a
-   key into the chat). Start a new session and check `/mcp`.
+   key into the chat). Start a **+ New** session on the workshop folder and ask *"Which tools do you have from the
+   google-developer-knowledge server?"*
 
 ### Or from the command line
 

@@ -20,7 +20,7 @@ called `workshop-practice` next to it. Then a **+ New** session on `workshop-pra
 
    > Set my git name to <your name> and email to <the email on your GitHub account>, for every repository.
 
-2. Make the practice folder:
+2. Make `workshop-practice`:
 
    > Copy the files in samples/ to a new folder called workshop-practice next to this workshop folder, not inside it. Make it a git repository and commit those files.
 
