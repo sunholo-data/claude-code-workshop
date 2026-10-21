@@ -6,16 +6,52 @@ commands: ask Claude in plain words, and read the commands it proposes before ap
 
 ## Do
 
-1. Ask Claude: *"Copy the samples folder to a new folder called workshop-practice next to this
-   one, and make it a git repository with a first commit."* Read each command before approving.
-   The first commit may stop to ask for your name and email; that is git, not Claude.
-2. Start a **+ New session** with `workshop-practice` as the folder.
-3. Ask for two small changes to `tagging-plan.md`, committing after each: *"commit this with a
-   message saying what changed."*
-4. Ask: *"Show me the history, and what changed in the last commit."*
-5. **Predict:** you ask *"undo the last commit's change"*. What happens to the file? What happens
+**Where:** first a session on the `claude-code-workshop` folder, in Manual, to make a folder
+called `workshop-practice` next to it. Then a **+ New** session on `workshop-practice`, in Manual.
+
+1. Check git knows who you are. Send:
+
+   ```
+   !git config user.email
+   ```
+
+   **You should see:** your email. Nothing? Git won't ask: the first commit would stop with
+   *"Author identity unknown"*, or on a Mac go through under a made-up name. Set it first:
+
+   > Set my git name to <your name> and email to <the email on your GitHub account>, for every repository.
+
+2. Make the practice folder:
+
+   > Copy the files in samples/ to a new folder called workshop-practice next to this workshop folder, not inside it. Make it a git repository and commit those files.
+
+   **You should see:** a prompt for each command (read each one before approving), then a commit
+   with `2 files changed`.
+3. **+ New**, the folder button, **Open folder…**, choose `workshop-practice`, and set **Manual**.
+4. Make two small changes, committing after each:
+
+   > In tagging-plan.md, change the Owner line to "the analytics team". Commit this with a message saying what changed.
+
+   > Add an open question to tagging-plan.md: "Do we track zero-result searches?" Commit this with a message saying what changed.
+
+   **You should see:** an edit to approve, then a commit, each time.
+5. Look at the record:
+
+   > Show me the history, and what changed in the last commit.
+
+   **You should see:** three commits, newest first, and the last one's change in red and green.
+6. **Predict:** you ask *"undo the last commit's change"*. What happens to the file? What happens
    to the history: is the commit deleted, or is a new one added?
-6. Try it. Open the file, then ask for the history again.
+7. Try it:
+
+   > Undo the last commit's change.
+
+   **You should see:** a `git revert` to approve (or a `git reset`, which asks: ask for a revert
+   instead, so the history keeps both). Open `tagging-plan.md`: the open question is gone.
+8. Ask for the history again.
+
+   > Show me the history.
+
+   **You should see:** four commits, the newest saying it reverts the one before.
 
 ## Proof
 
