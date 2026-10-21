@@ -7,15 +7,45 @@ is **proposing** until a reviewer approves it, and only then does it reach every
 
 ## Do
 
+**Where:** a session on the team skills repository's folder from
+[shared-skills-repo](shared-skills-repo.md), in Manual, and the repository's page on github.com.
+Step 3 needs whoever has **Admin** on the repository.
+
 1. **Predict:** if you push a change straight to `main`, who sees it, and when?
-2. In the team repository on GitHub, open **Settings → Rules** (or **Branches** on some plans) and
-   look at what protects `main`. If nothing does, ask whoever owns the repository to add a rule:
-   *require a pull request before merging*, with *at least one approval*.
-3. Add a `CODEOWNERS` file (in `.github/`) naming the reviewers, so GitHub asks them
-   automatically. Ask Claude to write it from your group's list of reviewers.
-4. Open a small pull request of your own, for example a clearer description for one skill. Try to
-   merge it before anyone has approved it. What happens?
-5. Have the named reviewer approve it, then merge.
+2. Name the reviewers in a `CODEOWNERS` file, so GitHub asks them automatically. It has to be on
+   `main` before the rule can use it, so it goes in by pull request:
+
+   > Switch to main and pull. Make a branch called codeowners. Write .github/CODEOWNERS with one line: * @<reviewer's GitHub username> @<another reviewer's GitHub username>. Commit it, push the branch, and open a pull request into main with gh.
+
+   The reviewers are the overlay's `reviewers`; ask the facilitator for their usernames.
+
+   **You should see:** one new file, prompts for the push and `gh pr create`, then a link. The
+   reviewers need Write access to the repository, or GitHub ignores the line. A reviewer merges it.
+3. The repository's admin protects `main`: on GitHub, **Settings → Branches**, then add a branch
+   protection rule for `main` (the button may be labelled **Add classic branch protection rule**;
+   **Settings → Rules → Rulesets** does the same job). Tick:
+   - **Require a pull request before merging**, then **Require approvals** (1)
+   - **Require review from Code Owners**
+   - **Do not allow bypassing the above settings**, so admins are held to it too
+
+   **You should see:** the rule listed for `main`. A banner saying it won't be enforced? See the
+   note below.
+4. Someone who is **not** a code owner opens a small pull request, for example a clearer
+   description for one skill:
+
+   > Make a branch called tidy/<your-github-username>, improve the description of one skill, commit, push, and open a pull request into main with gh.
+
+   Then, on the pull request's page, try to merge it.
+
+   **You should see:** merging blocked, with *Review required* and the code owner named. (Authors
+   can't approve their own pull requests, which is why a code owner can't do this step alone.)
+5. The named reviewer approves it on GitHub. **You should see:** the merge button becomes
+   available. Merge.
+
+**Private repository on GitHub Free?** GitHub doesn't enforce branch rules there; the rule saves
+but the merge button stays live. The protection is then a habit, and the proof is the pull request
+showing the code owner's review requested and their approval before the merge. The organisation
+needs GitHub Team (or the repository must be public) for the rule to bind.
 
 ## Proof
 
