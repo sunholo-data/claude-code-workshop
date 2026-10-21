@@ -18,7 +18,9 @@ mode selector has no screen for editing rules, so you edit the file, or ask Clau
 2. **Predict:** with these rules, which of these will just happen, which will ask, and which will
    be refused? *Commit a change. Push it. Delete a file. Read a file called `.env`.*
 3. In your `ladder-practice` repository, ask Claude to copy the `permissions` block from
-   `settings/starter.json` into `.claude/settings.json`. Read the result before you approve it.
+   `settings/starter.json` **in the workshop folder** (`../claude-code-workshop/settings/starter.json`:
+   `ladder-practice` is a copy of `samples/` only) into `.claude/settings.json`. Reading outside the
+   session's folder will ask first: that's the rules working. Read the result before you approve it.
 4. Start a new session there, in **Auto**. Ask for each of the four actions in step 2 (make a
    `.env` file with one made-up line first). Compare with your prediction.
 5. Open `.claude/settings.local.json` and find the rule you promoted in the trust-ladder node.
