@@ -9,34 +9,47 @@ the day, and bring any error message with you.
 
 ## Do
 
+**Where:** the Claude Desktop app on your own laptop, then a session on a new, empty folder
+called `claude-test` in your Documents, in Manual.
+
 1. Download Claude Desktop from **claude.com/download**, install it, and sign in.
 
    ![The claude.com/download page](../images/setup/install-claude-desktop.png)
 
-2. Click the **Code** button (**</>**) at the top left. If it asks you to upgrade, your plan
-   doesn't include it; tell the facilitator before the day.
+   **You should see:** the Claude window, signed in to the account with your paid plan.
+2. Click the **Code** button (**</>**) at the top left.
 
    ![The Code button at the top left, next to Chat](../images/setup/code-tab.png)
 
-3. Make an empty folder somewhere easy to find, for example `claude-test` in your Documents.
+   **You should see:** a message box with a folder button under it. If it asks you to upgrade,
+   your plan doesn't include the Code tab: tell the facilitator before the day.
+3. In Finder or File Explorer, make an empty folder called `claude-test` in your Documents.
 4. Click **+ New**. In the bar under the message box, choose **This computer**, then the folder
    button and **Open folder…**, and pick `claude-test`.
 
    ![The folder menu: recent folders, and Open folder](../images/setup/select-folder.png)
 
+   **You should see:** the folder button now says `claude-test`.
 5. In the same bar, the mode button says **Auto**: that's the default. Click it and choose
    **Manual**. Leave **Bypass permissions** alone.
 
    ![The mode menu, with Auto ticked](../images/setup/select-mode.png)
 
-6. **Predict:** you type *"Create a file called hello.txt that says hello"*. Will the file just
-   appear? Will Claude ask you first? Where on your computer will it go?
-7. Send it. Accept the change when it asks. Then open the folder in Finder or File Explorer and
-   look.
+   **You should see:** the button says **Manual**. No Auto in the list? Your plan or organisation
+   hasn't turned it on; choose Manual all the same.
+6. **Predict:** you send the prompt below. Will the file just appear? Will Claude ask you first?
+   Where on your computer will it go?
+7. Send it:
+
+   > Create a file called hello.txt that says hello.
+
+   **You should see:** Claude shows the new file and asks before saving it. Accept. Then open
+   `claude-test` in Finder or File Explorer: `hello.txt` is there. Not there? Check the folder
+   button says `claude-test`, not another folder.
 
 ## Proof
 
-`hello.txt` exists in your test folder, and you opened it yourself.
+`hello.txt` exists in `claude-test`, and you opened it yourself.
 
 ## Misconceptions this exposes
 

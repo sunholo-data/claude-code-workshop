@@ -8,24 +8,35 @@ you install yourself. Do this before the day.
 
 ## Do
 
+**Where:** a session on your `claude-test` folder from [install](install.md), in Manual.
+
 1. **Predict:** is git already on your computer? Most Macs have it, or offer to fetch it; most
    Windows PCs don't.
-2. Open a session in the Code tab (any folder, `claude-test` is fine). In the message box, type
-   `!git --version` and send it. The `!` means *run this myself*: the command runs straight away,
-   without Claude and without asking, and the result appears in the conversation.
+2. In the message box, type this and send it. The `!` means *run this myself*: the command runs
+   straight away, without Claude and without asking, and the result appears in the conversation.
+
+   ```
+   !git --version
+   ```
 
    ![!git --version and its output](../images/setup/git-version.png)
 
-3. If it prints a version number, you're done with this step. If not:
+   **You should see:** `git version` and a number. Then skip to step 5.
+3. If it said `command not found` or nothing useful:
    - **Mac:** git comes with Apple's developer tools. Asking for git when they're missing makes
      macOS offer to install them in a pop-up: click **Install** and wait a few minutes. No pop-up?
      Send `!xcode-select --install`.
    - **Windows:** install **Git for Windows** from git-scm.com/downloads/win, accepting the
-     defaults. Restart Claude Desktop afterwards so it finds git.
+     defaults. Quit Claude Desktop and open it again afterwards, so it finds git.
 4. Send `!git --version` again.
+
+   **You should see:** `git version` and a number. Still not found? Bring the message to the
+   facilitator's helper.
 5. If you don't have a GitHub account, make one at **github.com/signup**. Use the email you'll
    use for work, and turn on two-factor sign-in when it offers.
-6. Send your GitHub username (not your password) to the facilitator.
+
+   **You should see:** your profile at github.com/<your-username> when you're signed in.
+6. Send your GitHub username (not your password) to the facilitator, the way they asked for it.
 
 ## The GitHub check
 
@@ -35,7 +46,7 @@ repository you'll push to, send each line with `!` and read what comes back:
 
 | Send | Good | If not |
 |---|---|---|
-| `!git remote -v` | a `github.com/…` address for the repository you mean to push to | Nothing printed: this folder isn't a clone. You're probably in a practice folder: **+ New** and choose the clone. |
+| `!git remote -v` | a `github.com/…` address for the repository you mean to push to | Nothing printed, or a path on your laptop: this folder isn't a clone. You're probably in a folder made with `git init`, such as `rules-practice`: **+ New** and choose the clone. |
 | `!git config user.email` | your email | Nothing: ask Claude to set your git name and email (the email on your GitHub account). |
 | `!gh auth status` | `Logged in to github.com account <you>` | `command not found`: install GitHub CLI from cli.github.com. Not logged in: in the terminal pane, `gh auth login` then `gh auth setup-git`. |
 | `!gh repo view --json viewerPermission` | `WRITE`, `MAINTAIN` or `ADMIN` | `READ`: you can't push here yet. The facilitator adds you; then accept the invitation by email or at github.com/notifications, and check again. |
