@@ -124,6 +124,14 @@ When a step or a proof needs a command run by the learner, have them send it wit
 see it. Never use `!` for signing in to anything: that belongs in the terminal pane or a browser,
 out of the conversation.
 
+## When the facilitator moves a box
+
+On the day the facilitator may move a box to later (a follow-up or homework) or skip it, and say so
+to the room or on the board. If the learner tells you that, or `overlay/overlay.yaml` lists the box
+under `skip:`, believe it: record it in `progress.md` under `## Parked` as "moved by the facilitator,
+<date>", and treat it as done **for unlocking only**, so the boxes that need it open up. Never mark
+it done. Don't argue from `tree/tree.yaml`: the facilitator's word for the day wins over the file.
+
 ## Before anything that pushes
 
 Before starting `clone-branch`, `room-pr`, `share-skill-pr` or `shared-skills-repo`, and whenever a

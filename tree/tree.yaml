@@ -115,8 +115,11 @@ blocks:
     room: "The task ideas from the Who's here slide"
 
 # Not blocks: shown in the agenda's day table only.
+# minutes on a break is its length; day_end closes the last block. The build checks that each
+# block's core minutes fit between its start and the next block, less any breaks inside it.
+day_end: "15:00"
 breaks:
-  - { time: "12:00", title: "Lunch" }
+  - { time: "12:00", title: "Lunch", minutes: 30 }
 
 nodes:
   # ── Tier 0 · Setup (led by the facilitator from the deck; the guide records it, never sets it) ──
@@ -133,11 +136,11 @@ nodes:
     tier: 0
     band: core
     block: 1
-    title: Git and a GitHub account
+    title: Git, Node and a GitHub account
     needs: [install]
     minutes: 10
-    can: "I have git installed and a GitHub account I can sign in to."
-    proof: "`!git --version` in the Code tab prints a version; GitHub username sent to the facilitator."
+    can: "I have git and Node.js installed and a GitHub account I can sign in to."
+    proof: "`!git --version` and `!node --version` in the Code tab print versions; GitHub username sent to the facilitator."
   - id: get-workshop
     tier: 0
     band: core

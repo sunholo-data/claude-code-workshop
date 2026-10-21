@@ -10,7 +10,8 @@ and is revoked after the course. Making your own is the next node, [own-api-key]
 ## Do
 
 **Where:** a session on the `claude-code-workshop` folder, in Manual, then a **+ New** session on
-the same folder. You need the key the facilitator sent you privately. Never paste it into the chat:
+the same folder. You need the key the facilitator sends you privately at the start of this card
+(facilitator: hand keys out now, not during [connectors](connectors.md), which needs none). Never paste it into the chat:
 anything in the chat is sent to the model.
 
 The key goes in `.claude/settings.local.json`, your own file for this folder, which git ignores.
@@ -59,7 +60,9 @@ also stops Claude writing or creating it.
    the whole folder (`grep -r`), which reads every file. Don't ask Claude to search the folder for
    the key.
 4. **+ New**, open `claude-code-workshop`, Manual, so the server loads with the key. If it asks
-   whether to use this project's MCP server `google-developer-knowledge`, allow it. Then ask:
+   whether to use this project's MCP server `google-developer-knowledge`, allow it. A new server
+   only shows up once the session has started properly, so send any short message first (*"hi"*
+   will do). Then ask:
 
    > Which tools do you have from the google-developer-knowledge server?
 
@@ -74,6 +77,9 @@ also stops Claude writing or creating it.
 6. Send it. Expand the tool calls.
 
    **You should see:** a call to `search_documents` or `answer_query`, and what it sent to Google.
+   No tool call, just an answer? Claude answered from what it already knew. Ask again, starting
+   with *"Using Google Developer Knowledge,"*. Having a tool doesn't mean it gets used: when the
+   source matters, name it.
 
 ## Proof
 

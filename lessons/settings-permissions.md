@@ -25,7 +25,8 @@ later Manual.
 
    > Make a folder called rules-practice next to this one. Copy the files in samples/ into it, not the samples folder itself, make it a git repository and commit. Next to it, make an empty repository with git init --bare rules-practice-remote.git and add it to rules-practice as origin, so there is somewhere to push without GitHub. In rules-practice, write a .env file with the one line API_KEY=not-a-real-key and add .env to .gitignore. Last, copy the permissions block from settings/starter.json into rules-practice/.claude/settings.json and commit that.
 
-   Read each command before you approve it.
+   Read each command before you approve it. If Claude stops to warn that copying will replace an
+   existing permissions block, say: *"This folder is only for practice: replace it."*
 
    **You should see:** `rules-practice` with `tagging-plan.md` and `daily-sessions.csv` at the top
    (not in a `samples` folder), a `.env`, a `.claude/settings.json`, and two commits. The `.env` is
@@ -85,6 +86,9 @@ The settings file in use, one rule you promoted yourself, and the push or the de
 - *"A narrow allow can make an exception to a broad ask or deny."* It can't. Deny and ask are
   checked first, which is why `git checkout` asks even though moving between branches is safe:
   use `git switch` for that.
+- *"My own settings.local.json can switch off a team rule."*  It can add rules, not remove one. A
+  deny in the project's `.claude/settings.json` holds whatever your local file says; to lift it,
+  change the project file, which is the team's decision.
 - *"A deny rule makes something impossible."* It stops the command as Claude writes it. For
   anything that truly must not happen, take the access away too. The deny stops `cat .env` and its
   cousins (`head`, `tail`, `sed`), but not `grep -r` across the folder or a small script that opens

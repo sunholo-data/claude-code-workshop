@@ -14,10 +14,12 @@ opens it gets the same ones. This repository has one; [add-mcp](add-mcp.md) uses
 ## Do
 
 **Where:** a session on the `claude-code-workshop` folder, in Manual, then a **+ New** session on
-the same folder.
+the same folder. No API key in this card: connectors sign in with your own account. The key comes
+in the next card, [add-mcp](add-mcp.md).
 
 1. See which connectors are on: click **+** next to the message box and choose **Connectors** (it
-   may say **Add connectors**). Each connector that's on gives Claude its tools in this session.
+   may say **Add connectors**). Not there? Try **Settings → Connectors** from your profile menu at
+   the bottom left; the app has moved this between versions. Each connector that's on gives Claude its tools in this session.
    If **Google Drive** isn't connected, connect it and sign in with your work Google account.
 
    **You should see:** **Google Drive** listed as connected. Not listed at all, on a Team or

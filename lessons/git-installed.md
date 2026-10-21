@@ -1,4 +1,4 @@
-# Git and a GitHub account
+# Git, Node and a GitHub account
 
 *In the workshop, the facilitator walks the room through this from the slides. This page is for doing it beforehand, or afterwards on your own.*
 
@@ -37,6 +37,20 @@ you install yourself. Do this before the day.
 
    **You should see:** your profile at github.com/<your-username> when you're signed in.
 6. Send your GitHub username (not your password) to the facilitator, the way they asked for it.
+7. Check for **Node.js**: skills and scripts later in the course run on it, and it's the one other
+   tool you need.
+
+   ```
+   !node --version
+   ```
+
+   **You should see:** a version such as `v22.…`. `command not found`? Ask Claude:
+
+   > Install the current LTS version of Node.js on this computer. Tell me each step before you run it.
+
+   Approve each step as you read it (on a Mac it may ask for your password in a pop-up: that's
+   macOS, type it there, never in the chat). Then quit Claude Desktop, open it again, and send
+   `!node --version` once more.
 
 ## The GitHub check
 
@@ -60,7 +74,7 @@ you run the command; without it, Claude decides what to run and asks you first.
 
 ## Proof
 
-`!git --version` in the Code tab prints a version, and the facilitator has your GitHub username.
+`!git --version` and `!node --version` in the Code tab print versions, and the facilitator has your GitHub username.
 
 ## Misconceptions this exposes
 

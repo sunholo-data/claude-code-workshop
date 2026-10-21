@@ -38,3 +38,6 @@ Claude edited `samples/tagging-plan.md`, and you opened it afterwards and said w
 - *"It already knows what's in my files."* It reads them when it needs to, in this session. You can
   watch it do so.
 - *"If the answer sounds right, the file is right."* Open the file.
+- *"A chat with connectors does the same."* A chat can use connectors too, so it can look things
+  up. What's new here is that Claude works on your computer: it writes files, runs commands in the
+  terminal and leaves scripts you can run again tomorrow.

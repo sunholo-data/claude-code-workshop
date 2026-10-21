@@ -36,7 +36,12 @@ called `claude-test` in your Documents, in Manual.
    ![The mode menu, with Auto ticked](../images/setup/select-mode.png)
 
    **You should see:** the button says **Manual**. No Auto in the list? Your plan or organisation
-   hasn't turned it on; choose Manual all the same.
+   hasn't turned it on; choose Manual all the same. A new session can start in **Auto** again, so
+   check this button every time you click **+ New** today.
+
+   Next to it, the model button: choose **Haiku** for the exercises. It's fast and uses the least
+   of your plan's allowance; Opus and Fable are slower and can use a day's allowance in a morning
+   of exercises. Keep them for hard work later.
 6. **Predict:** you send the prompt below. Will the file just appear? Will Claude ask you first?
    Where on your computer will it go?
 7. Send it:

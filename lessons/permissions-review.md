@@ -21,7 +21,9 @@ Whatever the mode, a change you didn't want is yours to refuse.
    didn't ask for, such as a reworded open question or a changed date.
 
    **You should see:** a proposed change and a request to save it. Nothing to review because it
-   saved straight away? The mode isn't Manual: set it and ask again.
+   saved straight away? The mode isn't Manual: set it and ask again. Claude lists a few options
+   and asks which you want, instead of editing? That's a fair answer to a vague request: pick one,
+   and it will propose the change.
 4. Click **Reject** on at least one change, and say out loud why.
 
    **You should see:** Claude asking how to proceed. Tell it precisely what you do want, such as:
