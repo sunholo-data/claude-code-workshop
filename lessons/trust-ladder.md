@@ -35,6 +35,8 @@ yet, which is the point.
 2. Build the three copies, each with its own first commit and its own place to push to. In the
    workshop session:
 
+   ![Three copies next to the workshop folder, one session and one local remote each](../images/cards/ladder-copies.svg)
+
    > Next to this workshop folder, not inside it, make three folders: ladder-manual, ladder-accept and ladder-auto. Copy the files in samples/ into each one, not the samples folder itself. Make each a git repository and commit those files. Then, also next to this folder, make three empty repositories with git init --bare: ladder-manual-remote.git, ladder-accept-remote.git and ladder-auto-remote.git. Add each one to its folder as the remote called origin.
 
    **You should see:** several approval prompts (approve them: this session's prompts don't
