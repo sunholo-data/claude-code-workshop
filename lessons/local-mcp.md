@@ -33,22 +33,31 @@ gcloud auth application-default login \
 ```
 
 Type it in the terminal pane (**Ctrl** and the backtick key), not with `!`: it opens a browser to sign you in, and
-nothing about a sign-in belongs in the conversation. It prints `Credentials saved to file: [PATH]`. Ask Claude to add the server to your practice
-folder's `.mcp.json`: command `uvx`, argument `analytics-mcp`, with that path as
-`GOOGLE_APPLICATION_CREDENTIALS` and your project ID as `GOOGLE_PROJECT_ID`. Restart and check
-`/mcp`.
+nothing about a sign-in belongs in the conversation. It prints `Credentials saved to file: [PATH]`. Then, in a session on your
+`workshop-practice` folder from [git-safety-net](git-safety-net.md), not on the workshop clone (its
+`.mcp.json` is tracked and public, and this one names a file on your laptop), ask:
+
+> Add an MCP server called analytics-mcp to .mcp.json in this folder: command uvx, argument analytics-mcp, with the env variable GOOGLE_APPLICATION_CREDENTIALS set to <the path it printed>. Don't commit it.
+
+Then **+ New** on `workshop-practice`, allow the project's MCP server if asked, and ask Claude which
+tools it has from `analytics-mcp`. (Google's README also shows a `GOOGLE_PROJECT_ID`; the server
+doesn't read it.)
 
 ## Do
 
+**Where:** a session on `workshop-practice`, in Manual, with the server added as above.
+
 1. **Predict:** which accounts and properties will `get_account_summaries` list?
 2. Ask Claude to list them. Were you right? Is anything there you should not touch?
-3. Ask a question of one property your rules allow. If you have none, use Google's demo account
-   (the Google Merchandise Store).
+3. Ask a question of one property your rules allow. If you have none, use Google's demo account,
+   the Google Merchandise Store. It only appears after you add it: open
+   support.google.com/analytics/answer/6367342, click the **Google Merchandise Store** link while
+   signed in with the same Google account, then ask Claude to list the properties again.
 
 ## Proof
 
-A `run_report` result from an allowed property, with the property named, and one sentence on what
-left your laptop to produce it.
+A GA4 report from a property your group's rules allow, with the property named, and what your
+sign-in could reach.
 
 ## Misconceptions this exposes
 
