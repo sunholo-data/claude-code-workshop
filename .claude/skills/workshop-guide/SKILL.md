@@ -87,6 +87,9 @@ a question to the guide, do the task: doing it is the cheaper mistake.
 
 Every node has a `band` in the tree, separate from its tier. It says when the node is expected.
 
+- **pre-work**: done before the day, on the learner's own, from its card. Don't set it during the
+  day's blocks. On first use, ask whether they did it and record it from its proof; if not, list it
+  first in their homework. Nothing on the day depends on it.
 - **core**: the minimum standard everyone reaches on the day. Offer unlocked core nodes first,
   always. Say how many core nodes are left, never how many anyone else has done.
 - **stretch**: offer once the learner has no unlocked core node left for now, or if they're
