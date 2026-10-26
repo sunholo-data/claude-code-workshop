@@ -13,7 +13,8 @@ just written down.
 
 ## You need
 
-From your facilitator, privately:
+Ask your facilitator for these. They send them privately, as a password-manager share, never by
+email or chat:
 
 - The **Client ID** and **Client secret** for the connector. Never paste them into a chat with
   Claude or into this repository.
@@ -26,7 +27,8 @@ From your facilitator, privately:
   ideally on the one dataset. Not **BigQuery User**: that one can create datasets.
 
 Who adds the connector depends on your plan. On **Team** or **Enterprise**, only an Owner can add a
-custom connector, in **Organization settings → Connectors**; everyone else finds it under
+custom connector, in **Organization settings → Connectors**: the facilitator sends the Client ID and
+secret to your Owner, and tells you when it's there. Everyone else finds it under
 **Customize → Connectors** and clicks **Connect**: skip step 1. On **Pro** or **Max**, you add it
 yourself in step 1.
 
