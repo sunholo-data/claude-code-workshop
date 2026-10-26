@@ -16,8 +16,9 @@ just written down.
 Ask your facilitator for these. They send them privately, as a password-manager share, never by
 email or chat:
 
-- The **Client ID** and **Client secret** for the connector. Never paste them into a chat with
-  Claude or into this repository.
+- **Pro or Max only:** the **Client ID** and **Client secret** for the connector. On Team or
+  Enterprise they go to your Owner instead, and you never need them. Never paste them into a chat
+  with Claude or into this repository.
 - The **Google Cloud project ID** the queries run in, and the **dataset** that holds the GA4
   sample, written as `<project>.<dataset>`. Every BigQuery tool needs a project ID; Claude can't
   guess it.
