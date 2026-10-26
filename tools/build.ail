@@ -15,7 +15,8 @@
 -- hand-kept. Each reference slide's id is its node id, so 02-reference.html#trust-ladder opens it.
 --
 -- From a lesson it takes: the "## Do" section (steps, prompts, sub-headings, images),
--- "## Proof", and the first two bullets of "## Misconceptions this exposes". From the tree:
+-- "## You need" when there is one, "## Proof", and the first two bullets of
+-- "## Misconceptions this exposes". From the tree:
 -- title, tier, band, block, can, needs, proof. Edit those sources, never the generated parts.
 -- Core and follow-up cards are also held to the card shape (README, "Writing a card"); a card
 -- that misses it is reported after the build, not yet refused.
@@ -308,7 +309,7 @@ func section(md: string, name: string) -> [string] {
   reverse(st.out)
 }
 
--- A piece of the Do section. k: "step" | "para" | "head" | "quote" | "code" | "cont" | "img"
+-- A piece of the Do section. k: "step" | "para" | "bullet" | "head" | "quote" | "code" | "cont" | "img"
 -- ("cont": an indented paragraph after a prompt or code, still part of the step above)
 type Piece = { k: string, t: string }
 
@@ -349,8 +350,9 @@ func step(st: PState, raw: string) -> PState {
   else if startsWith(t, "- ") && indented && elem(lastKind(st), ["quote", "code", "img"]) then
     push(st, { k: "cont", t: "• ${substring(t, 2, slen(t))}" })
   else if startsWith(t, "- ") && indented then extend(st, "\n• ", substring(t, 2, slen(t)))
+  else if startsWith(t, "- ") then push(st, { k: "bullet", t: substring(t, 2, slen(t)) })
   else if indented then
-    (if lastKind(st) == "step" || ((lastKind(st) == "para" || lastKind(st) == "cont") && !st.blank) then extend(st, " ", t)
+    (if lastKind(st) == "step" || (elem(lastKind(st), ["para", "cont", "bullet"]) && !st.blank) then extend(st, " ", t)
      else if elem(lastKind(st), ["code", "quote", "cont", "img"]) then push(st, { k: "cont", t: t })
      else push(st, { k: "para", t: t }))
   else if lastKind(st) == "para" && !st.blank then extend(st, " ", t)
@@ -368,28 +370,37 @@ func renderImg(t: string) -> string =
   rx("^!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)$", esc(t), "<img class=\"ref-img\" src=\"$2\" alt=\"$1\">")
 
 -- Consecutive steps share one <ol>; a prompt or code between steps stays inside the list item
--- before it, so numbering carries on.
+-- before it, so numbering carries on. Consecutive bullets share one <ul>.
 func renderPieces(bs: [Piece]) -> string {
   let st = foldl(\acc. \b.
-      if b.k == "step" then
-        { out: "${acc.out}${if acc.open then "</li>" else "<ol>"}<li>${renderStep(b.t)}", open: true }
-      else if (b.k == "quote" || b.k == "code") && acc.open then
-        { out: "${acc.out}<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>", open: true }
-      else if b.k == "img" && acc.open then
-        { out: "${acc.out}${renderImg(b.t)}", open: true }
-      else if b.k == "cont" && acc.open then
-        { out: "${acc.out}<p>${renderStep(b.t)}</p>", open: true }
-      else {
-        let pre = if acc.open then "</li></ol>" else "";
-        let body =
-          if b.k == "head" then "<p class=\"ref-h\">${inline(b.t)}</p>"
-          else if b.k == "img" then renderImg(b.t)
-          else if b.k == "quote" || b.k == "code" then "<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>"
-          else "<p>${inline(b.t)}</p>";
-        { out: "${acc.out}${pre}${body}", open: false }
-      },
-    { out: "", open: false }, bs);
-  if st.open then "${st.out}</li></ol>" else st.out
+      if b.k == "bullet" then
+        { out: "${acc.out}${if acc.open then "</li></ol>" else ""}${if acc.ul then "" else "<ul>"}<li>${inline(b.t)}</li>", open: false, ul: true }
+      else if acc.ul then renderPiece({ out: "${acc.out}</ul>", open: false, ul: false }, b)
+      else renderPiece(acc, b),
+    { out: "", open: false, ul: false }, bs);
+  if st.open then "${st.out}</li></ol>" else if st.ul then "${st.out}</ul>" else st.out
+}
+
+type RState = { out: string, open: bool, ul: bool }
+
+func renderPiece(acc: RState, b: Piece) -> RState {
+  if b.k == "step" then
+    { out: "${acc.out}${if acc.open then "</li>" else "<ol>"}<li>${renderStep(b.t)}", open: true, ul: false }
+  else if (b.k == "quote" || b.k == "code") && acc.open then
+    { out: "${acc.out}<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>", open: true, ul: false }
+  else if b.k == "img" && acc.open then
+    { out: "${acc.out}${renderImg(b.t)}", open: true, ul: false }
+  else if b.k == "cont" && acc.open then
+    { out: "${acc.out}<p>${renderStep(b.t)}</p>", open: true, ul: false }
+  else {
+    let pre = if acc.open then "</li></ol>" else "";
+    let body =
+      if b.k == "head" then "<p class=\"ref-h\">${inline(b.t)}</p>"
+      else if b.k == "img" then renderImg(b.t)
+      else if b.k == "quote" || b.k == "code" then "<div class=\"prompt\">${join("<br>", map(\x. esc(x), split(b.t, "\n")))}</div>"
+      else "<p>${inline(b.t)}</p>";
+    { out: "${acc.out}${pre}${body}", open: false, ul: false }
+  }
 }
 
 -- Paragraph text of a short section, joined.
@@ -415,6 +426,9 @@ func link(id: string, text: string) -> string = "<a href=\"#${id}\">${esc(text)}
 
 export func slide(nodes: [Node], bl: [Band], n: Node, md: string) -> string {
   let doHtml = renderPieces(pieces(section(md, "Do")));
+  let needS = filter(\l. trim(l) != "", section(md, "You need"));
+  let needHtml = if length(needS) == 0 then ""
+    else "<div class=\"h\"><i class=\"fa-solid fa-key\"></i> You need</div>${renderPieces(pieces(section(md, "You need")))}<div class=\"ref-gap\"></div>";
   let proof = prose(section(md, "Proof"));
   let watch = bullets(section(md, "Misconceptions this exposes"), 2);
   let needs = if length(n.needs) == 0 then "nothing" else join(" · ", map(\x. link(x, titleOf(nodes, x)), n.needs));
@@ -426,7 +440,7 @@ export func slide(nodes: [Node], bl: [Band], n: Node, md: string) -> string {
     "        <h2 class=\"slide-title\">${esc(n.title)}</h2>",
     "        <p class=\"ref-can\">${inline(n.can)}</p>",
     "        <div class=\"ref-cols\">",
-    "          <div class=\"card ref-do\"><div class=\"h\"><i class=\"fa-solid fa-list-ol\"></i> Do</div>${doHtml}</div>",
+    "          <div class=\"card ref-do\">${needHtml}<div class=\"h\"><i class=\"fa-solid fa-list-ol\"></i> Do</div>${doHtml}</div>",
     "          <div class=\"ref-side\">",
     "            <div class=\"card hot\"><div class=\"h\"><i class=\"fa-solid fa-check\"></i> Proof</div><div class=\"s\">${inline(proof)}</div></div>",
     "            ${watchHtml}",

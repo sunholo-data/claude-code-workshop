@@ -45,7 +45,7 @@ make the copy. Then a **+ New** session on the copy, `claude-code-workshop`, in 
    go back to this session.
 
    This folder also lists one MCP server, `google-developer-knowledge`, in its `.mcp.json`. If you
-   are asked whether to use it, allow it: you'll use it in block 6, and it does nothing until you
+   are asked whether to use it, allow it: you'll use it in block 5, and it does nothing until you
    add a key there. A notice that `GOOGLE_DK_API_KEY` is missing is expected for the same reason;
    ignore it until then.
 8. The guide reads the course and offers you somewhere to start. The first time, it asks to create
