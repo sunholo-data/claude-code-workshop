@@ -4,15 +4,20 @@
 BigQuery, Cloud and more) as tools Claude can search. It runs at Google, so there is nothing to
 install: `https://developerknowledge.googleapis.com/mcp`.
 
-**Key:** in the session you use a key lent by the facilitator. It is restricted to this one API
-and is revoked after the course. Making your own is the next node, [own-api-key](own-api-key.md).
+## You need
+
+- An **API key** for the server. Ask your facilitator: they send it privately, as a
+  password-manager share, never by email or chat. It is restricted to this one API and revoked
+  after the course. Making your own is the next node, [own-api-key](own-api-key.md).
+- Never paste it into the chat: anything in the chat is sent to the model.
+
+**Facilitator:** hand the keys out at the start of this card, not during
+[connectors](connectors.md), which needs none.
 
 ## Do
 
 **Where:** a session on the `claude-code-workshop` folder, in Manual, then a **+ New** session on
-the same folder. You need the key the facilitator sends you privately at the start of this card
-(facilitator: hand keys out now, not during [connectors](connectors.md), which needs none). Never paste it into the chat:
-anything in the chat is sent to the model.
+the same folder.
 
 The key goes in `.claude/settings.local.json`, your own file for this folder, which git ignores.
 You edit it yourself: the workshop's rules deny Claude reading that file, and a deny on reading
